@@ -1,0 +1,10 @@
+{
+	"name": "Salvadanaio",
+	"short_name": "Salvadanaio",
+	"description": "Questo è un esempio di un sito Web.",
+	"lang": "it-IT",
+	"start_url": "/",
+	"display": "browser",
+	"background_color": "#004000",
+	"theme_color": "white"
+}

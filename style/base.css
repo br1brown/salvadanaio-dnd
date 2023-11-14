@@ -1,0 +1,91 @@
+html {
+	position: relative;
+	min-height: 100vh;
+}
+
+@media only screen and (max-width: 768px) {
+	.container-fluid {
+		overflow-x: hidden;
+		/*io basito... perché scrolla?*/
+	}
+}
+
+
+
+.tutto {
+	background-color: rgba(255, 255, 255, 0.7);
+	border: 1px solid;
+	padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	vertical-align: middle;
+}
+
+.bordo {
+	border: 1px solid;
+	padding: 10px;
+	box-shadow: 5px 5px 4px #888888;
+}
+
+.bordo-ico {
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.row {
+	padding-top: 10px;
+}
+
+.zoomma {
+	transition: transform .2s;
+}
+
+.zoomma:hover {
+	transform: scale(1.5);
+}
+
+body {
+	background-color: #031c03;
+	font-family: Verdana, sans-serif;
+}
+
+.back-to-top {
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+	display: none;
+}
+
+#addCharacterBtn {
+	cursor: pointer;
+	font-size: 24px;
+	margin-left: 10px;
+}
+
+
+.platinum-color {
+	color: #e5e4e2;
+	/* Colore per Platino */
+}
+
+.gold-color {
+	color: #ffd700;
+	/* Colore per Oro */
+}
+
+.silver-color {
+	color: #c0c0c0;
+	/* Colore per Argento */
+}
+
+.copper-color {
+	color: #b87333;
+	/* Colore per Rame */
+}
+
+.portafoglio {
+	font-family: "Lucida Console", Monaco, monospace;
+	background-image:
+		linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+		url('../style/assets/background-crumpled-paper-sheet_1194-7545.avif');
+	background-size: cover;
+	background-position: center;
+}
