@@ -11,7 +11,7 @@ function getConfig($frontEnd = false) {
 
 
 function getFileName($characterName,$frontEnd = false) {
-    $folder = getConfig($frontEnd)["FolderCharacters"];
+    $folder = getConfig($frontEnd)["FolderAPICharacters"];
     if ($frontEnd == true){
         $folder = "API/".$folder ;
     }

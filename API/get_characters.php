@@ -2,7 +2,7 @@
 include 'funzioni_comuni.php';
 
 $characters = [];
-$directory = getConfig()["FolderCharacters"].'/';
+$directory = getConfig()["FolderAPICharacters"].'/';
 if (file_exists($directory)) {
 
     foreach (new DirectoryIterator($directory) as $file) {
