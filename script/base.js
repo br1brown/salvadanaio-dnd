@@ -1,5 +1,9 @@
 //https://sweetalert2.github.io/
 $(document).ready(function () {
+
+	$('.addCharacterBtn').click(addNewCharacter);
+
+
 	$(window).scroll(function () {
 		if ($(this).scrollTop() > 50) {
 			$('#back-to-top').fadeIn();

@@ -54,7 +54,7 @@ body {
 	display: none;
 }
 
-#addCharacterBtn {
+.addCharacterBtn {
 	cursor: pointer;
 	font-size: 24px;
 	margin-left: 10px;

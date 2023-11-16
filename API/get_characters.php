@@ -11,6 +11,7 @@ if (file_exists($directory)) {
         $jsonContent = file_get_contents($directory . $file->getFilename());
         $characterData = json_decode($jsonContent, true);
         $characterData['filename'] = $file->getBasename('.json');
+        $characterData['totalcopper'] = get_totalcopper($characterData);
 
         $characters[] = $characterData;
     }
