@@ -1,20 +1,14 @@
 <?php
 
 
-function getConfig($frontEnd = false) {
+function getConfig() {
     $infos = "config.json";
-    if ($frontEnd == true)
-        $infos = "API/".$infos ;
-
     return json_decode(file_get_contents($infos), true);
 }
 
 
-function getFileName($characterName,$frontEnd = false) {
-    $folder = getConfig($frontEnd)["FolderAPICharacters"];
-    if ($frontEnd == true){
-        $folder = "API/".$folder ;
-    }
+function getFileName($characterName) {
+    $folder = getConfig()["FolderAPICharacters"];
 
     $characterName = trim($characterName);
     if (preg_match('/^\d/', $characterName))
@@ -22,12 +16,15 @@ function getFileName($characterName,$frontEnd = false) {
         return $folder.'/' . str_replace(' ', '_', strtoupper($characterName)) . '.json';
 }
 
-function getCharacterFromName($characterName) {
+function getCharacterFromName($characterName, $notCreate = false) {
     $filename = getFileName($characterName);
     if (file_exists($filename)) {
         $json = file_get_contents($filename);
         return json_decode($json, true);
     } else {
+        if($notCreate || empty($characterName)){
+            return null;
+        }else
         return [
             'name' => $characterName,
             'platinum' => 0,
@@ -44,6 +41,10 @@ function saveCharacter($character) {
     file_put_contents($filename, json_encode($character));
 }
 
+function get_totalcopper($character) {
+    $equivalenze = getConfig();
+    return $character['platinum'] * $equivalenze['platinum'] + $character['gold'] * $equivalenze['gold'] + $character['silver'] * $equivalenze['silver'] + $character['copper'];
+}
 function updateCharacterHistory(&$character, $platinum, $gold, $silver, $copper, $description, $isReceiving) {
     $transaction = [
         'date' => date('Y-m-d H:i:s'),
@@ -59,13 +60,18 @@ function updateCharacterHistory(&$character, $platinum, $gold, $silver, $copper,
 
 function receiveCoins($characterName, $platinum, $gold, $silver, $copper, $description) {
     $character = getCharacterFromName($characterName);
-    $character['platinum'] += $platinum;
-    $character['gold'] += $gold;
-    $character['silver'] += $silver;
-    $character['copper'] += $copper;
-    updateCharacterHistory($character, $platinum, $gold, $silver, $copper, $description, true);
-    saveCharacter($character);
+    if (!empty($character)){
+        $character['platinum'] += $platinum;
+        $character['gold'] += $gold;
+        $character['silver'] += $silver;
+        $character['copper'] += $copper;
+        updateCharacterHistory($character, $platinum, $gold, $silver, $copper, $description, true);
+        saveCharacter($character);
     return retOK('Monete ricevute correttamente.');
+    }
+    else{
+        return retError('Personaggio nullo!');
+    }
 }
 
 function makePayment($characterName, $platinum, $gold, $silver, $copper, $description, $canReceiveChange) {
@@ -73,41 +79,46 @@ function makePayment($characterName, $platinum, $gold, $silver, $copper, $descri
     $equivalenze = getConfig();
     
     $character = getCharacterFromName($characterName);
-    $totalCopperNeeded = $platinum * $equivalenze['platinum'] + $gold * $equivalenze['gold'] + $silver * $equivalenze['silver'] + $copper;
-    $characterTotalCopper = $character['platinum'] * $equivalenze['platinum'] + $character['gold'] * $equivalenze['gold'] + $character['silver'] * $equivalenze['silver'] + $character['copper'];
+    if (!empty($character)){
+        $totalCopperNeeded = $platinum * $equivalenze['platinum'] + $gold * $equivalenze['gold'] + $silver * $equivalenze['silver'] + $copper;
+        $characterTotalCopper = get_totalcopper($character);
 
-    if ($characterTotalCopper < $totalCopperNeeded) {
-        return retError('Non hai abbastanza monete per effettuare il pagamento.');
-    }
-
-    // Se può ricevere il resto, sottraiamo direttamente il totale necessario.
-    if ($canReceiveChange) {
-        $characterTotalCopper -= $totalCopperNeeded;
-
-        $character['platinum'] = floor($characterTotalCopper / $equivalenze['platinum']);
-        $characterTotalCopper %= $equivalenze['platinum'];
-
-        $character['gold'] = floor($characterTotalCopper / $equivalenze['gold']);
-        $characterTotalCopper %= $equivalenze['gold'];
-
-        $character['silver'] = floor($characterTotalCopper / $equivalenze['silver']);
-
-        $character['copper'] = $characterTotalCopper % $equivalenze['silver'];
-
-    } else {
-        // Altrimenti, assicurati di avere l'esatta denominazione per il pagamento
-        if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {
-            return retError('Non hai le monete della denominazione corretta per effettuare il pagamento esatto.');
+        if ($characterTotalCopper < $totalCopperNeeded) {
+            return retError('Non hai abbastanza monete per effettuare il pagamento.');
         }
-        $character['platinum'] -= $platinum;
-        $character['gold'] -= $gold;
-        $character['silver'] -= $silver;
-        $character['copper'] -= $copper;
-    }
 
-    updateCharacterHistory($character, -$platinum, -$gold, -$silver, -$copper, $description, false);
-    saveCharacter($character);
-    return retOK('Pagamento effettuato correttamente.');
+        // Se può ricevere il resto, sottraiamo direttamente il totale necessario.
+        if ($canReceiveChange) {
+            $characterTotalCopper -= $totalCopperNeeded;
+
+            $character['platinum'] = floor($characterTotalCopper / $equivalenze['platinum']);
+            $characterTotalCopper %= $equivalenze['platinum'];
+
+            $character['gold'] = floor($characterTotalCopper / $equivalenze['gold']);
+            $characterTotalCopper %= $equivalenze['gold'];
+
+            $character['silver'] = floor($characterTotalCopper / $equivalenze['silver']);
+
+            $character['copper'] = $characterTotalCopper % $equivalenze['silver'];
+
+        } else {
+            // Altrimenti, assicurati di avere l'esatta denominazione per il pagamento
+            if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {
+                return retError('Non hai le monete della denominazione corretta per effettuare il pagamento esatto.');
+            }
+            $character['platinum'] -= $platinum;
+            $character['gold'] -= $gold;
+            $character['silver'] -= $silver;
+            $character['copper'] -= $copper;
+        }
+
+        updateCharacterHistory($character, -$platinum, -$gold, -$silver, -$copper, $description, false);
+        saveCharacter($character);
+        return retOK('Pagamento effettuato correttamente.');
+    }
+    else{
+        return retError('Personaggio nullo!');
+    }
 }
 
 

@@ -102,7 +102,6 @@ function manageMoney(characterName, isReceiving) {
 						description: result.value.description
 					},
 					success: function (response) {
-						debugger
 						// La risposta dal server dovrebbe essere un oggetto JSON
 						if (response.status === 'success') {
 							SweetAlert.fire('Successo', response.message, 'success').then(() => {
