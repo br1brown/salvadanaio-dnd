@@ -159,7 +159,7 @@ function addEditLink(characterName, isEdit, url, text, note) {
 			}).then((result) => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: "API/" + (isEdit ? 'modifica-link' : 'aggiungi-link'),
+						url: "API/" + (isEdit ? 'modifica' : 'aggiungi') + "_link",
 						type: 'POST',
 						dataType: 'json',
 						data: {
