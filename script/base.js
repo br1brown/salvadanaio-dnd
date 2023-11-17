@@ -125,7 +125,7 @@ function manageMoney(characterName, isReceiving) {
 						}
 					},
 					error: function (xhr, status, error) {
-						SweetAlert.fire('Errore', 'Si è verificato un errore nella comunicazione con il server.', 'error');
+						SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
 					}
 				});
 			}
@@ -164,7 +164,7 @@ function addNewCharacter() {
 					}
 				},
 				error: function (xhr, status, error) {
-					SweetAlert.fire('Errore!', 'Non è stato possibile creare il personaggio.', 'error');
+					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
 				}
 			});
 		}
@@ -201,7 +201,7 @@ function deleteHistory(nome, datastoriacancellare, descrizione) {
 					}
 				},
 				error: function (xhr, status, error) {
-					SweetAlert.fire('Errore', 'Si è verificato un errore nella comunicazione con il server.', 'error');
+					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
 				}
 			});
 		}

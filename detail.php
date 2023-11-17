@@ -42,7 +42,7 @@
 								$('#contenuto').html(response);
 							},
 							error: function (xhr, status, error) {
-								SweetAlert.fire('Errore', error, 'error');
+									SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
 							}
 						});
 					}
