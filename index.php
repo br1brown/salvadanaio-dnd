@@ -20,11 +20,17 @@
 					<h3 class="col-12 d-block d-sm-none">Portafoglio Personaggi <span class="addCharacterBtn">[+]</span>
 					</h3>
 
-					<div class="col-12">
-						<select id="ordinamento" class="offset-md-4 col-md-4 col-12 form-control form-control-sm">
-							<option value="ricco_povero" selected>Dal più ricco al più povero</option>
-							<option value="povero_ricco">Dal più povero al più ricco</option>
-						</select>
+					<div class="offset-md-2 col-md-8 col-12">
+						<div class=row>
+							<select id="ordinamento" class="col form-control form-control-sm">
+								<option value="ricco_povero" selected>Dal più ricco al più povero</option>
+								<option value="povero_ricco">Dal più povero al più ricco</option>
+							</select>
+							<div class="input-group col" id="spazioRicerca">
+								<div class="form-outline">
+									<input type="search" placeholder="Ricerca" id="ricerca" class="form-control form-control-sm" />
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -43,18 +49,32 @@ var _cachePersonaggi = [];
 	$(document).ready(function () {
 
 		function renderUI(){
+			if (_cachePersonaggi.length > 5)
+				$('#spazioRicerca').show();
+			else
+				$('#spazioRicerca').hide();
+
 			var ordine = $('#ordinamento').val();
-			_cachePersonaggi.sort(function (a, b) {
-								if (ordine === 'ricco_povero') {
-									return b.totalcopper - a.totalcopper;
-								} else {
-									return a.totalcopper - b.totalcopper;
-								}
-							});
+			var ricerca = $('#ricerca').val().toLowerCase();
+
+			var filtered = _cachePersonaggi
+			.filter(function (elemento) {
+				if ((ricerca) && ricerca != "")
+					return elemento.name.toLowerCase().includes(ricerca);
+				return true;
+			})
+			.sort(function (a, b) {
+				if (ordine === 'ricco_povero') {
+				return b.totalcopper - a.totalcopper;
+				} else {
+				return a.totalcopper - b.totalcopper;
+				}
+			});
+
 			$.ajax({
 				url: "template/characters",
 				type: 'POST',
-				data: JSON.stringify(_cachePersonaggi),
+				data: JSON.stringify(filtered),
 				success: function (characterHtml) {
 					$('#characterContainer').html(characterHtml);
 				},
@@ -67,7 +87,11 @@ var _cachePersonaggi = [];
 
 		fetch();
 		$('#ordinamento').change(renderUI);
-
+		$('#ricerca').keypress(function(e){
+			if(e.which == 13){
+				renderUI();
+			}
+		});
 
 		function fetch() {
 			$('#characterContainer').html('<img src="loading.gif" class="w-100">');

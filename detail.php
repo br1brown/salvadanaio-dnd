@@ -12,11 +12,10 @@
 		<div class="row">
 			<div class="col-12 col-md-2">
 				<a href="index" class="btn btn-warning btn-sm w-100">Home</a>
-				<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto;">
-
+				<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto; overflow-x: auto;">
 				</div>
 			</div>
-			<div id=contenuto class="col-12 col-md-8 text-center tutto">
+			<div id=contenuto class="col-12 col-md-9 text-center tutto">
 				
 			</div>
 		<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button"><i
@@ -53,7 +52,7 @@
 				dataType: 'json',
 				success: function(response){
 					if (response.status === 'error') {
-						SweetAlert.fire('Errore', response.message, 'error').then(() => {window.location.href = 'index.html';});;
+						SweetAlert.fire('Errore', response.message, 'error').then(() => {window.location.href = 'index';});;
 					}else{
 						document.title = "Portafoglio di " + response.name;
 						$.ajax({
