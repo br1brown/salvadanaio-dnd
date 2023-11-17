@@ -52,6 +52,10 @@ body {
 	transform: scale(1.5);
 }
 
+.list-group-item {
+	font-size: x-small;
+}
+
 .addCharacterBtn {
 	cursor: pointer;
 	font-size: 24px;

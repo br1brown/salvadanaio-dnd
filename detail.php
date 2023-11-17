@@ -12,6 +12,9 @@
 		<div class="row">
 			<div class="col-12 col-md-2">
 				<a href="index" class="btn btn-warning btn-sm w-100">Home</a>
+				<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto;">
+
+				</div>
 			</div>
 			<div id=contenuto class="col-12 col-md-8 text-center tutto">
 				
@@ -23,6 +26,27 @@
 </body>
 <script>
 	$(document).ready(function () {
+
+		fetchCharacters(function() {
+			var urlAttuale = window.location.protocol + "//" + window.location.host + window.location.pathname;
+			$("#lista").empty();
+			_cachePersonaggi.forEach(function(item) {
+				var sonoqui = item.filename == "<?php echo $_GET['name']; ?>";
+				var classe = "list-group-item bg-transparent" + (sonoqui ? "" : "");
+				var link = urlAttuale + '?' + 'name=' + item.filename;
+				var elemento;
+				if(sonoqui) {
+					elemento = "<span class='" + classe + "' aria-disabled='true'>" + item.name + "</span>";
+				} else {
+					elemento = "<a href='" + link + "' class='" + classe + "'>" + item.name + "</a>";
+				}
+				$("#lista").append(elemento);
+			});
+
+		});
+
+
+
 		$.ajax({
 				url: 'API/get_single?name=<?php echo $_GET["name"]; ?>',
 				type: 'GET',
