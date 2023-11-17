@@ -1,44 +1,45 @@
-:root {--color-clone: black;
---color-cut: black;
---color-paste: black;
---color-download: black;
---color-mail: black;
---color-youtube: #bb0000;
---color-facebook: #3B5998;
---color-instagram: #8a3ab9;
---color-twitch: #6441a5;
---color-tiktok: black;
---color-snapchat: #fffc00;
---color-twitter: #55ACEE;
---color-vimeo: #45bbff;
---color-linkedin: #007bb5;
---color-skype: #00aff0;
---color-tumblr: #2c4762;
---color-pinterest: #cb2027;
---color-flickr: #f40083;
---color-dribbble: #ea4c89;
---color-stumbleupon: #eb4924;
---color-spotify: #1DB954;
---color-deezer: black;
---color-itunes: #EA4CC0;
---color-soundcloud: #ff5500;
---color-amazon: #FF9900;
---color-audible: #232F3E;
---color-pdf: red;
---color-bell: black;
---color-telegram: #2ca5e0;
---color-whatsapp: #25d366;
---color-google: #4285F4;
---color-chromecast: black;
---color-chrome: black;
---color-android: #a4c639;
---color-apple: #A2AAAD;
---color-playstation: #003791;
---color-quora: #b92b27;
---color-yahoo: #430297;
---color-foursquare: #45bbff;
---color-airbnb: #FF5A5F;
---color-btc: #f2a900;
+:root {
+	--color-clone: black;
+	--color-cut: black;
+	--color-paste: black;
+	--color-download: black;
+	--color-mail: black;
+	--color-youtube: #bb0000;
+	--color-facebook: #3B5998;
+	--color-instagram: #8a3ab9;
+	--color-twitch: #6441a5;
+	--color-tiktok: black;
+	--color-snapchat: #fffc00;
+	--color-twitter: #55ACEE;
+	--color-vimeo: #45bbff;
+	--color-linkedin: #007bb5;
+	--color-skype: #00aff0;
+	--color-tumblr: #2c4762;
+	--color-pinterest: #cb2027;
+	--color-flickr: #f40083;
+	--color-dribbble: #ea4c89;
+	--color-stumbleupon: #eb4924;
+	--color-spotify: #1DB954;
+	--color-deezer: black;
+	--color-itunes: #EA4CC0;
+	--color-soundcloud: #ff5500;
+	--color-amazon: #FF9900;
+	--color-audible: #232F3E;
+	--color-pdf: red;
+	--color-bell: black;
+	--color-telegram: #2ca5e0;
+	--color-whatsapp: #25d366;
+	--color-google: #4285F4;
+	--color-chromecast: black;
+	--color-chrome: black;
+	--color-android: #a4c639;
+	--color-apple: #A2AAAD;
+	--color-playstation: #003791;
+	--color-quora: #b92b27;
+	--color-yahoo: #430297;
+	--color-foursquare: #45bbff;
+	--color-airbnb: #FF5A5F;
+	--color-btc: #f2a900;
 }
 
 
@@ -52,14 +53,14 @@
 	font-weight: 300;
 }
 
-	.social-icon:hover {
-		opacity: 0.7;
-		border-radius: 0;
-	}
+.social-icon:hover {
+	opacity: 0.7;
+	border-radius: 0;
+}
 
-	.social-icon a {
-		text-decoration: none;
-	}
+.social-icon a {
+	text-decoration: none;
+}
 
 
 .fa-clone {
@@ -306,5 +307,3 @@
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 	background: var(--color-btc);
 }
-
-

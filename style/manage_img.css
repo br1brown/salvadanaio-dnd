@@ -1,6 +1,7 @@
 img {
 	max-width: 100%;
 }
+
 .muovi:hover {
 	/* Avvia l'animazione dello scuotimento e fa durare l'animazione per 0,5 secondi */
 	animation: shake 0.5s;
@@ -63,9 +64,9 @@ img {
 	text-align: left;
 }
 
-	.polaroid img {
-		width: 97%;
-	}
+.polaroid img {
+	width: 97%;
+}
 
 .ruotadestra {
 	-ms-transform: rotate(7deg);

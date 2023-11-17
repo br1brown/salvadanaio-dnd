@@ -33,7 +33,7 @@ $(document).ready(function () {
 // Funzione per caricare i dati dei personaggi
 function fetchCharacters(_success, _error) {
 	$.ajax({
-		url: 'API/get_characters.php',
+		url: 'API/get_characters',
 		type: 'GET',
 		dataType: 'json',
 		success: _success,
@@ -44,7 +44,7 @@ function fetchCharacters(_success, _error) {
 
 // Funzione per gestire il denaro
 function manageMoney(characterName, isReceiving) {
-	$.get(('template/insert.php?spendi=' + (isReceiving ? "0" : "1")), function (template, n2) {
+	$.get(('template/insert?spendi=' + (isReceiving ? "0" : "1")), function (template, n2) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';
 		SweetAlert.fire({
 			title: actionWord + ' monete per ' + characterName,
@@ -93,7 +93,7 @@ function manageMoney(characterName, isReceiving) {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: "API/" + (isReceiving ? 'ricevi.php' : 'spendi.php'),
+					url: "API/" + (isReceiving ? 'ricevi' : 'spendi'),
 					type: 'POST',
 					dataType: 'json', // Assicurati che la risposta sia in formato JSON
 					data: {
@@ -141,7 +141,7 @@ function addNewCharacter() {
 		if (result.isConfirmed) {
 			// Crea un nuovo personaggio con il nome fornito
 			$.ajax({
-				url: 'API/aggiungi_personaggio.php',
+				url: 'API/aggiungi_personaggio',
 				type: 'POST',
 				dataType: 'json',
 				data: { name: result.value },
@@ -175,7 +175,7 @@ function deleteHistory(nome, datastoriacancellare, descrizione) {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			$.ajax({
-				url: "API/elimina_cronologia.php",
+				url: "API/elimina_cronologia",
 				type: 'POST',
 				dataType: 'json',
 				data: {

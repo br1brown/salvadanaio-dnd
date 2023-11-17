@@ -3,14 +3,24 @@ html {
 	min-height: 100vh;
 }
 
+body {
+	background-color: #031c03;
+	font-family: Verdana, sans-serif;
+}
+
+.back-to-top {
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+	display: none;
+}
+
 @media only screen and (max-width: 768px) {
 	.container-fluid {
 		overflow-x: hidden;
 		/*io basito... perché scrolla?*/
 	}
 }
-
-
 
 .tutto {
 	background-color: rgba(255, 255, 255, 0.7);
@@ -42,24 +52,11 @@ html {
 	transform: scale(1.5);
 }
 
-body {
-	background-color: #031c03;
-	font-family: Verdana, sans-serif;
-}
-
-.back-to-top {
-	position: fixed;
-	bottom: 25px;
-	right: 25px;
-	display: none;
-}
-
 .addCharacterBtn {
 	cursor: pointer;
 	font-size: 24px;
 	margin-left: 10px;
 }
-
 
 .platinum-color {
 	color: #e5e4e2;

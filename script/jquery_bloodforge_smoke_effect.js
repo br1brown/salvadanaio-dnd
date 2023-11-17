@@ -244,7 +244,7 @@ Particle.prototype.GenerateRandom = function (min, max) {
 
             if (settings && settings.context) {
                 var $container = $(this);
-                
+
                 var width = $container.outerWidth();
                 var height = $container.outerHeight();
                 if (settings.width != width || settings.height != height) {
