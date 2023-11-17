@@ -1,7 +1,5 @@
 <?php
-$personaggio = [];
 if (isset($_POST['personaggio'])) {
-	$personaggio = $_POST['personaggio'];
     foreach ($_POST['personaggio'] as $key => $value) {
     	${$key} = $value;
 	}
@@ -28,6 +26,9 @@ if (isset($_POST['personaggio'])) {
 </style>
 	<div class="row">
 		<h1 class="col-12"><?php echo $name; ?></h1>
+		<div class="col-12">
+			
+		</div>
 
 		<div class="col">
 			<div class="portafoglio shadow rounded p-1 m-2">
@@ -45,10 +46,47 @@ if (isset($_POST['personaggio'])) {
 		</div>
 	</div>
 		
-	<div class="row text-center mt-3 mb-5">
+	<div class="row text-center mb-3">
 		<input type="button" value=Spendi class="btn btn-danger col-10 offset-1 offset-md-1 col-md-5" onclick="manageMoney('<?php echo $name; ?>', false)">
 		<input type="button" value=Ricevi class="btn btn-success col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo $name; ?>', true)">
 	</div>
+	
+	<div class="row mt-4">
+		<button class="btn btn-dark col-md-4 offset-md-4" onclick="addEditLink('<?php echo htmlspecialchars($name); ?>', false)">
+			<i class="fas fa-plus"></i> Aggiungi Nuovo Link
+		</button>
+	</div>
+
+<?php if (!empty($links)): ?>
+        <div class="row">
+		<?php foreach ($links as $index => $link): ?>
+			<div class="col-md-6">
+				<div class="list-group-item d-flex justify-content-start align-items-center">
+					<!-- Contenitore per il link e le note -->
+					<div class="mr-auto text-left">
+						<a href="<?php echo htmlspecialchars($link['url']); ?>" target="_blank" class="d-block">
+							<?php echo htmlspecialchars($link['text']); ?>
+						</a>
+						<?php if (!empty($link['note'])): ?>
+							<small class="text-muted">
+							<?php echo htmlspecialchars($link['note']); ?>
+							</small>
+						<?php endif; ?>
+					</div>
+					<!-- Bottone di modifica -->
+					<button onclick="addEditLink('<?php echo htmlspecialchars($name); ?>', true, '<?php echo htmlspecialchars($link['url']); ?>', '<?php echo htmlspecialchars($link['text']); ?>', '<?php echo htmlspecialchars($link['note'] ?? ''); ?>')" class="btn btn-dark btn-sm">
+						<i class="fas fa-edit"></i>
+					</button>
+					<!-- Bottone di eliminazione -->
+					<button onclick="deleteSingleLink('<?php echo htmlspecialchars($name); ?>','<?php echo htmlspecialchars($link['url']); ?>', '<?php echo htmlspecialchars($link['text']); ?>')" class="ml-1 btn btn-danger btn-sm">
+						<i class="fas fa-trash"></i>
+					</button>
+				</div>
+			</div>
+		<?php endforeach; ?>
+        </div>
+<?php endif; ?>
+
 	<?php
 	if (!empty($items)){
 	?>
@@ -80,7 +118,7 @@ if (isset($_POST['personaggio'])) {
 	
 	<?php
 	if (!empty($history)){ ?>
-	<div class="row">
+	<div class="row mt-5">
 		<div class="col-12" style="display: block; font-size: x-small;">
 			<table class="table" >
 				<thead class="thead-dark">
@@ -108,7 +146,7 @@ if (isset($_POST['personaggio'])) {
 						if($riga['copper'] != 0) echo "<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$riga['copper']}";
 						echo "</td>";
 						echo "<td>{$riga['description']}</td>";
-						echo "<td><i style=\"cursor: pointer;\" class=\"fa fa-solid fa-trash\" onclick=\"deleteHistory('{$personaggio['name']}','{$riga['date']}','{$riga['description']}')\"></i></td>";
+						echo "<td><i style=\"cursor: pointer;\" class=\"fa fa-solid fa-trash\" onclick=\"deleteSingleHistory('{$name}','{$riga['date']}','{$riga['description']}')\"></i></td>";
 						echo "</tr>";
 					}
 				}

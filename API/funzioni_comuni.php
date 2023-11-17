@@ -1,6 +1,4 @@
 <?php
-
-
 function getConfig() {
     $infos = "config.json";
     return json_decode(file_get_contents($infos), true);
@@ -31,7 +29,9 @@ function getCharacterFromName($characterName, $notCreate = false) {
             'gold' => 0,
             'silver' => 0,
             'copper' => 0,
-            'history' => []
+            'history' => [],
+            'link' => [],
+            'items' => []
         ];
     }
 }

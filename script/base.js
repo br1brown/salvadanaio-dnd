@@ -1,10 +1,7 @@
 var _cachePersonaggi = [];
-
 //https://sweetalert2.github.io/
 $(document).ready(function () {
-
 	$('.addCharacterBtn').click(addNewCharacter);
-
 
 	$(window).scroll(function () {
 		if ($(this).scrollTop() > 50) {
@@ -29,6 +26,7 @@ $(document).ready(function () {
 		particleRadius: 250,
 		density: 5
 	});
+
 });
 
 
@@ -44,9 +42,7 @@ function fetchCharacters(_success) {
 
 			_success()
 		},
-		error: function (xhr, status, error) {
-			SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
-		}
+		error: handleError
 	});
 }
 
@@ -114,23 +110,82 @@ function manageMoney(characterName, isReceiving) {
 						canReceiveChange: result.value.canReceiveChange,
 						description: result.value.description
 					},
-					success: function (response) {
-						// La risposta dal server dovrebbe essere un oggetto JSON
-						if (response.status === 'success') {
-							SweetAlert.fire('Successo', response.message, 'success').then(() => {
-								location.reload();
-							});
-						} else {
-							SweetAlert.fire('Errore', response.message, 'error');
-						}
-					},
-					error: function (xhr, status, error) {
-						SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
-					}
+					success: genericSuccess,
+					error: handleError
 				});
 			}
 		});
 	});
+}
+
+function addEditLink(characterName, isEdit, url, text, note) {
+
+	var linkData = {
+		url,
+		text,
+		note,
+		isEdit
+	}
+	var actionWord = isEdit ? 'Modifica' : 'Aggiungi';
+
+	$.ajax({
+		url: "template/link-form",
+		type: 'POST',
+		data: linkData,
+		success: function (htmlResponse) {
+			SweetAlert.fire({
+				title: actionWord + ' link per ' + characterName,
+				html: htmlResponse,
+				confirmButtonText: actionWord,
+				focusConfirm: false,
+				showCancelButton: true,
+				preConfirm: () => {
+					const url = Swal.getPopup().querySelector('#url').value;
+					const linkText = Swal.getPopup().querySelector('#linkText').value;
+					const note = Swal.getPopup().querySelector('#note').value;
+
+					try {
+						new URL(url);
+					}
+					catch (e) {
+						Swal.showValidationMessage('Per favore, inserisci un URL che sia valido');
+					}
+
+					if (!url || !linkText)
+						Swal.showValidationMessage('Per favore, inserisci sia l\'URL che il testo del link.');
+
+					return { url, linkText, note };
+				}
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: "API/" + (isEdit ? 'modifica-link' : 'aggiungi-link'),
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							name: characterName,
+							oldUrl: linkData.url,
+							url: result.value.url,
+							linkText: result.value.linkText,
+							note: result.value.note.replace(/\n/g, ' - ')
+						},
+						success: function (response) {
+							if (isEdit == true && response.status != 'success') {
+								SweetAlert.fire('Errore', response.message, 'error').then(() => {
+									addEditLink(characterName, false, result.value.url, result.value.linkText, result.value.note)
+								});
+							}
+							else
+								genericSuccess(response)
+						},
+						error: handleError
+					});
+				}
+			});
+		},
+		error: handleError
+	});
+
 }
 
 
@@ -154,24 +209,14 @@ function addNewCharacter() {
 				type: 'POST',
 				dataType: 'json',
 				data: { name: result.value },
-				success: function (response) {
-					if (response.status === 'success') {
-						SweetAlert.fire('Creato!', response.message, 'success').then(() => {
-							location.reload();
-						});
-					} else {
-						SweetAlert.fire('Errore!', response.message, 'error');
-					}
-				},
-				error: function (xhr, status, error) {
-					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
-				}
+				success: genericSuccess,
+				error: handleError
 			});
 		}
 	});
 }
 
-function deleteHistory(nome, datastoriacancellare, descrizione) {
+function deleteSingleHistory(nome, datastoriacancellare, descrizione) {
 	SweetAlert.fire({
 		title: 'Sei sicuro?',
 		html: "Vuoi davvero eliminare elemento '" + descrizione + "' dallo storico?<br><small>Non inficerà sulle somme possedute</small>",
@@ -184,26 +229,57 @@ function deleteHistory(nome, datastoriacancellare, descrizione) {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			$.ajax({
-				url: "API/elimina_cronologia",
+				url: "API/elimina_itemcronologia",
 				type: 'POST',
 				dataType: 'json',
 				data: {
 					name: nome,
 					date: datastoriacancellare,
 				},
-				success: function (response) {
-					if (response.status === 'success') {
-						SweetAlert.fire('Successo', response.message, 'success').then(() => {
-							location.reload();
-						});
-					} else {
-						SweetAlert.fire('Errore', response.message, 'error');
-					}
-				},
-				error: function (xhr, status, error) {
-					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
-				}
+				success: genericSuccess,
+				error: handleError
 			});
 		}
 	});
+}
+
+function deleteSingleLink(nome, url, text) {
+	SweetAlert.fire({
+		title: 'Sei sicuro?',
+		html: "Vuoi davvero eliminare link '" + text + "' ?",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Sì, elimina!',
+		cancelButtonText: 'Annulla'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				url: "API/elimina_itemlink",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					name: nome,
+					url: url,
+				},
+				success: genericSuccess,
+				error: handleError
+			});
+		}
+	});
+}
+
+function handleError(xhr, status, error) {
+	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
+}
+
+function genericSuccess(response) {
+	if (response.status === 'success') {
+		SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
+			location.reload();
+		});
+	} else {
+		SweetAlert.fire('Errore', response.message, 'error');
+	}
 }

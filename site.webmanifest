@@ -1,7 +1,7 @@
 {
 	"name": "Salvadanaio",
-	"short_name": "Salvadanaio",
-	"description": "Questo è un esempio di un sito Web.",
+	"short_name": "Salvadanaio per DnD",
+	"description": "Salvadanaio in Cloud",
 	"lang": "it-IT",
 	"start_url": "/",
 	"display": "browser",
