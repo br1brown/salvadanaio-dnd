@@ -1,3 +1,5 @@
+var _cachePersonaggi = [];
+
 //https://sweetalert2.github.io/
 $(document).ready(function () {
 
@@ -31,13 +33,20 @@ $(document).ready(function () {
 
 
 // Funzione per caricare i dati dei personaggi
-function fetchCharacters(_success, _error) {
+function fetchCharacters(_success) {
 	$.ajax({
 		url: 'API/get_characters',
 		type: 'GET',
 		dataType: 'json',
-		success: _success,
-		error: _error
+		success: function (personaggi) {
+			_cachePersonaggi = personaggi;
+
+
+			_success()
+		},
+		error: function (xhr, status, error) {
+			SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
+		}
 	});
 }
 

@@ -28,7 +28,7 @@
 					</div>
 				</div>
 
-				<div id="charactersContainer" class="row">
+				<div id="characterContainer" class="row">
 
 				</div>
 			</div>
@@ -39,46 +39,42 @@
 	</div>
 </body>
 <script>
+var _cachePersonaggi = [];
 	$(document).ready(function () {
 
-		function fetch() {
-			$('#charactersContainer').html('<img src="loading.gif" class="w-100">');
+		function renderUI(){
 			var ordine = $('#ordinamento').val();
-			fetchCharacters(
-				function (characters) {
-					debugger
-					$.get('template/character', function (template) {
-
-						characters.sort(function (a, b) {
-							if (ordine === 'ricco_povero') {
-								return b.totalcopper - a.totalcopper;
-							} else {
-								return a.totalcopper - b.totalcopper;
-							}
-						});
-						$('#charactersContainer').empty();
-						$.each(characters, function (index, character) {
-							var characterHtml = template.replace(/{{name}}/g, character.name)
-								.replace(/{{platinum}}/g, character.platinum)
-								.replace(/{{gold}}/g, character.gold)
-								.replace(/{{silver}}/g, character.silver)
-								.replace(/{{copper}}/g, character.copper)
-								.replace(/{{filename}}/g, character.filename)
-							$('#charactersContainer').append('<div class="col-12 col-md-6">' + characterHtml + "</div>");
-						});
-					});
+			_cachePersonaggi.sort(function (a, b) {
+								if (ordine === 'ricco_povero') {
+									return b.totalcopper - a.totalcopper;
+								} else {
+									return a.totalcopper - b.totalcopper;
+								}
+							});
+			$.ajax({
+				url: "template/characters",
+				type: 'POST',
+				data: JSON.stringify(_cachePersonaggi),
+				success: function (characterHtml) {
+					$('#characterContainer').html(characterHtml);
 				},
-				function (request, status, error) {
-					SweetAlert.fire('Errore', 'Impossibile caricare i personaggi.', 'error');
-				}
-			);
+				error: function (xhr, status, error) {
+					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
+			}
+			});
 		}
 
 
-
 		fetch();
+		$('#ordinamento').change(renderUI);
 
-		$('#ordinamento').change(fetch);
+
+		function fetch() {
+			$('#characterContainer').html('<img src="loading.gif" class="w-100">');
+			fetchCharacters(renderUI);
+		}
+
+
 	});
 </script>
 
