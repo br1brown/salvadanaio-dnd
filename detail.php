@@ -29,6 +29,9 @@
 		fetchCharacters(function() {
 			var urlAttuale = window.location.protocol + "//" + window.location.host + window.location.pathname;
 			$("#lista").empty();
+
+			_cachePersonaggi.sort(function (a, b) { return b.totalcopper - a.totalcopper; })
+
 			_cachePersonaggi.forEach(function(item) {
 				var sonoqui = item.filename == "<?php echo $_GET['name']; ?>";
 				var classe = "list-group-item bg-transparent" + (sonoqui ? "" : "");

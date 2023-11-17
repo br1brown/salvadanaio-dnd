@@ -2,9 +2,9 @@
 $personaggio = [];
 if (isset($_POST['personaggio'])) {
 	$personaggio = $_POST['personaggio'];
-    // foreach ($_POST['personaggio'] as $key => $value) {
-    // ${$key} = $value;
-	// }
+    foreach ($_POST['personaggio'] as $key => $value) {
+    	${$key} = $value;
+	}
 }
 
 ?>
@@ -27,31 +27,59 @@ if (isset($_POST['personaggio'])) {
 }
 </style>
 	<div class="row">
-		<h1 class="col-12"><?php echo $personaggio['name']; ?></h1>
+		<h1 class="col-12"><?php echo $name; ?></h1>
 
 		<div class="col">
 			<div class="portafoglio shadow rounded p-1 m-2">
 			<div class="row text-center">
-				<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $personaggio['platinum']; ?></span>
+				<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $platinum; ?></span>
 			</div>
 			<div class="row small text-center">
-				<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $personaggio['gold']; ?></span>
-				<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $personaggio['silver']; ?></span>
+				<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $gold; ?></span>
+				<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $silver; ?></span>
 			</div>
 			<div class="row small text-center">
-				<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $personaggio['copper']; ?></span>
+				<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $copper; ?></span>
 			</div>
 			</div>
 		</div>
 	</div>
 		
 	<div class="row text-center mt-3 mb-5">
-		<input type="button" value=Spendi class="btn btn-danger col-10 offset-1 offset-md-1 col-md-5" onclick="manageMoney('<?php echo $personaggio['name']; ?>', false)">
-		<input type="button" value=Ricevi class="btn btn-success col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo $personaggio['name']; ?>', true)">
+		<input type="button" value=Spendi class="btn btn-danger col-10 offset-1 offset-md-1 col-md-5" onclick="manageMoney('<?php echo $name; ?>', false)">
+		<input type="button" value=Ricevi class="btn btn-success col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo $name; ?>', true)">
 	</div>
-
 	<?php
-	if (!empty($personaggio['history'])){ ?>
+	if (!empty($items)){
+	?>
+	<div class="row">
+		<div class="col-12" style="display: block; font-size: x-small;">
+			<table class="table" >
+				<thead class="thead-dark">
+					<tr>
+						<th width="70%">Oggetto</th>
+						<th width="30%">Quantità</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php
+				// function confrontaInventario($a, $b) {
+				// 	return strtotime($b['date']) - strtotime($a['date']);
+				// }
+				// usort($items, 'confrontaInventario');
+				foreach ($items as $oggetto) {
+					
+				}
+				
+				?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+<?php } ?>
+	
+	<?php
+	if (!empty($history)){ ?>
 	<div class="row">
 		<div class="col-12" style="display: block; font-size: x-small;">
 			<table class="table" >
@@ -67,8 +95,8 @@ if (isset($_POST['personaggio'])) {
 				function confrontaData($a, $b) {
 					return strtotime($b['date']) - strtotime($a['date']);
 				}
-				usort($personaggio['history'], 'confrontaData');
-				foreach ($personaggio['history'] as $riga) {
+				usort($history, 'confrontaData');
+				foreach ($history as $riga) {
 					// Controllo se almeno uno dei valori non è zero
 					if($riga['platinum'] != 0 || $riga['gold'] != 0 || $riga['silver'] != 0 || $riga['copper'] != 0) {
 						$classeRiga = $riga['type'] == 'received' ? 'table-success' : 'table-danger';
