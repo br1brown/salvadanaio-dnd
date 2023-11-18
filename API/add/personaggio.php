@@ -1,5 +1,5 @@
 <?php
-include 'funzioni_comuni.php';
+include dirname(__DIR__).'/funzioni_comuni.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $characterName = $_POST['name'];
@@ -9,11 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (file_exists($filename)) {
         echo json_encode(['status' => 'error', 'message' => 'Un personaggio con questo nome esiste già.']);
     } else {
-        $newCharacter = getCharacterFromName($characterName); // Questa funzione creerà un personaggio se non esiste
+        $newCharacter = getCharacterFromName($characterName,'',false); // Questa funzione creerà un personaggio se non esiste
         saveCharacter($newCharacter);
-        echo json_encode(['status' => 'success', 'message' => 'Personaggio creato con successo.']);
+        echo retOK('Personaggio creato con successo.');
     }
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Metodo HTTP non supportato.']);
+    echo retError('Metodo HTTP non supportato.');
 }
 ?>

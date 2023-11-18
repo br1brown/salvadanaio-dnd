@@ -50,7 +50,7 @@
 
 
 		$.ajax({
-				url: 'API/get_single?name=<?php echo $_GET["name"]; ?>',
+				url: 'API/get/single?name=<?php echo $_GET["name"]; ?>',
 				type: 'GET',
 				dataType: 'json',
 				success: function(response){
@@ -59,7 +59,7 @@
 					}else{
 						document.title = "Portafoglio di " + response.name;
 						$.ajax({
-							url: "template/detail",
+							url: getTemplateUrl("detail"),
 							type: 'POST',
 							data: {
 								personaggio: response

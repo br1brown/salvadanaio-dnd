@@ -1,8 +1,9 @@
 <?php
-include 'funzioni_comuni.php';
+include dirname(__DIR__).'/funzioni_comuni.php';
 
 $characters = [];
-$directory = getConfig()["FolderAPICharacters"].'/';
+$infos = getConfig();
+$directory = $infos["FolderAPICharacters"].'/';
 if (file_exists($directory)) {
 
     foreach (new DirectoryIterator($directory) as $file) {
@@ -11,7 +12,7 @@ if (file_exists($directory)) {
         $jsonContent = file_get_contents($directory . $file->getFilename());
         $characterData = json_decode($jsonContent, true);
         $characterData['filename'] = $file->getBasename('.json');
-        $characterData['totalcopper'] = get_totalcopper($characterData);
+        $characterData['totalcopper'] = get_totalcopper($characterData,$infos);
 
         $characters[] = $characterData;
     }

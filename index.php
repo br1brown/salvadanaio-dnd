@@ -72,7 +72,7 @@ var _cachePersonaggi = [];
 			});
 
 			$.ajax({
-				url: "template/characters",
+				url: getTemplateUrl("characters"),
 				type: 'POST',
 				data: JSON.stringify(filtered),
 				success: function (characterHtml) {

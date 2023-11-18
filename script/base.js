@@ -33,7 +33,7 @@ $(document).ready(function () {
 // Funzione per caricare i dati dei personaggi
 function fetchCharacters(_success) {
 	$.ajax({
-		url: 'API/get_characters',
+		url: getApiMethod("get", "characters"),
 		type: 'GET',
 		dataType: 'json',
 		success: function (personaggi) {
@@ -49,7 +49,7 @@ function fetchCharacters(_success) {
 
 // Funzione per gestire il denaro
 function manageMoney(characterName, isReceiving) {
-	$.get(('template/insert?spendi=' + (isReceiving ? "0" : "1")), function (template, n2) {
+	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template, n2) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';
 		SweetAlert.fire({
 			title: actionWord + ' monete per ' + characterName,
@@ -98,7 +98,7 @@ function manageMoney(characterName, isReceiving) {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: "API/" + (isReceiving ? 'ricevi' : 'spendi'),
+					url: getApiUrl((isReceiving ? 'ricevi' : 'spendi')),
 					type: 'POST',
 					dataType: 'json', // Assicurati che la risposta sia in formato JSON
 					data: {
@@ -129,7 +129,7 @@ function addEditLink(characterName, isEdit, url, text, note) {
 	var actionWord = isEdit ? 'Modifica' : 'Aggiungi';
 
 	$.ajax({
-		url: "template/link-form",
+		url: getTemplateUrl("link-form"),
 		type: 'POST',
 		data: linkData,
 		success: function (htmlResponse) {
@@ -159,7 +159,7 @@ function addEditLink(characterName, isEdit, url, text, note) {
 			}).then((result) => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: "API/" + (isEdit ? 'modifica' : 'aggiungi') + "_link",
+						url: getApiMethod((isEdit ? 'edit' : 'add'), "link"),
 						type: 'POST',
 						dataType: 'json',
 						data: {
@@ -205,7 +205,7 @@ function addNewCharacter() {
 		if (result.isConfirmed) {
 			// Crea un nuovo personaggio con il nome fornito
 			$.ajax({
-				url: 'API/aggiungi_personaggio',
+				url: getApiMethod("add", "personaggio"),
 				type: 'POST',
 				dataType: 'json',
 				data: { name: result.value },
@@ -229,7 +229,7 @@ function deleteSingleHistory(nome, datastoriacancellare, descrizione) {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			$.ajax({
-				url: "API/elimina_itemcronologia",
+				url: getApiMethod("delete", "item_cronologia"),
 				type: 'POST',
 				dataType: 'json',
 				data: {
@@ -256,7 +256,7 @@ function deleteSingleLink(nome, url, text) {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			$.ajax({
-				url: "API/elimina_itemlink",
+				url: getApiMethod("delete", "item_link"),
 				type: 'POST',
 				dataType: 'json',
 				data: {
@@ -282,4 +282,29 @@ function genericSuccess(response) {
 	} else {
 		SweetAlert.fire('Errore', response.message, 'error');
 	}
+}
+
+function getApiMethod(action, metod, params = null) {
+	return "API/" + action + "/" + metod + MakeGetQueryString(params);
+}
+function getApiUrl(action, params = null) {
+	return "API/" + action + MakeGetQueryString(params);
+}
+
+function getTemplateUrl(type, params = null) {
+	return "template/" + type + MakeGetQueryString(params);
+}
+function MakeGetQueryString(parametri) {
+	var ret = '';
+	if (!parametri || Object.keys(parametri).length === 0)
+		ret = '';
+	else
+		ret = Object.keys(parametri)
+			.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(parametri[key])}`)
+			.join('&');
+
+	if (ret != '')
+		return "?" + ret;
+	return ret;
+
 }

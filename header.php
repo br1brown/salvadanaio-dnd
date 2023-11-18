@@ -1,4 +1,3 @@
-
 	<!-- Definizione della codifica dei caratteri per la pagina -->
 	<meta charset="UTF-8">
 
