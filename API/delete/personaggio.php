@@ -8,8 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
     }
     $percorsoFileOriginale = getFileName($characterName);;
-
-     if (!file_exists($percorsoFileOriginale)) {
+    if (!file_exists($percorsoFileOriginale)) {
         echo retError('Nessun dato');
             exit;
     }

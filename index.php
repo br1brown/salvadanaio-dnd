@@ -21,15 +21,18 @@
 					</h3>
 
 					<div class="offset-md-2 col-md-8 col-12">
-						<div class=row>
-							<select id="ordinamento" class="col form-control form-control-sm">
+						<div class="row">
+							<select id="ordinamento" class="col col-12 col-md form-control form-control-sm">
 								<option value="ricco_povero" selected>Dal più ricco al più povero</option>
 								<option value="povero_ricco">Dal più povero al più ricco</option>
 							</select>
-							<div class="input-group col" id="spazioRicerca">
+							<div class="input-group col-10 col-md" id="spazioRicerca">
 								<div class="form-outline">
 									<input type="search" placeholder="Ricerca" id="ricerca" class="form-control form-control-sm" />
 							</div>
+							<button id=bottone class="btn btn-outline-dark btn-sm col-2 col-md-1 mr-1">
+								<i class="fa fa-search"></i>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -61,10 +64,18 @@ var _cachePersonaggi = [];
 
 			var filtered = _cachePersonaggi
 			.filter(function (elemento) {
-				if ((ricerca) && ricerca != "")
-					return elemento.name.toLowerCase().includes(ricerca);
+			if ((ricerca) && ricerca != "") {
+					var parole = elemento.name.toLowerCase().split(/\s+/);
+					var ricerche = ricerca.toLowerCase().split(/\s+/);
+					// Verifica che ogni parola della ricerca sia presente nel nome
+					return ricerche.some(function (parolaRicerca) {
+						return parole.some( function (parola) {
+						return parola.includes(parolaRicerca);
+					});
+					});
+				}
 				return true;
-			})
+			})	
 			.sort(function (a, b) {
 				if (ordine === 'ricco_povero') {
 				return b.totalcopper - a.totalcopper;
@@ -88,6 +99,7 @@ var _cachePersonaggi = [];
 
 		fetch();
 		$('#ordinamento').change(renderUI);
+		$('#bottone').click(renderUI);
 		$('#ricerca').keypress(function(e){
 			if(e.which == 13){
 				renderUI();
