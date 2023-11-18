@@ -51,14 +51,14 @@ if (isset($_POST['personaggio'])) {
 		<input type="button" value=Ricevi class="btn btn-success col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo $name; ?>', true)">
 	</div>
 	
-	<div class="row mt-4">
-		<button class="btn btn-dark col-md-4 offset-md-4" onclick="addEditLink('<?php echo htmlspecialchars($name); ?>', false)">
+	<div class="row mt-4 item_Link">
+		<button id=addLink class="btn btn-dark col-md-4 offset-md-4" onclick="addEditLink('<?php echo htmlspecialchars($name); ?>', false)">
 			<i class="fas fa-plus"></i> Aggiungi Nuovo Link
 		</button>
 	</div>
 
 <?php if (!empty($links)): ?>
-        <div class="row">
+        <div class="row item_Link">
 		<?php foreach ($links as $index => $link): ?>
 			<div class="col-md-6">
 				<div class="list-group-item d-flex justify-content-start align-items-center">

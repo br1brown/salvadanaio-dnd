@@ -2,12 +2,34 @@
 include dirname(__DIR__).'/funzioni_comuni.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $characterName = $_POST['name'];
-    if (empty($characterName)){
+    $characterlabel = $_POST['name'];
+    if (empty($characterlabel)){
         echo retError('Nessun personaggio');
     exit;
     }
-    $percorsoFileOriginale = getFileName($characterName);;
+
+    $infos = getConfig();
+    $directory = $infos["FolderAPICharacters"].'/';
+
+    $nome = "";
+    foreach (new DirectoryIterator($directory) as $file) {
+        if ($file->isDot() || $file->getExtension() !== 'json') continue;
+        
+        if ($characterlabel == $file->getBasename('.json')){
+            $json = file_get_contents($directory . $file->getFilename());
+            $characterName = json_decode($json, true)['name'];
+        }
+
+    }
+    
+    if (empty($characterName)){
+            echo retError('Nessun personaggio');
+        exit;
+        }
+
+
+
+    $percorsoFileOriginale = getFileName($characterName);
     if (!file_exists($percorsoFileOriginale)) {
         echo retError('Nessun dato');
             exit;

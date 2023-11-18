@@ -22,6 +22,11 @@
 				class="fas fa-chevron-up"></i></a>
 	</div>
     </div>
+	<br>
+
+	<hr>
+	<button type="button" onclick="eliminami('<?php echo $_GET['name'];  ?>',1)" class="btnEliminaPersonaggi btn btn-outline-danger btn-sm">Elimina</button>
+
 </body>
 <script>
 	$(document).ready(function () {
@@ -50,10 +55,11 @@
 
 
 		$.ajax({
-				url: 'API/get/single?name=<?php echo $_GET["name"]; ?>',
+				url: getApiMethod("get", "single", {name : '<?php echo $_GET["name"]; ?>'}),
 				type: 'GET',
 				dataType: 'json',
 				success: function(response){
+					$("#del").val("Eliminare "+ response.name)
 					if (response.status === 'error') {
 						SweetAlert.fire('Errore', response.message, 'error').then(() => {window.location.href = 'index';});;
 					}else{
@@ -66,6 +72,8 @@
 							},
 							success: function (response) {
 								$('#contenuto').html(response);
+								settinAppSetting();
+
 							},
 							error: function (xhr, status, error) {
 									SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');

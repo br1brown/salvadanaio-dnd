@@ -1,32 +1,75 @@
 var _cachePersonaggi = [];
+var appsettings = [];
+
+function settinAppSetting(settings = null) {
+
+	$('.btnEliminaPersonaggi').hide();
+
+	$('.addCharacterBtn').hide();
+
+	$('.filtri').hide();
+
+	$('.item_Link').hide();
+	$('#addLink').hide();
+
+
+	if (!(!settings))
+		appsettings = settings;
+
+	if (!(!appsettings)) {
+
+		if (appsettings.aggiuntaPersonaggio) {
+			$('.addCharacterBtn').click(addNewCharacter);
+			$('.addCharacterBtn').show();
+		}
+
+		if (appsettings.filtri) {
+			$('.filtri').show();
+		}
+
+		if (appsettings.Link) {
+			$('.itemLink').show();
+			$('#addLink').show();
+		}
+
+		if (appsettings.eliminaPersonaggio) {
+			$('.btnEliminaPersonaggi').show();
+		}
+	}
+}
+
+
 //https://sweetalert2.github.io/
 $(document).ready(function () {
-	$('.addCharacterBtn').click(addNewCharacter);
+	settinAppSetting();
+	$.get(getConfigUrl(), function (settings) {
 
-	$(window).scroll(function () {
-		if ($(this).scrollTop() > 50) {
-			$('#back-to-top').fadeIn();
-		} else {
-			$('#back-to-top').fadeOut();
-		}
+		settinAppSetting(settings);
+
+		$(window).scroll(function () {
+			if ($(this).scrollTop() > 50) {
+				$('#back-to-top').fadeIn();
+			} else {
+				$('#back-to-top').fadeOut();
+			}
+		});
+
+
+		// scroll body to 0px on click
+		$('#back-to-top').click(function () {
+			$('body,html').animate({
+				scrollTop: 0
+			}, 400);
+			return false;
+		});
+		$('#smoke-effect-canvas').SmokeEffect({
+			color: 'orange',
+			opacity: 0.4,
+			maximumVelocity: 100,
+			particleRadius: 250,
+			density: 5
+		});
 	});
-
-
-	// scroll body to 0px on click
-	$('#back-to-top').click(function () {
-		$('body,html').animate({
-			scrollTop: 0
-		}, 400);
-		return false;
-	});
-	$('#smoke-effect-canvas').SmokeEffect({
-		color: 'orange',
-		opacity: 0.4,
-		maximumVelocity: 100,
-		particleRadius: 250,
-		density: 5
-	});
-
 });
 
 
@@ -49,7 +92,7 @@ function fetchCharacters(_success) {
 
 // Funzione per gestire il denaro
 function manageMoney(characterName, isReceiving) {
-	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template, n2) {
+	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';
 		SweetAlert.fire({
 			title: actionWord + ' monete per ' + characterName,
@@ -270,6 +313,52 @@ function deleteSingleLink(nome, url, text) {
 	});
 }
 
+function eliminami(nome, iter) {
+	var title = 'Sei';
+	debugger;
+	for (let i = 0; i < iter; i++) {
+		title = title + ' sicuro';
+	}
+	title += '?';
+	SweetAlert.fire({
+		title: title,
+		html: "Vuoi eliminare il personaggio?",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Sì, elimina!',
+		cancelButtonText: 'Annulla'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			if (iter < 2) {
+				eliminami(nome, iter + 1);
+			}
+			else {
+				$.ajax({
+					url: getApiMethod("delete", "personaggio"),
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						name: nome,
+					},
+					success: function (response) {
+						if (response.status === 'success') {
+							SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
+								location.href = ("index");
+							});
+						} else {
+							SweetAlert.fire('Errore', response.message, 'error');
+						}
+					},
+					error: handleError
+				});
+			}
+		}
+	});
+}
+
+
 function handleError(xhr, status, error) {
 	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
 }
@@ -294,6 +383,12 @@ function getApiUrl(action, params = null) {
 function getTemplateUrl(type, params = null) {
 	return "template/" + type + MakeGetQueryString(params);
 }
+
+
+function getConfigUrl() {
+	return "config.json";
+}
+
 function MakeGetQueryString(parametri) {
 	var ret = '';
 	if (!parametri || Object.keys(parametri).length === 0)

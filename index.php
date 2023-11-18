@@ -20,17 +20,17 @@
 					<h3 class="col-12 d-block d-sm-none">Portafoglio Personaggi <span class="addCharacterBtn">[+]</span>
 					</h3>
 
-					<div class="offset-md-2 col-md-8 col-12">
+					<div class="filtri offset-md-2 col-md-8 col-12">
 						<div class="row">
 							<select id="ordinamento" class="col col-12 col-md form-control form-control-sm">
 								<option value="ricco_povero" selected>Dal più ricco al più povero</option>
 								<option value="povero_ricco">Dal più povero al più ricco</option>
 							</select>
-							<div class="input-group col-10 col-md" id="spazioRicerca">
+							<div class="input-group col-6 col-md" id="spazioRicerca">
 								<div class="form-outline">
 									<input type="search" placeholder="Ricerca" id="ricerca" class="form-control form-control-sm" />
 							</div>
-							<button id=bottone class="btn btn-outline-dark btn-sm col-2 col-md-1 mr-1">
+							<button id=bottone class="btn btn-outline-dark btn-sm col-5 col-md-2 ml-1">
 								<i class="fa fa-search"></i>
 							</button>
 						</div>
@@ -90,6 +90,7 @@ var _cachePersonaggi = [];
 				data: JSON.stringify(filtered),
 				success: function (characterHtml) {
 					$('#characterContainer').html(characterHtml);
+					settinAppSetting()
 				},
 				error: function (xhr, status, error) {
 					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
