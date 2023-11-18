@@ -34,8 +34,8 @@
 					</div>
 				</div>
 
-				<div id="characterContainer" class="row">
-
+				<div id="characterContainer" class="row w-100" style="margin: 0;">
+				<img src="loading.gif" align=center class="col-12 w-100">
 				</div>
 			</div>
 		</div>
@@ -45,8 +45,10 @@
 	</div>
 </body>
 <script>
+var HTMLcharacterContainer = "";
 var _cachePersonaggi = [];
 	$(document).ready(function () {
+    	HTMLcharacterContainer = $('#characterContainer').html();
 
 		function renderUI(){
 			if (_cachePersonaggi.length > 5)
@@ -84,7 +86,6 @@ var _cachePersonaggi = [];
 			});
 		}
 
-
 		fetch();
 		$('#ordinamento').change(renderUI);
 		$('#ricerca').keypress(function(e){
@@ -94,7 +95,7 @@ var _cachePersonaggi = [];
 		});
 
 		function fetch() {
-			$('#characterContainer').html('<img src="loading.gif" class="w-100">');
+			$('#characterContainer').html(HTMLcharacterContainer);
 			fetchCharacters(renderUI);
 		}
 
