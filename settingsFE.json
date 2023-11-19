@@ -1,6 +1,6 @@
 {
     "filtri": false,
     "aggiuntaPersonaggio": true,
-    "Link": false,
+    "links": false,
     "eliminaPersonaggio": true
 }

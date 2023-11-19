@@ -1,4 +1,4 @@
 ﻿# Ignora tutto nella cartella API/characters/
 API/characters/*
-# Non ignorare il file .gitkeep
-!API/characters/.gitkeep
+# Non ignorare il file .htaccess
+!API/characters/.htaccess

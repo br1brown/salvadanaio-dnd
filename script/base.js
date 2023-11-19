@@ -1,50 +1,7 @@
 var _cachePersonaggi = [];
-var appsettings = [];
-
-function settinAppSetting(settings = null) {
-
-	$('.btnEliminaPersonaggi').hide();
-
-	$('.addCharacterBtn').hide();
-
-	$('.filtri').hide();
-
-	$('.item_Link').hide();
-	$('#addLink').hide();
-
-
-	if (!(!settings))
-		appsettings = settings;
-
-	if (!(!appsettings)) {
-
-		if (appsettings.aggiuntaPersonaggio) {
-			$('.addCharacterBtn').click(addNewCharacter);
-			$('.addCharacterBtn').show();
-		}
-
-		if (appsettings.filtri) {
-			$('.filtri').show();
-		}
-
-		if (appsettings.Link) {
-			$('.itemLink').show();
-			$('#addLink').show();
-		}
-
-		if (appsettings.eliminaPersonaggio) {
-			$('.btnEliminaPersonaggi').show();
-		}
-	}
-}
-
 
 //https://sweetalert2.github.io/
 $(document).ready(function () {
-	settinAppSetting();
-	$.get(getConfigUrl(), function (settings) {
-
-		settinAppSetting(settings);
 
 		$(window).scroll(function () {
 			if ($(this).scrollTop() > 50) {
@@ -69,11 +26,9 @@ $(document).ready(function () {
 			particleRadius: 250,
 			density: 5
 		});
-	});
 });
 
-
-// Funzione per caricare i dati dei personaggi
+var lastfetchCharacters = null;
 function fetchCharacters(_success) {
 	$.ajax({
 		url: getApiMethod("get", "characters"),
@@ -83,14 +38,12 @@ function fetchCharacters(_success) {
 			_cachePersonaggi = personaggi;
 
 
-			_success()
+			_success(personaggi)
 		},
 		error: handleError
 	});
 }
 
-
-// Funzione per gestire il denaro
 function manageMoney(characterName, isReceiving) {
 	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';
@@ -161,204 +114,6 @@ function manageMoney(characterName, isReceiving) {
 	});
 }
 
-function addEditLink(characterName, isEdit, url, text, note) {
-
-	var linkData = {
-		url,
-		text,
-		note,
-		isEdit
-	}
-	var actionWord = isEdit ? 'Modifica' : 'Aggiungi';
-
-	$.ajax({
-		url: getTemplateUrl("link-form"),
-		type: 'POST',
-		data: linkData,
-		success: function (htmlResponse) {
-			SweetAlert.fire({
-				title: actionWord + ' link per ' + characterName,
-				html: htmlResponse,
-				confirmButtonText: actionWord,
-				focusConfirm: false,
-				showCancelButton: true,
-				preConfirm: () => {
-					const url = Swal.getPopup().querySelector('#url').value;
-					const linkText = Swal.getPopup().querySelector('#linkText').value;
-					const note = Swal.getPopup().querySelector('#note').value;
-
-					try {
-						new URL(url);
-					}
-					catch (e) {
-						Swal.showValidationMessage('Per favore, inserisci un URL che sia valido');
-					}
-
-					if (!url || !linkText)
-						Swal.showValidationMessage('Per favore, inserisci sia l\'URL che il testo del link.');
-
-					return { url, linkText, note };
-				}
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: getApiMethod((isEdit ? 'edit' : 'add'), "link"),
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							name: characterName,
-							oldUrl: linkData.url,
-							url: result.value.url,
-							linkText: result.value.linkText,
-							note: result.value.note.replace(/\n/g, ' - ')
-						},
-						success: function (response) {
-							if (isEdit == true && response.status != 'success') {
-								SweetAlert.fire('Errore', response.message, 'error').then(() => {
-									addEditLink(characterName, false, result.value.url, result.value.linkText, result.value.note)
-								});
-							}
-							else
-								genericSuccess(response)
-						},
-						error: handleError
-					});
-				}
-			});
-		},
-		error: handleError
-	});
-
-}
-
-
-function addNewCharacter() {
-	SweetAlert.fire({
-		title: 'Crea Nuovo Personaggio',
-		input: 'text',
-		inputLabel: 'Nome del Personaggio',
-		showCancelButton: true,
-		confirmButtonText: 'Crea',
-		inputValidator: (value) => {
-			if (!value) {
-				return 'Devi inserire un nome!';
-			}
-		}
-	}).then((result) => {
-		if (result.isConfirmed) {
-			// Crea un nuovo personaggio con il nome fornito
-			$.ajax({
-				url: getApiMethod("add", "personaggio"),
-				type: 'POST',
-				dataType: 'json',
-				data: { name: result.value },
-				success: genericSuccess,
-				error: handleError
-			});
-		}
-	});
-}
-
-function deleteSingleHistory(nome, datastoriacancellare, descrizione) {
-	SweetAlert.fire({
-		title: 'Sei sicuro?',
-		html: "Vuoi davvero eliminare elemento '" + descrizione + "' dallo storico?<br><small>Non inficerà sulle somme possedute</small>",
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Sì, elimina!',
-		cancelButtonText: 'Annulla'
-	}).then((result) => {
-		if (result.isConfirmed) {
-			$.ajax({
-				url: getApiMethod("delete", "item_cronologia"),
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					name: nome,
-					date: datastoriacancellare,
-				},
-				success: genericSuccess,
-				error: handleError
-			});
-		}
-	});
-}
-
-function deleteSingleLink(nome, url, text) {
-	SweetAlert.fire({
-		title: 'Sei sicuro?',
-		html: "Vuoi davvero eliminare link '" + text + "' ?",
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Sì, elimina!',
-		cancelButtonText: 'Annulla'
-	}).then((result) => {
-		if (result.isConfirmed) {
-			$.ajax({
-				url: getApiMethod("delete", "item_link"),
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					name: nome,
-					url: url,
-				},
-				success: genericSuccess,
-				error: handleError
-			});
-		}
-	});
-}
-
-function eliminami(nome, iter) {
-	var title = 'Sei';
-	debugger;
-	for (let i = 0; i < iter; i++) {
-		title = title + ' sicuro';
-	}
-	title += '?';
-	SweetAlert.fire({
-		title: title,
-		html: "Vuoi eliminare il personaggio?",
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Sì, elimina!',
-		cancelButtonText: 'Annulla'
-	}).then((result) => {
-		if (result.isConfirmed) {
-			if (iter < 2) {
-				eliminami(nome, iter + 1);
-			}
-			else {
-				$.ajax({
-					url: getApiMethod("delete", "personaggio"),
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						name: nome,
-					},
-					success: function (response) {
-						if (response.status === 'success') {
-							SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
-								location.href = ("index");
-							});
-						} else {
-							SweetAlert.fire('Errore', response.message, 'error');
-						}
-					},
-					error: handleError
-				});
-			}
-		}
-	});
-}
-
-
 function handleError(xhr, status, error) {
 	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
 }
@@ -366,7 +121,12 @@ function handleError(xhr, status, error) {
 function genericSuccess(response) {
 	if (response.status === 'success') {
 		SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
-			location.reload();
+			if (window.ReloadAfterSuccess) {
+				ReloadAfterSuccess()
+			}
+			else {
+				location.reload();
+			}
 		});
 	} else {
 		SweetAlert.fire('Errore', response.message, 'error');

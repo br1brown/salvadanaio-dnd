@@ -16,7 +16,7 @@ if (json_last_error() === JSON_ERROR_NONE) {
 	<div class="col-12 col-md-6">
 	<div class="card m-2 portafoglio shadow rounded">
 		<div class="card-body">
-			<h5 class="card-title"><a href="detail?name=<?php echo $filename; ?>"><?php echo $name; ?><a></h5>
+			<h5 class="card-title"><a href="detail?basename=<?php echo $basename; ?>"><?php echo $name; ?><a></h5>
 			<p class="card-text">
 			<div class="row text-center">
 				<span class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino: <?php echo $platinum; ?></span>
@@ -30,8 +30,8 @@ if (json_last_error() === JSON_ERROR_NONE) {
 			</div>
 			</p>
 
-			<a href="#<?php echo $filename; ?>" class="btn link-secondary" data-toggle="collapse">Gestione</a>
-			<div id="<?php echo $filename; ?>" class="collapse text-center mt-3">
+			<a href="#<?php echo $basename; ?>" class="btn link-secondary" data-toggle="collapse">Gestione</a>
+			<div id="<?php echo $basename; ?>" class="collapse text-center mt-3">
 					<input type="button" data-type="success" value=Ricevi onclick="manageMoney('<?php echo $name; ?>', true)" class="btn btn-success">
 					<input type="button" data-type="success" value=Spendi onclick="manageMoney('<?php echo $name; ?>', false)" class="btn btn-danger">
 			</div>

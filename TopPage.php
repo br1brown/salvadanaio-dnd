@@ -1,3 +1,14 @@
+<!doctype html>
+<html lang="it">
+<head>
+	<?php
+	// Leggi il contenuto del file settingsFE.json
+	$settingsJson = file_get_contents('settingsFE.json');
+	// Decodifica il JSON in un array associativo
+	$settings = json_decode($settingsJson, true);
+	?>
+	<title><?php echo $title ?></title>
+
 	<!-- Definizione della codifica dei caratteri per la pagina -->
 	<meta charset="UTF-8">
 
@@ -32,3 +43,30 @@
 	<script src="script/base.js"></script>
 	<!-- SFONDO CON LE NUVOLE -->
 	<script src="script/jquery_bloodforge_smoke_effect.js"></script>
+</head>
+
+<style>
+        <?php if (!$settings['filtri']) : ?>
+            .filtri { display: none; }
+        <?php endif; ?>
+
+        <?php if (!$settings['aggiuntaPersonaggio']) : ?>
+            .addCharacterBtn { display: none; }
+        <?php endif; ?>
+
+        <?php if (!$settings['links']) : ?>
+            .item_Link, #addLink { display: none; }
+        <?php endif; ?>
+
+        <?php if (!$settings['eliminaPersonaggio']) : ?>
+            .btnEliminaPersonaggi { display: none; }
+        <?php endif; ?>
+    </style>
+
+<body>	
+<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
+	<i class="fas fa-chevron-up"></i>
+</a>
+<canvas id="smoke-effect-canvas"
+		style="width:100%; height:100%; position: fixed;top: 0; left: 0; z-index: -100;"></canvas>
+<!-- qui comincia l'html diverso per tutti -->

@@ -1,15 +1,8 @@
-<!doctype html>
-<html lang="it">
+<?php 
+$title = "Salvadanaio";
+?>
+    <?php include('TopPage.php'); ?>
 
-<head>
-    <?php include('header.php'); ?>
-	<title>Salvadanaio</title>
-</head>
-
-
-<body>
-	<canvas id="smoke-effect-canvas"
-		style="width:100%; height:100%; position: fixed;top: 0; left: 0; z-index: -100;"></canvas>
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 col-md-1 text-center"></div>
@@ -43,74 +36,94 @@
 			</div>
 		</div>
 
-		<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button"><i
-				class="fas fa-chevron-up"></i></a>
 	</div>
 </body>
 <script>
-var HTMLcharacterContainer = "";
-var _cachePersonaggi = [];
+	
+	function ReloadAfterSuccess (){
+		if (_cachePersonaggi.length < 5)
+			$('#spazioRicerca').hide();
+
+		var ordine = $('#ordinamento').val();
+		var ricerca = $('#ricerca').val().toLowerCase();
+
+		var filtered = _cachePersonaggi
+		.filter(function (elemento) {
+		if ((ricerca) && ricerca != "") {
+				var parole = elemento.name.toLowerCase().split(/\s+/);
+				var ricerche = ricerca.toLowerCase().split(/\s+/);
+				// Verifica che ogni parola della ricerca sia presente nel nome
+				return ricerche.some(function (parolaRicerca) {
+					return parole.some( function (parola) {
+					return parola.includes(parolaRicerca);
+				});
+				});
+			}
+			return true;
+		})	
+		.sort(function (a, b) {
+			if (ordine === 'ricco_povero') {
+			return b.totalcopper - a.totalcopper;
+			} else {
+			return a.totalcopper - b.totalcopper;
+			}
+		});
+
+		$.ajax({
+			url: getTemplateUrl("characters"),
+			type: 'POST',
+			data: JSON.stringify(filtered),
+			success: function (characterHtml) {
+				$('#characterContainer').html(characterHtml);
+			},
+			error: handleError
+		});
+	}
+
+	var HTMLcharacterContainer = "";
 	$(document).ready(function () {
     	HTMLcharacterContainer = $('#characterContainer').html();
 
-		function renderUI(){
-			if (_cachePersonaggi.length > 5)
-				$('#spazioRicerca').show();
-			else
-				$('#spazioRicerca').hide();
-
-			var ordine = $('#ordinamento').val();
-			var ricerca = $('#ricerca').val().toLowerCase();
-
-			var filtered = _cachePersonaggi
-			.filter(function (elemento) {
-			if ((ricerca) && ricerca != "") {
-					var parole = elemento.name.toLowerCase().split(/\s+/);
-					var ricerche = ricerca.toLowerCase().split(/\s+/);
-					// Verifica che ogni parola della ricerca sia presente nel nome
-					return ricerche.some(function (parolaRicerca) {
-						return parole.some( function (parola) {
-						return parola.includes(parolaRicerca);
-					});
-					});
-				}
-				return true;
-			})	
-			.sort(function (a, b) {
-				if (ordine === 'ricco_povero') {
-				return b.totalcopper - a.totalcopper;
-				} else {
-				return a.totalcopper - b.totalcopper;
-				}
-			});
-
-			$.ajax({
-				url: getTemplateUrl("characters"),
-				type: 'POST',
-				data: JSON.stringify(filtered),
-				success: function (characterHtml) {
-					$('#characterContainer').html(characterHtml);
-					settinAppSetting()
-				},
-				error: function (xhr, status, error) {
-					SweetAlert.fire('Errore', xhr.status + ': ' + xhr.responseText, 'error');
-			}
-			});
-		}
-
 		fetch();
-		$('#ordinamento').change(renderUI);
-		$('#bottone').click(renderUI);
+		$('#ordinamento').change(ReloadAfterSuccess);
+		$('#bottone').click(ReloadAfterSuccess);
 		$('#ricerca').keypress(function(e){
 			if(e.which == 13){
-				renderUI();
+				ReloadAfterSuccess();
 			}
 		});
 
 		function fetch() {
 			$('#characterContainer').html(HTMLcharacterContainer);
-			fetchCharacters(renderUI);
+			fetchCharacters(ReloadAfterSuccess);
 		}
+
+		$('.addCharacterBtn').click(function () {
+			SweetAlert.fire({
+				title: 'Crea Nuovo Personaggio',
+				input: 'text',
+				inputLabel: 'Nome del Personaggio',
+				showCancelButton: true,
+				confirmButtonText: 'Crea',
+				inputValidator: (value) => {
+					if (!value) {
+						return 'Devi inserire un nome!';
+					}
+				}
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// Crea un nuovo personaggio con il nome fornito
+					$.ajax({
+						url: getApiMethod("add", "personaggio"),
+						type: 'POST',
+						dataType: 'json',
+						data: { name: result.value },
+						success: genericSuccess,
+						error: handleError
+					});
+				}
+			});
+		});
 
 
 	});
