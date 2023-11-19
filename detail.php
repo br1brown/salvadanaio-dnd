@@ -92,7 +92,7 @@ $title = "Salvadanaio Singolo";
 	});
 
 	function addEditLink(characterName, isEdit, url, text, note) {
-
+		
 		var linkData = {
 			url,
 			text,

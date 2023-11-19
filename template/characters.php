@@ -32,8 +32,12 @@ if (json_last_error() === JSON_ERROR_NONE) {
 
 			<a href="#<?php echo $basename; ?>" class="btn link-secondary" data-toggle="collapse">Gestione</a>
 			<div id="<?php echo $basename; ?>" class="collapse text-center mt-3">
-					<input type="button" data-type="success" value=Ricevi onclick="manageMoney('<?php echo $name; ?>', true)" class="btn btn-success">
-					<input type="button" data-type="success" value=Spendi onclick="manageMoney('<?php echo $name; ?>', false)" class="btn btn-danger">
+			<button onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)" class="btn btn-success btn-sm">
+				<i class="fas fa-coins"></i>
+			</button>
+			<button onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', false)" class="btn btn-danger btn-sm">
+				<i class="fas fa-shopping-cart"></i>
+			</button>
 			</div>
 
 		</div>
