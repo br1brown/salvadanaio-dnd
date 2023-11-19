@@ -40,7 +40,7 @@ $title = "Salvadanaio";
 </body>
 <script>
 	
-	function ReloadAfterSuccess (){
+	function RefreshUI (){
 		if (_cachePersonaggi.length < 5)
 			$('#spazioRicerca').hide();
 
@@ -79,24 +79,22 @@ $title = "Salvadanaio";
 			error: handleError
 		});
 	}
-
+	function ReloadAfterSuccess() {
+		$('#characterContainer').html(HTMLcharacterContainer);
+		fetchCharacters(RefreshUI);
+	}
 	var HTMLcharacterContainer = "";
 	$(document).ready(function () {
     	HTMLcharacterContainer = $('#characterContainer').html();
 
-		fetch();
-		$('#ordinamento').change(ReloadAfterSuccess);
-		$('#bottone').click(ReloadAfterSuccess);
+		ReloadAfterSuccess();
+		$('#ordinamento').change(RefreshUI);
+		$('#bottone').click(RefreshUI);
 		$('#ricerca').keypress(function(e){
 			if(e.which == 13){
-				ReloadAfterSuccess();
+				RefreshUI();
 			}
 		});
-
-		function fetch() {
-			$('#characterContainer').html(HTMLcharacterContainer);
-			fetchCharacters(ReloadAfterSuccess);
-		}
 
 		$('.addCharacterBtn').click(function () {
 			SweetAlert.fire({

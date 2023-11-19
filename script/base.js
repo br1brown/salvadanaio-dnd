@@ -3,32 +3,31 @@ var _cachePersonaggi = [];
 //https://sweetalert2.github.io/
 $(document).ready(function () {
 
-		$(window).scroll(function () {
-			if ($(this).scrollTop() > 50) {
-				$('#back-to-top').fadeIn();
-			} else {
-				$('#back-to-top').fadeOut();
-			}
-		});
+	$(window).scroll(function () {
+		if ($(this).scrollTop() > 50) {
+			$('#back-to-top').fadeIn();
+		} else {
+			$('#back-to-top').fadeOut();
+		}
+	});
 
 
-		// scroll body to 0px on click
-		$('#back-to-top').click(function () {
-			$('body,html').animate({
-				scrollTop: 0
-			}, 400);
-			return false;
-		});
-		$('#smoke-effect-canvas').SmokeEffect({
-			color: 'orange',
-			opacity: 0.4,
-			maximumVelocity: 100,
-			particleRadius: 250,
-			density: 5
-		});
+	// scroll body to 0px on click
+	$('#back-to-top').click(function () {
+		$('body,html').animate({
+			scrollTop: 0
+		}, 400);
+		return false;
+	});
+	$('#smoke-effect-canvas').SmokeEffect({
+		color: 'orange',
+		opacity: 0.4,
+		maximumVelocity: 100,
+		particleRadius: 250,
+		density: 5
+	});
 });
 
-var lastfetchCharacters = null;
 function fetchCharacters(_success) {
 	$.ajax({
 		url: getApiMethod("get", "characters"),
@@ -36,9 +35,7 @@ function fetchCharacters(_success) {
 		dataType: 'json',
 		success: function (personaggi) {
 			_cachePersonaggi = personaggi;
-
-
-			_success(personaggi)
+			_success();
 		},
 		error: handleError
 	});

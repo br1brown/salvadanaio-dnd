@@ -33,15 +33,15 @@ $title = "Salvadanaio Singolo";
 
 		refreshUI();
 
-		fetchCharacters(function(Personaggi) {
+		fetchCharacters(function() {
 			var urlAttuale = window.location.protocol + "//" + window.location.host + window.location.pathname;
 			$("#lista").empty();
 
-			Personaggi.sort(function(a, b) {
+			_cachePersonaggi.sort(function(a, b) {
 				return b.totalcopper - a.totalcopper;
 			})
 
-			Personaggi.forEach(function(item) {
+			_cachePersonaggi.forEach(function(item) {
 				var sonoqui = item.basename == "<?php echo $_GET['basename']; ?>";
 				var classe = "list-group-item bg-transparent" + (sonoqui ? "" : "");
 				var link = urlAttuale + '?' + 'basename=' + item.basename;
