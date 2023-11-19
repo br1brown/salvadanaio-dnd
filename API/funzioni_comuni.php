@@ -1,4 +1,5 @@
 <?php
+
 function findAPIPath($dir = __DIR__) {
     $path = $dir . '/API/';
 
@@ -11,28 +12,54 @@ function findAPIPath($dir = __DIR__) {
     }
 }
 
-function getConfig() {
-    $api = findAPIPath();
-    $js = json_decode(file_get_contents($api."config.json"), true);
-    $js["FolderAPICharacters"] = $api.$js["FolderCharacters"];
-    return $js;
+function defineConstants() {
+    if (defined('FOLDER_CHARACTERS'))
+        return;
+
+    $data = json_decode(file_get_contents(findAPIPath()."config.json"), true);
+
+    if ($data === null) {
+        return;
+    }
+
+    foreach (["platinum","gold","silver"]as $key) {
+        if (isset($data[$key])) {
+            define("CAMBIO_".strtoupper($key), $data[$key]);
+        }
+    }
+
+    $cartella = $data["FolderCharacters"];
+    $lastChar = "/";
+
+    if (substr($cartella, -1) !== $lastChar)
+        $cartella .= $lastChar;
+
+    define("FOLDER_CHARACTERS", $cartella);
+    
 }
 
-function get_totalcopper($character, $equivalenze) {
-    $totali = $character['platinum'] * $equivalenze['platinum'];
-    $totali += $character['gold'] * $equivalenze['gold'];
-    $totali += $character['silver']  * $equivalenze['silver'];
+defineConstants();
+
+function getFolderCharacters() {
+    return findAPIPath().FOLDER_CHARACTERS;
+}
+
+function get_totalcopper($character) {
+    $totali = $character['platinum'] * CAMBIO_PLATINUM;
+    $totali += $character['gold'] * CAMBIO_GOLD;
+    $totali += $character['silver']  * CAMBIO_SILVER;
     $totali += $character['copper'];
     return ($totali);
 }
 
 function getFileName($characterName) {
-    $folder = getConfig()["FolderAPICharacters"];
-
     $characterName = trim($characterName);
     if (preg_match('/^\d/', $characterName))
         $characterName = "_".$characterName;
-        return $folder.'/' . str_replace(' ', '_', strtoupper($characterName)) . '.json';
+    return getFileNamebase(strtoupper($characterName));
+}
+function getFileNamebase($baseName) {
+    return getFolderCharacters().$baseName. '.json';
 }
 
 function getCharacterFromName($characterName, $notCreate = true) {
@@ -63,14 +90,13 @@ function saveCharacter($character) {
 }
 
 function manageCharacterCoins($characterName, $transactionType, $platinum, $gold, $silver, $copper, $description, $canReceiveChange = false) {
-    $equivalenze = getConfig();
     $character = getCharacterFromName($characterName);
 
     if (empty($character)) {
         return retError('Personaggio non trovato!');
     }
-    $totalCopper = get_totalcopper($character, $equivalenze);
-    $totalCopperNeeded = $platinum * $equivalenze['platinum'] + $gold * $equivalenze['gold'] + $silver * $equivalenze['silver'] + $copper;
+    $totalCopper = get_totalcopper($character);
+    $totalCopperManaging = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
     
     // Gestione delle monete
     if ($transactionType === 'receive') {
@@ -80,17 +106,17 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
         $character['copper'] += $copper;
     } else if ($transactionType === 'pay') {
         if ($canReceiveChange) {
-            if ($totalCopper < $totalCopperNeeded) {
+            if ($totalCopper < $totalCopperManaging) {
                 return retError('Non hai abbastanza monete per effettuare il pagamento.');
             }
             // Calcola il nuovo totale dopo il pagamento e aggiorna le monete
-            $characterTotalCopper = $totalCopper - $totalCopperNeeded;
-            $character['platinum'] = floor($characterTotalCopper / $equivalenze['platinum']);
-            $characterTotalCopper %= $equivalenze['platinum'];
-            $character['gold'] = floor($characterTotalCopper / $equivalenze['gold']);
-            $characterTotalCopper %= $equivalenze['gold'];
-            $character['silver'] = floor($characterTotalCopper / $equivalenze['silver']);
-            $character['copper'] = $characterTotalCopper % $equivalenze['silver'];
+            $characterTotalCopper = $totalCopper - $totalCopperManaging;
+            $character['platinum'] = floor($characterTotalCopper / CAMBIO_PLATINUM);
+            $characterTotalCopper %= CAMBIO_PLATINUM;
+            $character['gold'] = floor($characterTotalCopper / CAMBIO_GOLD);
+            $characterTotalCopper %= CAMBIO_GOLD;
+            $character['silver'] = floor($characterTotalCopper / CAMBIO_SILVER);
+            $character['copper'] = $characterTotalCopper % CAMBIO_SILVER;
         } else {
             // Verifica se il personaggio ha abbastanza monete per il pagamento esatto
             if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {

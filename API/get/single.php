@@ -1,11 +1,11 @@
 <?php
 include dirname(__DIR__).'/funzioni_comuni.php';
-if (isset($_GET["name"])) {
-    $personaggio = getCharacterFromName($_GET["name"]);
-    if (empty($personaggio)){
+if (isset($_GET["basename"])) {
+    $filepersonaggio = getFileNamebase($_GET["basename"]);
+    if (!file_exists($filepersonaggio)) {
         echo retError("Personaggio non trovato");
     }else{
-        echo json_encode($personaggio);
+        echo file_get_contents($filepersonaggio);
     }
 }
 else{
