@@ -15,6 +15,10 @@ body {
 	display: none;
 }
 
+.btnEliminaPersonaggi {
+	align-self: flex-end;
+}
+
 .tutto {
 	background-color: rgba(255, 255, 255, 0.7);
 	border: 1px solid;
@@ -60,12 +64,15 @@ body {
 .piccolill {
 	transform: scale(0.5);
 }
+
 .piccolill-s {
 	transform: scale(0.3);
 }
+
 .piccolill-m {
 	transform: scale(0.7);
 }
+
 .platinum-color {
 	color: #e5e4e2;
 	/* Colore per Platino */

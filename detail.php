@@ -2,21 +2,23 @@
 $title = "Salvadanaio Singolo";
 ?>
     <?php include('TopPage.php'); ?>	<div class="container-fluid">
-		<div class="row">
-			<div class="col-12 col-md-2">
-				<a href="index" class="btn btn-warning btn-sm w-100">Home</a>
-				<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto; overflow-x: auto;">
-				</div>
+	<div class="row">
+		<div class="col-12 col-md-2">
+			<a href="index" class="btn btn-warning btn-sm w-100">Home</a>
+			<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto; overflow-x: auto;">
 			</div>
-			<div id=contenuto class="col-12 col-md-9 text-center tutto">
+		</div>
+		<div class="col-12 col-md-9">
+			<div id=contenuto class="tutto">
 				
 			</div>
-	</div>
+			<div class="row">
+				<button type="button" onclick="eliminami('<?php echo $_GET['basename']; ?>',1)" class="col-12 col-md-6 offset-md-3 btn btn-outline-danger btn-sm"><i class="fa fa-solid fa-trash"></i> <span id="lbldel">Elimina</span></button>
+			</div>
+		</div>
+		
     </div>
 	<br>
-
-	<hr>
-	<button type="button" onclick="eliminami('<?php echo $_GET['basename']; ?>',1)" class="btnEliminaPersonaggi btn btn-outline-danger btn-sm"><span id="lbldel">Elimina</span></button>
 
 </body>
 <script>

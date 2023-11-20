@@ -37,6 +37,14 @@ $(document).ready(function() {
 <div class="row">
 	<h1 class="col-12"><a href="#toManage" class="btnmanage" data-toggle="collapse"><i class="piccolill fas fa-chevron-up fa-chevron-down"></i></a> <?php echo $name; ?>
 	</h1>
+	<div class="col-12 collapse" id="toManage">
+			<a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary piccolill">
+				<i class="fas fa-sync-alt"></i> Converti Valuta
+			</a>
+			<!-- <a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary">
+				<i class="fas fa-sync-alt"></i> Converti Valuta <span class=badge>Manuale</span>
+			</a> -->
+	</div>
 	<div class="col">
 		<div class="portafoglio shadow rounded p-1 m-2 mb-0">
 			<div class="row text-center">
@@ -51,14 +59,6 @@ $(document).ready(function() {
 			</div>
 		</div>
 		
-		<div class="col-12 collapse text-center piccolill" id="toManage">
-			<a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary">
-				<i class="fas fa-sync-alt"></i> Converti Valuta
-			</a>
-			<!-- <a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary">
-				<i class="fas fa-sync-alt"></i> Converti Valuta <span class=badge>Manuale</span>
-			</a> -->
-		</div>
 	</div>
 </div>
 	
@@ -146,7 +146,7 @@ if (!empty($history)){ ?>
             <thead class="thead-dark">
                 <tr>
                     <th class="col-1">Tipo</th>
-                    <th class="col-5">Denaro</th>
+                    <th class="col-5 text-center">Denaro</th>
                     <th class="col-6">Descrizione</th>
                     <th class="col"></th>
                 </tr>
@@ -165,8 +165,8 @@ if (!empty($history)){ ?>
                 $hiddenClass = ($index >= $rowsToShow) ? 'hidden' : ''; // Le righe oltre la quinta avranno la classe 'hidden'
                 $classeRiga = $riga['type'] == 'RECEIVED' ? 'table-success' : 'table-danger';
                 echo "<tr class='{$classeRiga} {$hiddenClass}'>";
-                echo "<td>{$riga['type']}</td>";
-                echo "<td>";
+                echo "<td class='text-muted align-middle'>{$riga['type']}</td>";
+                echo "<td class=\"text-center\">";
 				if($riga['platinum'] != 0) echo "{$primamoneta}<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$riga['platinum']}{$dopomoneta}";
 				if($riga['gold'] != 0) echo "{$primamoneta}<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$riga['gold']}{$dopomoneta}";
 				if($riga['silver'] != 0) echo "{$primamoneta}<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$riga['silver']}{$dopomoneta}";
@@ -179,7 +179,9 @@ if (!empty($history)){ ?>
             </tbody>
         </table>
 		<?php if (count($history) > $rowsToShow ) : ?>
-        	<button id="loadMore" class="btn btn-outline-light">Carica più</button>
+			<div class="col-12 text-center">
+        		<button id="loadMore" class="btn btn-outline-light"><i class="fa fa-solid fa-arrow-down"></i> Carica più</button>
+			</div>
         <?php endif; ?>
     </div>
 </div>
