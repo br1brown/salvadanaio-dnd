@@ -96,7 +96,6 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
         return retError('Personaggio non trovato!');
     }
 
-    $totalCopper = get_totalcopper($character);
     $totalCopperManaging = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
 
     // Logica per gestire ricezione, pagamento, debito, credito e sanazione del debito/credito
@@ -110,21 +109,21 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
             
         case 'spent':
             if ($canReceiveChange) {
-                if ($totalCopper < $totalCopperManaging) {
-                    return retError('Non hai abbastanza monete per effettuare il pagamento.');
-                }
-                // Calcola il nuovo totale dopo il pagamento e aggiorna le monete
-                $characterTotalCopper = $totalCopper - $totalCopperManaging;
-                $character['platinum'] = floor($characterTotalCopper / CAMBIO_PLATINUM);
-                $characterTotalCopper %= CAMBIO_PLATINUM;
-                $character['gold'] = floor($characterTotalCopper / CAMBIO_GOLD);
-                $characterTotalCopper %= CAMBIO_GOLD;
-                $character['silver'] = floor($characterTotalCopper / CAMBIO_SILVER);
-                $character['copper'] = $characterTotalCopper % CAMBIO_SILVER;
+            $totalCopperToPay = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
+            $totalCopper = get_totalcopper($character);
+            if ($totalCopper < $totalCopperToPay) 
+                return retError("Non hai le monete per effettuare il pagamento esatto");
+            
+            $character['platinum'] = 0;
+            $character['gold'] = 0;
+            $character['silver'] = 0;
+            $character['copper'] = $totalCopper - $totalCopperToPay;
+        
+            refreshCambio($character);
 
             } else {
                 if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {
-                    return retError('Non hai le monete della denominazione corretta per effettuare il pagamento esatto.');
+                    return retError('Non hai le monete della denominazione corretta per effettuare il pagamento esatto');
                 }
                 $character['platinum'] -= $platinum;
                 $character['gold'] -= $gold;
@@ -178,6 +177,22 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
 
     saveCharacter($character);
     return retOK("Transazione ($transactionType) eseguita correttamente.");
+}
+
+function refreshCambio(&$character){
+    // Calcola il nuovo totale dopo il pagamento e aggiorna le monete
+    $characterTotalCopper = get_totalcopper($character);
+    
+    $character['platinum'] = floor($characterTotalCopper / CAMBIO_PLATINUM);
+    $characterTotalCopper -= $character['platinum'] * CAMBIO_PLATINUM;
+
+    $character['gold'] = floor($characterTotalCopper / CAMBIO_GOLD);
+    $characterTotalCopper -= $character['gold'] * CAMBIO_GOLD;
+
+    $character['silver'] = floor($characterTotalCopper / CAMBIO_SILVER);
+
+    $character['copper'] = $characterTotalCopper % CAMBIO_SILVER;
+
 }
 
 
@@ -270,4 +285,5 @@ function retError($stringa){
 function retOK($stringa){
     return json_encode(['status' => 'success', 'message' => $stringa]);
 }
+
 ?>

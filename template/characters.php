@@ -30,8 +30,7 @@ if (json_last_error() === JSON_ERROR_NONE) {
 			</div>
 			</p>
 
-			<a href="#<?php echo $basename; ?>" class="btn link-secondary" data-toggle="collapse">Gestione</a>
-			<div id="<?php echo $basename; ?>" class="collapse text-center mt-3">
+			<div class="text-center mt-3">
 			<button onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)" class="btn btn-success btn-sm">
 				<i class="fas fa-coins"></i>
 			</button>

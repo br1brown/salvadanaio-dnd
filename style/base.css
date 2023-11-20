@@ -50,12 +50,22 @@ body {
 	font-size: x-small;
 }
 
+.btnGeneric,
 .addCharacterBtn {
 	cursor: pointer;
 	font-size: 24px;
 	margin-left: 10px;
 }
 
+.piccolill {
+	transform: scale(0.5);
+}
+.piccolill-s {
+	transform: scale(0.3);
+}
+.piccolill-m {
+	transform: scale(0.7);
+}
 .platinum-color {
 	color: #e5e4e2;
 	/* Colore per Platino */

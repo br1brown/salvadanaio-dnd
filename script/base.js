@@ -41,6 +41,20 @@ function fetchCharacters(_success) {
 	});
 }
 
+
+function refreshcambio(name) {
+	$.ajax({
+		url: getApiUrl("refresh_cambio"),
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			name: name,
+		},
+		success: genericSuccess,
+		error: handleError
+	});
+}
+
 function manageMoney(characterName, isReceiving) {
 	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';

@@ -24,42 +24,52 @@ $(document).ready(function() {
             $('#loadMore').hide();
         }
     });
+
+	$(".btnmanage").click(function () {
+		$(this).children('.fas').toggleClass('fa-chevron-down', 150);
+	});
+
 });
 </script>
 
 
 
 <div class="row">
-	<h1 class="col-12"><?php echo $name; ?></h1>
-	<div class="col-12">
-		
-	</div>
-
+	<h1 class="col-12"><a href="#toManage" class="btnmanage" data-toggle="collapse"><i class="piccolill fas fa-chevron-up fa-chevron-down"></i></a> <?php echo $name; ?>
+	</h1>
 	<div class="col">
-		<div class="portafoglio shadow rounded p-1 m-2">
-		<div class="row text-center">
-			<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $platinum; ?></span>
+		<div class="portafoglio shadow rounded p-1 m-2 mb-0">
+			<div class="row text-center">
+				<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $platinum; ?></span>
+			</div>
+			<div class="row small text-center">
+				<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $gold; ?></span>
+				<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $silver; ?></span>
+			</div>
+			<div class="row small text-center">
+				<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $copper; ?></span>
+			</div>
 		</div>
-		<div class="row small text-center">
-			<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $gold; ?></span>
-			<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $silver; ?></span>
-		</div>
-		<div class="row small text-center">
-			<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $copper; ?></span>
-		</div>
+		
+		<div class="col-12 collapse text-center piccolill" id="toManage">
+			<a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary">
+				<i class="fas fa-sync-alt"></i> Converti Valuta
+			</a>
+			<!-- <a onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="btn btn-secondary">
+				<i class="fas fa-sync-alt"></i> Converti Valuta <span class=badge>Manuale</span>
+			</a> -->
 		</div>
 	</div>
 </div>
 	
 <div class="row text-center mb-3">
-<!-- Bottone per spendere denaro -->
-<button class="btn btn-danger col-10 offset-1 offset-md-1 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', false)">
-    <i class="fas fa-shopping-cart"></i> Spendi
-</button>
-
 <!-- Bottone per ricevere denaro -->
-<button class="btn btn-success col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)">
+<button class="btn btn-success col-10 offset-1 offset-md-1 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)">
 	<i class="fas fa-coins"></i> Ricevi 
+</button>
+<!-- Bottone per spendere denaro -->
+<button class="btn btn-danger col-10 offset-1 offset-md-0 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', false)">
+    <i class="fas fa-shopping-cart"></i> Spendi
 </button>
 </div>
 
@@ -107,8 +117,8 @@ if (!empty($items)){
 		<table class="table" >
 			<thead class="thead-dark">
 				<tr>
-					<th width="70%">Oggetto</th>
-					<th width="30%">Quantità</th>
+					<th class=col-10>Oggetto</th>
+					<th class="col-2">Quantità</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -147,16 +157,20 @@ if (!empty($history)){ ?>
                 return strtotime($b['date']) - strtotime($a['date']);
             }
             usort($history, 'confrontaData');
-            foreach ($history as $index => $riga) { // Utilizza $index come chiave
+            
+			$primamoneta = "<span style='white-space: nowrap;'>";
+			$dopomoneta= "</span>&nbsp";
+			
+			foreach ($history as $index => $riga) { // Utilizza $index come chiave
                 $hiddenClass = ($index >= $rowsToShow) ? 'hidden' : ''; // Le righe oltre la quinta avranno la classe 'hidden'
-                $classeRiga = strtolower($riga['type']) == 'received' ? 'table-success' : 'table-danger';
+                $classeRiga = $riga['type'] == 'RECEIVED' ? 'table-success' : 'table-danger';
                 echo "<tr class='{$classeRiga} {$hiddenClass}'>";
                 echo "<td>{$riga['type']}</td>";
                 echo "<td>";
-				if($riga['platinum'] != 0) echo "<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$riga['platinum']} ";
-				if($riga['gold'] != 0) echo "<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$riga['gold']} ";
-				if($riga['silver'] != 0) echo "<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$riga['silver']} ";
-				if($riga['copper'] != 0) echo "<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$riga['copper']}";                echo "</td>";
+				if($riga['platinum'] != 0) echo "{$primamoneta}<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$riga['platinum']}{$dopomoneta}";
+				if($riga['gold'] != 0) echo "{$primamoneta}<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$riga['gold']}{$dopomoneta}";
+				if($riga['silver'] != 0) echo "{$primamoneta}<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$riga['silver']}{$dopomoneta}";
+				if($riga['copper'] != 0) echo "{$primamoneta}<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$riga['copper']}{$dopomoneta}";                echo "</td>";
                 echo "<td>{$riga['description']}</td>";
                 echo "<td><i style=\"cursor: pointer;\" class=\"fa fa-solid fa-trash\" onclick=\"deleteSingleHistory('{$name}','{$riga['date']}','{$riga['description']}')\"></i></td>";
                 echo "</tr>";

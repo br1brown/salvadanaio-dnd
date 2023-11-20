@@ -16,14 +16,13 @@ $title = "Salvadanaio Singolo";
 	<br>
 
 	<hr>
-	<button type="button" onclick="eliminami('<?php echo $_GET['basename'];  ?>',1)" class="btnEliminaPersonaggi btn btn-outline-danger btn-sm">Elimina</button>
+	<button type="button" onclick="eliminami('<?php echo $_GET['basename']; ?>',1)" class="btnEliminaPersonaggi btn btn-outline-danger btn-sm"><span id="lbldel">Elimina</span></button>
 
 </body>
 <script>
 
 	var isElimina = false;
 	function ReloadAfterSuccess() {
-		debugger;
 		if (isElimina)
 			location.href = ("index");
 		else
@@ -67,8 +66,7 @@ $title = "Salvadanaio Singolo";
 			type: 'GET',
 			dataType: 'json',
 			success: function(response) {
-				$("#del").val("Eliminare " + response.name)
-				debugger;
+				$("#lbldel").html("Eliminare " + response.name);
 				if (response.status === 'error') {
 					SweetAlert.fire('Errore', response.message, 'error').then(() => {
 						window.location.href = 'index';
