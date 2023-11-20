@@ -3,7 +3,7 @@ include 'funzioni_comuni.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    echo manageCharacterCoins($_POST['name'],"pay",
+    echo manageCharacterCoins($_POST['name'],"spent",
         intval($_POST['platinum']),
         intval($_POST['gold']),
         intval($_POST['silver']),

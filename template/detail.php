@@ -135,9 +135,10 @@ if (!empty($history)){ ?>
         <table class="table mb-0" >
             <thead class="thead-dark">
                 <tr>
-                    <th width="45%">Denaro</th>
-                    <th width="50%">Descrizione</th>
-                    <th width="5%"></th>
+                    <th class="col-1">Tipo</th>
+                    <th class="col-5">Denaro</th>
+                    <th class="col-6">Descrizione</th>
+                    <th class="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -148,8 +149,9 @@ if (!empty($history)){ ?>
             usort($history, 'confrontaData');
             foreach ($history as $index => $riga) { // Utilizza $index come chiave
                 $hiddenClass = ($index >= $rowsToShow) ? 'hidden' : ''; // Le righe oltre la quinta avranno la classe 'hidden'
-                $classeRiga = $riga['type'] == 'received' ? 'table-success' : 'table-danger';
+                $classeRiga = strtolower($riga['type']) == 'received' ? 'table-success' : 'table-danger';
                 echo "<tr class='{$classeRiga} {$hiddenClass}'>";
+                echo "<td>{$riga['type']}</td>";
                 echo "<td>";
 				if($riga['platinum'] != 0) echo "<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$riga['platinum']} ";
 				if($riga['gold'] != 0) echo "<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$riga['gold']} ";
@@ -162,7 +164,7 @@ if (!empty($history)){ ?>
             ?>
             </tbody>
         </table>
-		<?php if (count($history) > 5) : ?>
+		<?php if (count($history) > $rowsToShow ) : ?>
         	<button id="loadMore" class="btn btn-outline-light">Carica più</button>
         <?php endif; ?>
     </div>

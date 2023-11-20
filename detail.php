@@ -23,6 +23,7 @@ $title = "Salvadanaio Singolo";
 
 	var isElimina = false;
 	function ReloadAfterSuccess() {
+		debugger;
 		if (isElimina)
 			location.href = ("index");
 		else
@@ -55,41 +56,43 @@ $title = "Salvadanaio Singolo";
 			});
 
 		});
-
-		function refreshUI(){
-			$.ajax({
-				url: getApiMethod("get", "single", {
-					basename: '<?php echo $_GET["basename"]; ?>'
-				}),
-				type: 'GET',
-				dataType: 'json',
-				success: function(response) {
-					$("#del").val("Eliminare " + response.name)
-					if (response.status === 'error') {
-						SweetAlert.fire('Errore', response.message, 'error').then(() => {
-							window.location.href = 'index';
-						});;
-					} else {
-						document.title = "Portafoglio di " + response.name;
-						$.ajax({
-							url: getTemplateUrl("detail"),
-							type: 'POST',
-							data: {
-								personaggio: response
-							},
-							success: function(response) {
-								$('#contenuto').html(response);
-							},
-							error: handleError
-						});
-					}
-				},
-				error: handleError
-			});
-
-		}
-
 	});
+
+
+	function refreshUI(){
+		$.ajax({
+			url: getApiMethod("get", "single", {
+				basename: '<?php echo $_GET["basename"]; ?>'
+			}),
+			type: 'GET',
+			dataType: 'json',
+			success: function(response) {
+				$("#del").val("Eliminare " + response.name)
+				debugger;
+				if (response.status === 'error') {
+					SweetAlert.fire('Errore', response.message, 'error').then(() => {
+						window.location.href = 'index';
+					});;
+				} else {
+					document.title = "Portafoglio di " + response.name;
+					$.ajax({
+						url: getTemplateUrl("detail"),
+						type: 'POST',
+						data: {
+							personaggio: response
+						},
+						success: function(response) {
+							$('#contenuto').html(response);
+						},
+						error: handleError
+					});
+				}
+			},
+			error: handleError
+		});
+
+	}
+
 
 	function addEditLink(characterName, isEdit, url, text, note) {
 		
