@@ -9,6 +9,7 @@ body {
 }
 
 .back-to-top {
+	z-index: 999;
 	position: fixed;
 	bottom: 25px;
 	right: 25px;
@@ -117,18 +118,16 @@ body {
 	}
 }
 
-@media screen and (max-width: 600px) {
-	.table {
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
+.table {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 
-		.table-responsive {
-			margin: 0 auto;
-		}
+	.table-responsive {
+		margin: 0 auto;
+	}
 
-		.table th,
-		.table td {
-			white-space: nowrap;
-		}
+	.table th,
+	.table td {
+		white-space: nowrap;
 	}
 }

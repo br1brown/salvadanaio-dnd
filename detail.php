@@ -220,6 +220,44 @@ $title = "Salvadanaio Singolo";
 		});
 	}
 
+	function uploadImage(characterName) {
+		SweetAlert.fire({
+			title: 'Carica immagine di ' + characterName,
+			html: '<input id="imageInput" type="file" class="swal2-input form-control form-control-sm " accept="image/*">',
+			confirmButtonText: 'Carica',
+			focusConfirm: false,
+			showCancelButton: true,
+			preConfirm: () => {
+				const imageInput = Swal.getPopup().querySelector('#imageInput').files[0];
+				debugger;
+				if (!imageInput)
+					Swal.showValidationMessage('Per favore, seleziona un\'immagine.');
+
+				return { image: imageInput };
+			}
+		}).then((result) => {
+			if (result.isConfirmed) {
+				var formData = new FormData();
+				formData.append('name', characterName);
+				formData.append('image', result.value.image);
+
+				$.ajax({
+					url: getApiUrl('set_image'),
+					type: 'POST',
+					processData: false,
+					contentType: false,
+					dataType: 'json',
+					data: formData,
+					success: genericSuccess,
+					error: handleError
+				});
+			}
+		});
+	}
+
+
+
+
 	function eliminami(baseName, iter) {
 		isElimina = true;
 		var title = 'Sei';

@@ -52,11 +52,16 @@ function get_totalcopper($character) {
     return ($totali);
 }
 
-function getFileName($characterName) {
+
+function getBaseName($characterName) {
     $characterName = trim($characterName);
     if (preg_match('/^\d/', $characterName))
         $characterName = "_".$characterName;
-    return getFileNamebase(strtoupper($characterName));
+    return strtoupper($characterName);
+}
+
+function getFileName($characterName) {
+    return getFileNamebase(getBaseName($characterName));
 }
 function getFileNamebase($baseName) {
     return getFolderCharacters().$baseName. '.json';
@@ -198,7 +203,7 @@ function refreshCambio(&$character){
 
 function updaateGenericItem($tipoItem, $condizioneCallback, $modificaCallback) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $character = getCharacterFromName($_POST['name'], findAPIPath());
+        $character = getCharacterFromName($_POST['name']);
         
         if (empty($character)) {
             return retError('Personaggio non trovato!');
@@ -225,7 +230,7 @@ function updaateGenericItem($tipoItem, $condizioneCallback, $modificaCallback) {
 
 function deleteGenericItem( $tipoItem, $condizioneCallback) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $character = getCharacterFromName($_POST['name'], findAPIPath());
+        $character = getCharacterFromName($_POST['name']);
         if (empty($character)) {
             return retError('Personaggio non trovato!');
         }
@@ -253,7 +258,7 @@ function deleteGenericItem( $tipoItem, $condizioneCallback) {
 
 function addGenericItem($tipoItem, $condizioneEsistenzaCallback, $creazioneCallback) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $character = getCharacterFromName($_POST['name'], findAPIPath());
+        $character = getCharacterFromName($_POST['name']);
         if (empty($character)) {
             return retError('Personaggio non trovato!');
         }

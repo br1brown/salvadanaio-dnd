@@ -174,3 +174,27 @@ function MakeGetQueryString(parametri) {
 	return ret;
 
 }
+
+function IsAggiornato() {
+	$.ajax({
+		url: 'https://api.github.com/repos/br1brown/salvadanaio-dnd/contents/settingsFE.json',
+		//url: 'https://api.github.com/repos/br1brown/salvadanaio-dnd/contents/.versione',
+		type: 'GET',
+		headers: {
+			'Accept': 'application/vnd.github.v3.raw'
+			// 'Authorization': 'token YOUR_GITHUB_TOKEN'
+		},
+		success: function (gitHubContent) {
+			var localContent = 'CONTENUTO_DEL_TUO_FILE_LOCALE';
+			debugger;
+			if (gitHubContent.trim() === localContent.trim()) {
+				console.log('I file sono identici.');
+			} else {
+				console.log('I file sono diversi.');
+			}
+		},
+		error: function (request, status, error) {
+			console.error('Errore nella richiesta:', status, error);
+		}
+	});
+}
