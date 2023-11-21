@@ -2,5 +2,6 @@
     "filtri": false,
     "aggiuntaPersonaggio": true,
     "links": false,
-    "eliminaPersonaggio": true
+    "eliminaPersonaggio": true,
+    "debiti": false
 }

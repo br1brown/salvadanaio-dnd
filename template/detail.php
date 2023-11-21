@@ -48,13 +48,17 @@ $(document).ready(function() {
 		<h1><strong><?php echo $name; ?></strong></h1>
 	
 		<div class="col">
-			<!-- Bottone per ricevere denaro -->
-			<button class="btn btn-success col-10 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)">
+			<button class="btn m-1 btn-success col-10 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)">
 				<i class="fas fa-coins"></i> Ricevi 
 			</button>
-			<!-- Bottone per spendere denaro -->
-			<button class="btn btn-danger col-10 offset-md-0 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', false)">
+			<button class="btn m-1 btn-danger col-10 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', false)">
 				<i class="fas fa-shopping-cart"></i> Spendi
+			</button>
+			<button class="debiti btn m-1 btn-sm btn-info col-10 col-md-5" onclick="creditTransaction('<?php echo htmlspecialchars($name); ?>')">
+				<i class="fas fa-hand-holding-usd"></i> Fai Credito
+			</button>
+			<button class="debiti btn m-1 btn-sm btn-warning col-10 col-md-5" onclick="debitTransaction('<?php echo htmlspecialchars($name); ?>')">
+				<i class="fas fa-money-bill-wave"></i> Fai Debito
 			</button>
 		</div>
 	</div>
@@ -64,7 +68,8 @@ $(document).ready(function() {
 		
 		<div class="col small">
 		<div class="row small">
-			<div class="col-auto"><i class="fas fa-bars"></i> Azioni:</div>
+			<div class="col-auto">Azioni:</div>
+			<!-- <div class="col-auto"><i class="fas fa-bars"></i> Azioni:</div> -->
 			<div class="col">
 				<a href="#" onclick="refreshcambio('<?php echo htmlspecialchars($name); ?>')" class="link-secondary">
 					<i class="fas fa-sync-alt "></i> Converti Valuta

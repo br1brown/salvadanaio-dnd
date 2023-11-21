@@ -61,6 +61,10 @@
         <?php if (!$settings['eliminaPersonaggio']) : ?>
             .btnEliminaPersonaggi { display: none; }
         <?php endif; ?>
+		
+        <?php if (!$settings['debiti']) : ?>
+            .debiti { display: none; }
+        <?php endif; ?>
     </style>
 
 <body>	
