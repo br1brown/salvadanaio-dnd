@@ -194,32 +194,17 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
 function refreshCambio(&$obj){
     // Calcola il nuovo totale dopo il pagamento e aggiorna le monete
     $objTotalCopper = get_totalcopper($obj);
-    
-    // Controlla e imposta platino
-    if (!isset($obj['platinum'])) {
-        $obj['platinum'] = 0;
-    }
-    $obj['platinum'] += floor($objTotalCopper / CAMBIO_PLATINUM);
+
+    $obj['platinum'] = floor($objTotalCopper / CAMBIO_PLATINUM);
     $objTotalCopper -= $obj['platinum'] * CAMBIO_PLATINUM;
 
-    // Controlla e imposta oro
-    if (!isset($obj['gold'])) {
-        $obj['gold'] = 0;
-    }
-    $obj['gold'] += floor($objTotalCopper / CAMBIO_GOLD);
+    $obj['gold'] = floor($objTotalCopper / CAMBIO_GOLD);
     $objTotalCopper -= $obj['gold'] * CAMBIO_GOLD;
 
-    // Controlla e imposta argento
-    if (!isset($obj['silver'])) {
-        $obj['silver'] = 0;
-    }
-    $obj['silver'] += floor($objTotalCopper / CAMBIO_SILVER);
+    $obj['silver'] = floor($objTotalCopper / CAMBIO_SILVER);
 
-    // Controlla e imposta rame
-    if (!isset($obj['copper'])) {
-        $obj['copper'] = 0;
-    }
-    $obj['copper'] += $objTotalCopper % CAMBIO_SILVER;
+    $obj['copper'] = $objTotalCopper % CAMBIO_SILVER;
+
 }
 
 

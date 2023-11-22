@@ -47,7 +47,7 @@ $(document).ready(function() {
 	<div class="col">
 		<h1><strong><?php echo $name; ?></strong></h1>
 	
-		<div class="col">
+		<div class="col text-center">
 			<button class="btn m-1 btn-success col-10 col-md-5" onclick="manageMoney('<?php echo htmlspecialchars($name); ?>', true)">
 				<i class="fas fa-coins"></i> Ricevi 
 			</button>
@@ -61,6 +61,21 @@ $(document).ready(function() {
 				<i class="fas fa-money-bill-wave"></i> Fai Debito
 			</button>
 		</div>
+
+
+		<div class="portafoglio shadow rounded p-1 m-2 mb-0">
+			<div class="row text-center">
+				<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $platinum; ?></span>
+			</div>
+			<div class="row small text-center">
+				<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $gold; ?></span>
+				<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $silver; ?></span>
+			</div>
+			<div class="row small text-center">
+				<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $copper; ?></span>
+			</div>
+		</div>
+
 	</div>
 </div>
 <div class="row">
@@ -81,18 +96,6 @@ $(document).ready(function() {
 		</div>
 		</div>
 
-		<div class="portafoglio shadow rounded p-1 m-2 mb-0">
-			<div class="row text-center">
-				<span style=scale(2) class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> Platino:  <?php echo $platinum; ?></span>
-			</div>
-			<div class="row small text-center">
-				<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> Oro:  <?php echo $gold; ?></span>
-				<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> Argento:  <?php echo $silver; ?></span>
-			</div>
-			<div class="row small text-center">
-				<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> Rame:  <?php echo $copper; ?></span>
-			</div>
-		</div>
 	</div>
 </div>
 
