@@ -65,6 +65,10 @@
         <?php if (!$settings['debiti']) : ?>
             .debiti { display: none; }
         <?php endif; ?>
+		
+        <?php if (!$settings['propic']) : ?>
+            .propic { display: none !important;}
+        <?php endif; ?>
     </style>
 
 <body>	

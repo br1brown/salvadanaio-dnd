@@ -68,12 +68,12 @@ $title = "Salvadanaio Singolo";
 			type: 'GET',
 			dataType: 'json',
 			success: function(response) {
-				$("#lbldel").html("Eliminare " + response.name);
 				if (response.status === 'error') {
 					SweetAlert.fire('Errore', response.message, 'error').then(() => {
 						window.location.href = 'index';
 					});;
 				} else {
+					$("#lbldel").html("Eliminare " + response.name);
 					document.title = "Portafoglio di " + response.name;
 					$.ajax({
 						url: getTemplateUrl("detail"),
@@ -166,7 +166,7 @@ $title = "Salvadanaio Singolo";
 
 	}
 
-	function deleteSingleHistory(nome, datastoriacancellare, descrizione) {
+	function deleteSingleHistory(characterName, datastoriacancellare, descrizione) {
 		SweetAlert.fire({
 			title: 'Sei sicuro?',
 			html: "Vuoi davvero eliminare elemento '" + descrizione + "' dallo storico?<br><small>Non inficerà sulle somme possedute</small>",
@@ -183,7 +183,7 @@ $title = "Salvadanaio Singolo";
 					type: 'POST',
 					dataType: 'json',
 					data: {
-						name: nome,
+						name: characterName,
 						date: datastoriacancellare,
 					},
 					success: genericSuccess,
@@ -193,7 +193,7 @@ $title = "Salvadanaio Singolo";
 		});
 	}
 
-	function deleteSingleLink(nome, url, text) {
+	function deleteSingleLink(characterName, url, text) {
 		SweetAlert.fire({
 			title: 'Sei sicuro?',
 			html: "Vuoi davvero eliminare link '" + text + "' ?",
@@ -210,7 +210,7 @@ $title = "Salvadanaio Singolo";
 					type: 'POST',
 					dataType: 'json',
 					data: {
-						name: nome,
+						name: characterName,
 						url: url,
 					},
 					success: genericSuccess,
@@ -241,7 +241,7 @@ $title = "Salvadanaio Singolo";
 				formData.append('image', result.value.image);
 
 				$.ajax({
-					url: getApiUrl('set_image'),
+					url: getApiMethod("upload", "propic"),
 					type: 'POST',
 					processData: false,
 					contentType: false,
@@ -274,7 +274,7 @@ $title = "Salvadanaio Singolo";
 			if (result.isConfirmed) {
 
 				$.ajax({
-					url: getApiUrl('link_image'),
+					url: getApiMethod("edit", "link_propic"),
 					type: 'POST',
 					dataType: 'json',
 					data: {
@@ -288,6 +288,33 @@ $title = "Salvadanaio Singolo";
 		});
 	}
 
+	
+	function deleteProPic(characterName) {
+		SweetAlert.fire({
+			title: 'Sei sicuro?',
+			html: "Vuoi davvero eliminare l'immagine del profilo?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Sì, elimina!',
+			cancelButtonText: 'Annulla'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: getApiMethod("edit", "link_propic"),
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						name: characterName,
+						link: ""
+					},
+					success: genericSuccess,
+					error: handleError
+				});
+			}
+		});
+	}
 
 	function eliminami(baseName, iter) {
 		isElimina = true;

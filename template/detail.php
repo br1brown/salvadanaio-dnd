@@ -35,12 +35,13 @@ $(document).ready(function() {
 
 
 <div class="row">
-	<div class="d-none d-md-block col-md-3" style=" margin-left:auto; margin-right:auto;">
+	<div class="d-none d-md-block col-md-3 propic" style=" margin-left:auto; margin-right:auto;">
 		<div class="polaroid ruotadestra">
-			<img src="<?php echo isset($imgPath) ? $imgPath :"https://picsum.photos/500" ?>" alt="Immgine <?php echo $name; ?>">
+			<img src="<?php echo isset($imgPath) && !empty($imgPath) ? $imgPath :"" ?>" alt="Immgine <?php echo $name; ?>">
 			<p class="caption">
 				<span class="small">[<a href="#" onclick="uploadImage('<?php echo htmlspecialchars($name); ?>')"><i class="fas fa-camera"></i></a>]</span>
 				<span class="small">[<a href="#" onclick="linkdImage('<?php echo htmlspecialchars($name); ?>')"><i class="fas fa-link"></i></a>]</span>
+				<span class="small">[<a href="#" onclick="deleteProPic('<?php echo htmlspecialchars($name); ?>')"><i class="fas fa-trash"></i></a>]</span>
 			</p>
 		</div>
 	</div>

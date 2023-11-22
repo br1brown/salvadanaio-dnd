@@ -100,7 +100,7 @@ function getCharacterFromName($characterName, $notCreate = true) {
                 'history' => [],
                 'link' => [],
                 'items' => [],
-                'imgPath' => ''
+                'imgPath' => 'API/pic/placeholder.png'
             ];
     }
     return $characterData;

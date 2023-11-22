@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $listaContent = getAllNameCharacters();
         $listaContent [] = $characterName;
         file_put_contents(getFileCharacters(), json_encode($listaContent));
-
+        
         saveCharacter($newCharacter);
         echo retOK('Personaggio creato con successo.');
     }

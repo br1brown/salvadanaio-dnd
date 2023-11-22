@@ -1,5 +1,5 @@
 <?php
-include 'funzioni_comuni.php';
+include dirname(__DIR__).'/funzioni_comuni.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
