@@ -40,7 +40,7 @@ $(document).ready(function() {
 			<img src="<?php echo isset($imgPath) ? $imgPath :"https://picsum.photos/500" ?>" alt="Immgine <?php echo $name; ?>">
 			<p class="caption">
 				<span class="small">[<a href="#" onclick="uploadImage('<?php echo htmlspecialchars($name); ?>')"><i class="fas fa-camera"></i></a>]</span>
-				<?php echo $name; ?>
+				<span class="small">[<a href="#" onclick="linkdImage('<?php echo htmlspecialchars($name); ?>')"><i class="fas fa-link"></i></a>]</span>
 			</p>
 		</div>
 	</div>

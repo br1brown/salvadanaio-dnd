@@ -229,7 +229,6 @@ $title = "Salvadanaio Singolo";
 			showCancelButton: true,
 			preConfirm: () => {
 				const imageInput = Swal.getPopup().querySelector('#imageInput').files[0];
-				debugger;
 				if (!imageInput)
 					Swal.showValidationMessage('Per favore, seleziona un\'immagine.');
 
@@ -256,6 +255,38 @@ $title = "Salvadanaio Singolo";
 	}
 
 
+	function linkdImage(characterName) {
+		SweetAlert.fire({
+			title: 'Linka immagine di ' + characterName,
+			html: '<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="fas fa-link"></i></span></div><input type="url" id="url" name="url" class="form-control form-control-sm" placeholder="Inserisci l\'URL dell\'iimagine" value="" required></div>',
+			confirmButtonText: 'Linka',
+			focusConfirm: false,
+			showCancelButton: true,
+			preConfirm: () => {
+				const url = Swal.getPopup().querySelector('#url') .value;
+
+				if (!url || (url.match(/\.(jpg|gif|png)$/)!= null))
+					Swal.showValidationMessage('Per favore, seleziona un\'immagine.');
+
+				return { url };
+			}
+		}).then((result) => {
+			if (result.isConfirmed) {
+
+				$.ajax({
+					url: getApiUrl('link_image'),
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						name: characterName,
+						link: result.value.url
+					},
+					success: genericSuccess,
+					error: handleError
+				});
+			}
+		});
+	}
 
 
 	function eliminami(baseName, iter) {

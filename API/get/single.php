@@ -5,7 +5,7 @@ if (isset($_GET["basename"])) {
     if (!file_exists($filepersonaggio)) {
         echo retError("Personaggio non trovato");
     }else{
-        echo file_get_contents($filepersonaggio);
+        echo json_encode(getCharacterFromPath($filepersonaggio));
     }
 }
 else{

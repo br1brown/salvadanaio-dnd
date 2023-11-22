@@ -44,6 +44,16 @@ function getFolderCharacters() {
     return findAPIPath().FOLDER_CHARACTERS;
 }
 
+function getFileCharacters() {
+    return findAPIPath().FOLDER_CHARACTERS."/visibili.json";
+}
+function getAllNameCharacters(){
+    $listaPath = getFileCharacters();
+    $listaContent = [];
+    if (file_exists($listaPath))
+        $listaContent = json_decode(file_get_contents($listaPath), true);
+    return $listaContent;
+}
 function get_totalcopper($obj) {
     // Inizializza le variabili per il calcolo
     $platinum = isset($obj['platinum']) ? $obj['platinum'] : 0;
@@ -76,28 +86,45 @@ function getFileNamebase($baseName) {
 
 function getCharacterFromName($characterName, $notCreate = true) {
     $filename = getFileName($characterName);
+
+    $characterData = getCharacterFromPath($filename);
+
+    if (!isset($characterData) || $characterData == null) {
+        if(!$notCreate)
+            return [
+                'name' => $characterName,
+                'platinum' => 0,
+                'gold' => 0,
+                'silver' => 0,
+                'copper' => 0,
+                'history' => [],
+                'link' => [],
+                'items' => [],
+                'imgPath' => ''
+            ];
+    }
+    return $characterData;
+}
+
+function getCharacterFromPath($filename) {
     if (file_exists($filename)) {
         $json = file_get_contents($filename);
-        return json_decode($json, true);
-    } else {
-        if($notCreate || empty($characterName)){
-            return null;
-        }else
-        return [
-            'name' => $characterName,
-            'platinum' => 0,
-            'gold' => 0,
-            'silver' => 0,
-            'copper' => 0,
-            'history' => [],
-            'link' => [],
-            'items' => []
-        ];
+
+        $characterData = json_decode($json, true);
+
+        $characterData['basename'] = basename($filename, '.' . pathinfo($filename)['extension']);
+        $characterData['totalcopper'] = get_totalcopper($characterData);
+
+        return $characterData;
+    } else
+        return null;
     }
-}
 
 function saveCharacter($character) {
     $filename = getFileName($character['name']);
+    unset($character['totalcopper']);
+    unset($character['basename']);
+
     file_put_contents($filename, json_encode($character));
 }
 

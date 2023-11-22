@@ -5,10 +5,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $baseName = $_POST['baseName'];
 
     $percorsoFileOriginale = getFileNamebase($baseName);
-    if (!file_exists($percorsoFileOriginale)) {
+
+    $c = getCharacterFromPath($percorsoFileOriginale);
+
+    if ($c == null) {
         echo retError('Nessun personaggio trovato!');
             exit;
     }
+    file_put_contents(getFileCharacters(), json_encode(array_diff(getAllNameCharacters(), [$c['name']])));
 
     $folderEliminati = getFolderCharacters().'//eliminati/';
 

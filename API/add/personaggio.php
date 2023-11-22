@@ -10,6 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Un personaggio con questo nome esiste già.']);
     } else {
         $newCharacter = getCharacterFromName($characterName, false); // Questa funzione creerà un personaggio se non esiste
+        
+        $listaContent = getAllNameCharacters();
+        $listaContent [] = $characterName;
+        file_put_contents(getFileCharacters(), json_encode($listaContent));
+
         saveCharacter($newCharacter);
         echo retOK('Personaggio creato con successo.');
     }
