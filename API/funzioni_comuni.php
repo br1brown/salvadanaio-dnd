@@ -44,14 +44,21 @@ function getFolderCharacters() {
     return findAPIPath().FOLDER_CHARACTERS;
 }
 
-function get_totalcopper($character) {
-    $totali = $character['platinum'] * CAMBIO_PLATINUM;
-    $totali += $character['gold'] * CAMBIO_GOLD;
-    $totali += $character['silver']  * CAMBIO_SILVER;
-    $totali += $character['copper'];
-    return ($totali);
-}
+function get_totalcopper($obj) {
+    // Inizializza le variabili per il calcolo
+    $platinum = isset($obj['platinum']) ? $obj['platinum'] : 0;
+    $gold = isset($obj['gold']) ? $obj['gold'] : 0;
+    $silver = isset($obj['silver']) ? $obj['silver'] : 0;
+    $copper = isset($obj['copper']) ? $obj['copper'] : 0;
 
+    // Calcola il totale
+    $totali = $platinum * CAMBIO_PLATINUM;
+    $totali += $gold * CAMBIO_GOLD;
+    $totali += $silver * CAMBIO_SILVER;
+    $totali += $copper;
+
+    return $totali;
+}
 
 function getBaseName($characterName) {
     $characterName = trim($characterName);
@@ -184,20 +191,35 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
     return retOK("Transazione ($transactionType) eseguita correttamente.");
 }
 
-function refreshCambio(&$character){
+function refreshCambio(&$obj){
     // Calcola il nuovo totale dopo il pagamento e aggiorna le monete
-    $characterTotalCopper = get_totalcopper($character);
+    $objTotalCopper = get_totalcopper($obj);
     
-    $character['platinum'] = floor($characterTotalCopper / CAMBIO_PLATINUM);
-    $characterTotalCopper -= $character['platinum'] * CAMBIO_PLATINUM;
+    // Controlla e imposta platino
+    if (!isset($obj['platinum'])) {
+        $obj['platinum'] = 0;
+    }
+    $obj['platinum'] += floor($objTotalCopper / CAMBIO_PLATINUM);
+    $objTotalCopper -= $obj['platinum'] * CAMBIO_PLATINUM;
 
-    $character['gold'] = floor($characterTotalCopper / CAMBIO_GOLD);
-    $characterTotalCopper -= $character['gold'] * CAMBIO_GOLD;
+    // Controlla e imposta oro
+    if (!isset($obj['gold'])) {
+        $obj['gold'] = 0;
+    }
+    $obj['gold'] += floor($objTotalCopper / CAMBIO_GOLD);
+    $objTotalCopper -= $obj['gold'] * CAMBIO_GOLD;
 
-    $character['silver'] = floor($characterTotalCopper / CAMBIO_SILVER);
+    // Controlla e imposta argento
+    if (!isset($obj['silver'])) {
+        $obj['silver'] = 0;
+    }
+    $obj['silver'] += floor($objTotalCopper / CAMBIO_SILVER);
 
-    $character['copper'] = $characterTotalCopper % CAMBIO_SILVER;
-
+    // Controlla e imposta rame
+    if (!isset($obj['copper'])) {
+        $obj['copper'] = 0;
+    }
+    $obj['copper'] += $objTotalCopper % CAMBIO_SILVER;
 }
 
 
