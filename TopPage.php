@@ -47,23 +47,27 @@
 
 <style>
         <?php if (!$settings['filtri']) : ?>
-            .filtri { display: none; }
+            .filtri { display: none !important; }
         <?php endif; ?>
 
         <?php if (!$settings['aggiuntaPersonaggio']) : ?>
-            .addCharacterBtn { display: none; }
+            .addCharacterBtn { display: none !important; }
         <?php endif; ?>
 
         <?php if (!$settings['links']) : ?>
-            .item_Link, #addLink { display: none; }
+            .item_Link, #addLink { display: none !important; }
         <?php endif; ?>
 
         <?php if (!$settings['eliminaPersonaggio']) : ?>
-            .btnEliminaPersonaggi { display: none; }
+            .btnEliminaPersonaggi { display: none !important; }
+        <?php endif; ?>
+		
+        <?php if (!$settings['inventario']) : ?>
+            .inventory-items { display: none !important; }
         <?php endif; ?>
 		
         <?php if (!$settings['debiti']) : ?>
-            .debiti { display: none; }
+            .debiti { display: none !important; }
         <?php endif; ?>
 		
         <?php if (!$settings['propic']) : ?>

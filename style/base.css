@@ -63,15 +63,23 @@ body {
 }
 
 .piccolill {
-	transform: scale(0.5);
-}
-
-.piccolill-s {
-	transform: scale(0.3);
+	font-size: 0.5rem;
 }
 
 .piccolill-m {
-	transform: scale(0.7);
+	font-size: 0.7rem;
+}
+
+.grandill {
+	font-size: 1.3rem;
+}
+
+.grandill-s {
+	font-size: 1rem;
+}
+
+.grandill-m {
+	font-size: 1.5rem;
 }
 
 .platinum-color {

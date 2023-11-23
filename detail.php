@@ -4,7 +4,7 @@ $title = "Salvadanaio Singolo";
     <?php include('TopPage.php'); ?>	<div class="container-fluid">
 	<div class="row">
 		<div class="col-12 col-md-2">
-			<a href="index" class="btn btn-warning btn-sm w-100">Home</a>
+			<a href="index" class="btn btn-dark btn-sm w-100">Home</a>
 			<div id=lista class="list-group col-12 d-none d-md-block tutto h-80" style="overflow-y: auto; overflow-x: auto;">
 			</div>
 		</div>
@@ -12,7 +12,7 @@ $title = "Salvadanaio Singolo";
 			<div id=contenuto class="tutto">
 				
 			</div>
-			<div class="row">
+			<div class="row btnEliminaPersonaggi">
 				<button type="button" onclick="eliminami('<?php echo $_GET['basename']; ?>',1)" class="col-12 col-md-6 offset-md-3 btn btn-outline-danger btn-sm"><i class="fa fa-solid fa-trash"></i> <span id="lbldel">Elimina</span></button>
 			</div>
 		</div>
@@ -218,6 +218,97 @@ $title = "Salvadanaio Singolo";
 				});
 			}
 		});
+	}
+
+
+	function manageInventoryItem(action, characterName, itemName, quantity, description = '') {
+		var inventoryData = {
+			itemName: itemName,
+			quantity: quantity,
+			description: description
+		};
+
+		var actionWord = {
+			'add': 'Aggiungi',
+			'edit': 'Modifica',
+			'delete': 'Elimina'
+		}[action];
+
+		if (action !== 'delete') {
+			var isEdit = action === 'edit';
+			$.ajax({
+				url: getTemplateUrl("inventory-form"),
+				type: 'POST',
+				data: inventoryData,
+				success: function(htmlResponse) {
+					SweetAlert.fire({
+					title: actionWord +' Inventario per ' + characterName,
+					html: htmlResponse,
+					confirmButtonText: 'Salva',
+					focusConfirm: false,
+					showCancelButton: true,
+					preConfirm: () => {
+						const itemName = Swal.getPopup().querySelector('#itemName').value;
+						const quantity = Swal.getPopup().querySelector('#quantity').value;
+						const description = Swal.getPopup().querySelector('#description').value;
+
+						if (!itemName || !quantity)
+						Swal.showValidationMessage('Per favore, inserisci sia il nome dell\'oggetto che la quantità.');
+
+						return {
+						itemName,
+						quantity,
+						description
+						};
+					}
+					}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+						url: getApiMethod((isEdit ? 'edit' : 'add'), "inventory"),
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							name: characterName,
+							oldItemName: inventoryData.itemName,
+							itemName: result.value.itemName,
+							quantity: result.value.quantity,
+							description: result.value.description.replace(/\n/g, ' - ')
+						},
+						success: genericSuccess,
+						error: handleError
+						});
+					}
+					});
+				},
+				error: handleError
+				});
+
+		} else {
+			SweetAlert.fire({
+				title: 'Sei sicuro?',
+				text: "Vuoi davvero eliminare l'oggetto '" + itemName + "' dall'inventario?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Sì, elimina!',
+				cancelButtonText: 'Annulla'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: getApiMethod('delete', 'inventory_item'),
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							name: characterName,
+							itemName: itemName
+						},
+						success: genericSuccess,
+						error: handleError
+					});
+				}
+			});
+		}
 	}
 
 	function uploadImage(characterName) {

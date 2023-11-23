@@ -1,8 +1,9 @@
 {
     "filtri": false,
     "aggiuntaPersonaggio": true,
-    "links": false,
+    "links": true,
     "eliminaPersonaggio": false,
-    "debiti": false,
+    "debiti": true,
+    "inventario": true,
     "propic": false
 }
