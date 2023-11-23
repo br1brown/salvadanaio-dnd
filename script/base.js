@@ -50,7 +50,18 @@ function refreshcambio(name) {
 		data: {
 			name: name,
 		},
-		success: genericSuccess,
+		success: function (response) {
+			if (response.status === 'success') {
+				if (window.ReloadAfterSuccess) {
+					ReloadAfterSuccess()
+				}
+				else {
+					location.reload();
+				}
+			} else {
+				SweetAlert.fire('Errore', response.message, 'error');
+			}
+		},
 		error: handleError
 	});
 }

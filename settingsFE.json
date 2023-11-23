@@ -1,7 +1,7 @@
 {
     "filtri": false,
     "aggiuntaPersonaggio": true,
-    "links": true,
+    "links": false,
     "eliminaPersonaggio": false,
     "debiti": true,
     "inventario": true,

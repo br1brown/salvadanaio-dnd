@@ -43,6 +43,21 @@ $(document).ready(function() {
 		$(this).children('.fas').toggleClass('fa-chevron-down', 150);
 	});
 
+
+	$("#searchInventInput").on("keyup", function() {
+        var value = $(this).val().trim().toLowerCase();
+        $(".inventory-items > .oggettoInventario").each(function() {
+
+			var itemName = $(this).find("strong").text().toLowerCase();
+            
+			var presente = value.split(" ").some(function(term) {
+				return itemName.indexOf(term) > -1;
+			});
+			
+			$(this).toggle(presente);
+
+        });
+    });
 });
 </script>
 
@@ -142,12 +157,6 @@ foreach ($suspended as $tipo =>$obj) {
 			<?php
 			$buttons = [
 				[
-					'testo' => 'Converti Valuta',
-					'onclick' => "refreshcambio('".htmlspecialchars($name)."')",
-					'simbolo' => 'fas fa-sync-alt',
-					'class' => ''
-				],
-				[
 					'testo' => 'Aggiungi Nuovo Link',
 					'onclick' => "addEditLink('".htmlspecialchars($name)."', false)",
 					'simbolo' => 'fas fa-plus',
@@ -158,6 +167,12 @@ foreach ($suspended as $tipo =>$obj) {
 					'onclick' => "manageInventoryItem('add','".htmlspecialchars($name)."')",
 					'simbolo' => 'fas fa-plus',
 					'class' => 'inventory-items'
+				],
+				[
+					'testo' => 'Cambio Valuta',
+					'onclick' => "refreshcambio('".htmlspecialchars($name)."')",
+					'simbolo' => 'fas fa-sync-alt',
+					'class' => ''
 				]
 			];
 			?>
@@ -175,11 +190,13 @@ foreach ($suspended as $tipo =>$obj) {
 <div class="row">
 
 <?php if (!empty($inventory)): ?>
-	<div class="col-12 col-md-6">
+	<div class="col-12 col-md">
     <div class="row inventory-items">
-		<h3 class=col-12>Inventario</h3>
+		<h3 class=col-12>Inventario
+			<input type="text" class="form-control" id="searchInventInput" placeholder="Cerca nell'inventario..."></h3>
+
         <?php foreach ($inventory as $index => $item): ?>
-            <div class="col-12 mb-1">
+            <div class="col-12 mb-1 oggettoInventario">
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     <!-- Contenitore per il nome e la descrizione dell'oggetto -->
                     <div class="text-left d-flex align-items-center">
@@ -212,7 +229,7 @@ foreach ($suspended as $tipo =>$obj) {
 	</div>
 <?php endif; ?>
 <?php if (!empty($links)): ?>
-	<div class="col-12 col-md-6">
+	<div class="col-12 col-md">
         <div class="row item_Link">
 		<h3 class=col-12>Link Utili</h3>
 		<?php foreach ($links as $index => $link): ?>

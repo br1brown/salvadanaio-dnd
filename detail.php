@@ -110,7 +110,7 @@ $title = "Salvadanaio Singolo";
 			data: linkData,
 			success: function(htmlResponse) {
 				SweetAlert.fire({
-					title: actionWord + ' link per ' + characterName,
+					title: actionWord + ' link di ' + characterName,
 					html: htmlResponse,
 					confirmButtonText: actionWord,
 					focusConfirm: false,
@@ -242,7 +242,7 @@ $title = "Salvadanaio Singolo";
 				data: inventoryData,
 				success: function(htmlResponse) {
 					SweetAlert.fire({
-					title: actionWord +' Inventario per ' + characterName,
+					title: actionWord +' '+itemName+' di ' + characterName,
 					html: htmlResponse,
 					confirmButtonText: 'Salva',
 					focusConfirm: false,
