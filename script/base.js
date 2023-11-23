@@ -55,6 +55,116 @@ function refreshcambio(name) {
 	});
 }
 
+function creditTransaction(characterName, isCredit) {
+	const actionWord = isCredit ? 'Credito' : 'Debito';
+	$.get(getApiMethod("get", "names"), function (lista) {
+		var altri = JSON.parse(lista).filter(e => e !== characterName)
+		$.get(getTemplateUrl('insert', { lista: JSON.stringify(altri) }), function (template) {
+			SweetAlert.fire({
+				title: actionWord + ' per ' + characterName,
+				html: template,
+				confirmButtonText: "Procedi",
+				focusConfirm: false,
+				showCancelButton: true,
+				preConfirm: () => {
+					const platinum = Swal.getPopup().querySelector('#platinum').value;
+					const gold = Swal.getPopup().querySelector('#gold').value;
+					const silver = Swal.getPopup().querySelector('#silver').value;
+					const copper = Swal.getPopup().querySelector('#copper').value;
+					var description = Swal.getPopup().querySelector('#description').value;
+					const persona = Swal.getPopup().querySelector('#altro').value;
+
+					if (persona == "" || (!persona))
+						Swal.showValidationMessage('Inserire persona di rifermento');
+
+					var bindCorrect = true;
+					validanum = function (sznum, nome) {
+						if (sznum == "")
+							return 0;
+						var Num = parseFloat(sznum);
+						if (isNaN(Num)) {
+							bindCorrect = false;
+							Swal.showValidationMessage('Errore nella validazione ' + nome);
+							return 0;
+						}
+						if (Num < 0) {
+							bindCorrect = false;
+							Swal.showValidationMessage('Modifica non supportata: Valore ' + nome + ' negativo');
+						}
+						return Num;
+					}
+
+					var platinumNum = validanum(platinum, "platino");
+					var goldNum = validanum(gold, "Oro");
+					var silverNum = validanum(silver, "Argento");
+					var copperNum = validanum(copper, "Rame");
+					if (bindCorrect && (platinumNum + goldNum + silverNum + copperNum == 0)) {
+						Swal.showValidationMessage('Nessuna valuta rilevata');
+					}
+
+					if (description == "" || (!description))
+						description = actionWord + " con " + persona;
+
+					return { platinum, gold, silver, copper, description, persona };
+				}
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: getApiUrl((isCredit ? 'credito' : 'debito')),
+						type: 'POST',
+						dataType: 'json', // Assicurati che la risposta sia in formato JSON
+						data: {
+							name: characterName,
+							platinum: result.value.platinum,
+							gold: result.value.gold,
+							silver: result.value.silver,
+							copper: result.value.copper,
+							persona: result.value.persona,
+							description: result.value.description
+						},
+						success: genericSuccess,
+						error: handleError
+					});
+				}
+			});
+		});
+	});
+}
+
+
+function sanaContratto(characterName, isCredit, platinum, gold, silver, copper, persona) {
+	var word = (isCredit ? 'credito' : 'debito');
+	SweetAlert.fire({
+		title: 'Sei sicuro?',
+		html: "Vuoi esaurire il " + word + " di '" + characterName + "'<br> sono " + platinum + "p " + gold + "g " + silver + "s " + copper + "c?<br><small>Le modifiche saranno effettive sui soldi posseduti</small>",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Procedi!',
+		cancelButtonText: 'Annulla'
+	}).then((result) => {
+		debugger
+		if (result.isConfirmed) {
+			$.ajax({
+				url: getApiUrl("sana_" + (isCredit ? 'credito' : 'debito')),
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					name: characterName,
+					platinum,
+					gold,
+					silver,
+					copper,
+					persona,
+					description: word + " sanato"
+				},
+				success: genericSuccess,
+				error: handleError
+			});
+		}
+	});
+}
+
+
 function manageMoney(characterName, isReceiving) {
 	$.get(getTemplateUrl('insert', { spendi: (isReceiving ? "0" : "1") }), function (template) {
 		const actionWord = isReceiving ? 'Ricevi' : 'Spendi';

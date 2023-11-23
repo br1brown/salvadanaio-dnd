@@ -1,5 +1,11 @@
   <?php
-  $spendi = filter_var($_GET['spendi'], FILTER_VALIDATE_BOOLEAN);
+  $spendi = false;
+  if (isset($_GET['spendi']))
+    $spendi = filter_var($_GET['spendi'], FILTER_VALIDATE_BOOLEAN);
+  
+  $lista = null;
+  if (isset($_GET['lista']))
+  $lista = json_decode($_GET['lista']); 
   ?>
 <div class=row>
   <div class="col-12 col-md-3">
@@ -24,5 +30,29 @@
     <label for=canReceiveChange class=small> Posso ricevere resto</label>
   </div>
   <?php } ?>
+    <?php 
+      if (isset($_GET['lista'])) {
+?>
+<div class="row col-12">
+  <div class="col-auto my-2">
+    <span>stipulato con</span>
+  </div>
+  <div class="col my-2">
+    <select id="altro" class="form-control form-control-sm">
+      <option value="NPC">
+        NPC - Altro
+    </option>
+      <?php foreach ($lista as $nome) { ?>
+        <option value="<?php echo htmlspecialchars($nome); ?>">
+          <?php echo htmlspecialchars($nome); ?>
+        </option>
+      <?php } ?>
+    </select>
+  </div>
 </div>
-  <hr class=my-1> <textarea id="description" maxlength="100"  class="form-control form-control-sm my-2" rows="3" placeholder="Descrizione" style="resize: none;"></textarea>
+
+<?php 
+}?>
+</div>
+  <hr class=my-1> <textarea id="description" maxlength="100"  class="form-control form-control-sm my-2" rows="2" placeholder="Descrizione" style="resize: none;"></textarea>
+

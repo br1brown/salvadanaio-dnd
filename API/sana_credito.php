@@ -1,4 +1,4 @@
 <?php
 include 'maneggiasoldi.php';
-esegui("received",$_POST);
+esegui("settle_credit",$_POST);
 ?>

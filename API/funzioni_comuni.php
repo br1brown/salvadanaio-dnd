@@ -72,6 +72,8 @@ function get_totalcopper($obj) {
 
 function getBaseName($characterName) {
     $characterName = trim($characterName);
+    $characterName = str_replace(' ', '_', $characterName);
+    $characterName = preg_replace('/__+/', '_', $characterName);
     if (preg_match('/^\d/', $characterName))
         $characterName = "_".$characterName;
     return strtoupper($characterName);
@@ -93,14 +95,11 @@ function getCharacterFromName($characterName, $notCreate = true) {
         if(!$notCreate)
             return [
                 'name' => $characterName,
+                'imgPath' => 'API/pic/placeholder.png',
                 'platinum' => 0,
                 'gold' => 0,
                 'silver' => 0,
-                'copper' => 0,
-                'history' => [],
-                'link' => [],
-                'items' => [],
-                'imgPath' => 'API/pic/placeholder.png'
+                'copper' => 0
             ];
     }
     return $characterData;
@@ -128,57 +127,57 @@ function saveCharacter($character) {
     file_put_contents($filename, json_encode($character));
 }
 
-function manageCharacterCoins($characterName, $transactionType, $platinum, $gold, $silver, $copper, $description, $canReceiveChange = false, $otherPartyName = null) {
+function manageCharacterCoins($characterName, $transactionType, $platinum, $gold, $silver, $copper, $description, $canReceiveChange = false, $person = null) {
     $character = getCharacterFromName($characterName);
-
+    if ($person == "NPC")
+        $person = null;
     if (empty($character)) {
         return retError('Personaggio non trovato!');
     }
 
-    $totalCopperManaging = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
+    try {
+        $isAdding = null;
+        $shouldAdjustCurrency = false;
 
-    // Logica per gestire ricezione, pagamento, debito, credito e sanazione del debito/credito
+        switch ($transactionType) {
+            case 'debt': //sto avviando un debito quindi ricevo soldi
+            case 'received': 
+            case 'settle_credit': //sto incasssando un credito quindi ricevo soldi 
+                $isAdding = true;
+                $shouldAdjustCurrency = true;
+                break;
+                
+            case 'credit': //sto avviando un credito quindi perdo soldi
+            case 'spent':
+            case 'settle_debt': //sto incasssando un debito quindi ricevo soldi 
+                $isAdding = false;
+                $shouldAdjustCurrency = true;
+                break;
+
+                
+            default:
+                return retError('Tipo di transazione non supportata.');
+        }
+
+        if ($shouldAdjustCurrency)     
+                manageCurrency($character,$isAdding,$platinum, $gold, $silver, $copper, $description, $canReceiveChange);
+    }
+    catch(Exception $e) {
+        return retError($e->getMessage());
+    }
+
+
+    $totalCopperManaging = ($platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper);
     switch ($transactionType) {
-        case 'received':
-            $character['platinum'] += $platinum;
-            $character['gold'] += $gold;
-            $character['silver'] += $silver;
-            $character['copper'] += $copper;
-            break;
-            
-        case 'spent':
-            if ($canReceiveChange) {
-            $totalCopperToPay = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
-            $totalCopper = get_totalcopper($character);
-            if ($totalCopper < $totalCopperToPay) 
-                return retError("Non hai le monete per effettuare il pagamento esatto");
-            
-            $character['platinum'] = 0;
-            $character['gold'] = 0;
-            $character['silver'] = 0;
-            $character['copper'] = $totalCopper - $totalCopperToPay;
-        
-            refreshCambio($character);
-
-            } else {
-                if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {
-                    return retError('Non hai le monete della denominazione corretta per effettuare il pagamento esatto');
-                }
-                $character['platinum'] -= $platinum;
-                $character['gold'] -= $gold;
-                $character['silver'] -= $silver;
-                $character['copper'] -= $copper;
-            }
-            break;
-            
         case 'debt':
         case 'credit':
-            // Aggiungi il debito o il credito al personaggio
-            $character[$transactionType][] = [
-                'name' => $otherPartyName,
+
+            $character["suspended"][$transactionType][] = [
+                'person' => $person,
                 'copper' => $totalCopperManaging,
                 'description' => $description
             ];
+        
             break;
             
         case 'settle_debt':
@@ -186,23 +185,20 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
             // Rimuovi il debito o il credito sanato
             $transactionKey = $transactionType === 'settle_debt' ? 'debt' : 'credit';
             $found = false;
-            foreach ($character[$transactionKey] as $key => $transaction) {
-                if ($transaction['name'] === $otherPartyName && $transaction['copper'] === $totalCopperManaging) {
-                    unset($character[$transactionKey][$key]);
+            foreach ($character["suspended"][$transactionKey] as $key => $transaction) {
+                if ($transaction['person'] === $person && $transaction['copper'] === $totalCopperManaging) {
+                    unset($character["suspended"][$transactionKey][$key]);
                     $found = true;
                     break;
                 }
             }
             if (!$found) {
-                return retError('Debito o credito specificato non trovato.');
+                return retError('Contratto non trovato.');
             }
-            $character[$transactionKey] = array_values($character[$transactionKey]); // Reindex array
+            $character["suspended"][$transactionKey] = array_values($character["suspended"][$transactionKey]); // Reindex array
             break;
-            
-        default:
-            return retError('Tipo di transazione non supportato.');
     }
-
+    
     $character['history'][] = [
         'date' => date('Y-m-d H:i:s'),
         'platinum' => $platinum,
@@ -211,12 +207,46 @@ function manageCharacterCoins($characterName, $transactionType, $platinum, $gold
         'copper' => $copper,
         'description' => $description,
         'type' => strtoupper($transactionType),
-        'other_party' => $otherPartyName
     ];;
 
     saveCharacter($character);
     return retOK("Transazione ($transactionType) eseguita correttamente.");
 }
+
+function manageCurrency(&$character, $isAdding, $platinum = 0, $gold = 0, $silver = 0, $copper = 0, $canReceiveChange = true) {
+
+    if ($isAdding) {
+        $character['platinum'] += $platinum;
+        $character['gold'] += $gold;
+        $character['silver'] += $silver;
+        $character['copper'] += $copper;
+    } else {
+        if ($canReceiveChange) {
+            $totalCopperToPay = $platinum * CAMBIO_PLATINUM + $gold * CAMBIO_GOLD + $silver * CAMBIO_SILVER + $copper;
+            $totalCopper = get_totalcopper($character);
+            if ($totalCopper < $totalCopperToPay) 
+                throw new Exception("Non hai abbastanza monete per effettuare il pagamento esatto");
+            
+            $character['platinum'] = 0;
+            $character['gold'] = 0;
+            $character['silver'] = 0;
+            $character['copper'] = $totalCopper - $totalCopperToPay;
+
+            refreshCambio($character);
+
+            } else {
+                if ($character['platinum'] < $platinum || $character['gold'] < $gold || $character['silver'] < $silver || $character['copper'] < $copper) {
+                    throw new Exception('Non hai le monete della denominazione corretta per effettuare il pagamento esatto');
+                }
+                $character['platinum'] -= $platinum;
+                $character['gold'] -= $gold;
+                $character['silver'] -= $silver;
+                $character['copper'] -= $copper;
+            }
+    }
+    
+}
+
 
 function refreshCambio(&$obj){
     // Calcola il nuovo totale dopo il pagamento e aggiorna le monete

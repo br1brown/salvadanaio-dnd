@@ -5,7 +5,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $character = getCharacterFromName($_POST['name']);
     if ($character != null){
-        var_dump(empty($_POST['link']));
         if (empty($_POST['link']))
             $character['imgPath'] = 'API/pic/placeholder.png';
         else

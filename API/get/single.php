@@ -8,13 +8,18 @@ if (isset($_GET["basename"])) {
 
         $c = getCharacterFromPath($filepersonaggio);
 
+            if (isset($c["suspended"]))
+                foreach ($c["suspended"] as $tipo =>$obj) {
+                    foreach ($c["suspended"][$tipo] as $key => $tran) {
+                        refreshCambio($c["suspended"][$tipo][$key]);
+                    }
+                }
+
+
         if (!in_array($c['name'], getAllNameCharacters()))
             echo retError("Personaggio non accessibile");
         else
-        echo json_encode($c);
-
-        
-
+            echo json_encode($c);
 
     }
 }

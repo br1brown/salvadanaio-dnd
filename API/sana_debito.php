@@ -1,4 +1,4 @@
 <?php
 include 'maneggiasoldi.php';
-esegui("spent",$_POST);
+    esegui("settle_debt",$_POST);
 ?>
