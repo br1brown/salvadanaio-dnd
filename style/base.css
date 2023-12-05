@@ -1,0 +1,74 @@
+html {
+	position: relative;
+	min-height: 100vh;
+}
+
+body {
+	background-color: rgb(96, 96, 96);
+	font-family: Verdana, sans-serif;
+}
+
+.back-to-top {
+	z-index: 999;
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+	display: none;
+}
+
+
+.tutto {
+	background-color: rgba(255, 255, 255, 0.7);
+	border: 1px solid;
+	padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	vertical-align: middle;
+}
+
+.bordo {
+	border: 1px solid;
+	padding: 10px;
+	box-shadow: 5px 5px 4px #888888;
+}
+
+.row {
+	padding: 0;
+	padding-top: 10px;
+}
+
+.zoomma {
+	transition: transform .2s;
+}
+
+.zoomma:hover {
+	transform: scale(1.5);
+}
+
+.piccolill {
+	font-size: 0.5rem;
+}
+
+.piccolill-m {
+	font-size: 0.7rem;
+}
+
+.grandill {
+	font-size: 1.3rem;
+}
+
+.grandill-s {
+	font-size: 1rem;
+}
+
+.grandill-m {
+	font-size: 1.5rem;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+	.container-fluid {
+		overflow-x: hidden;
+		/*io basito... perché scrolla?*/
+	}
+}

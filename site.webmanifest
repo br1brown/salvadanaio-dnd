@@ -1,0 +1,10 @@
+{
+	"name": "XXX",
+	"short_name": "XXX",
+	"description": "XXX",
+	"lang": "it-IT",
+	"start_url": "/",
+	"display": "browser",
+	"background_color": "black",
+	"theme_color": "white"
+}

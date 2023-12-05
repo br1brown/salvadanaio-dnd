@@ -1,0 +1,13 @@
+{
+    "AppName": "Template",
+    "description": "Descrizione",
+    "keywords": "xxx,xxxx",
+    "APIEndPoint": "API",
+    "footer": true,
+    "itemsMenu": [
+        {
+            "nome": "Social",
+            "route": "social"
+        }
+    ]
+}

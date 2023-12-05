@@ -1,0 +1,309 @@
+:root {
+	--color-clone: black;
+	--color-cut: black;
+	--color-paste: black;
+	--color-download: black;
+	--color-mail: black;
+	--color-youtube: #bb0000;
+	--color-facebook: #3B5998;
+	--color-instagram: #8a3ab9;
+	--color-twitch: #6441a5;
+	--color-tiktok: black;
+	--color-snapchat: #fffc00;
+	--color-twitter: #55ACEE;
+	--color-vimeo: #45bbff;
+	--color-linkedin: #007bb5;
+	--color-skype: #00aff0;
+	--color-tumblr: #2c4762;
+	--color-pinterest: #cb2027;
+	--color-flickr: #f40083;
+	--color-dribbble: #ea4c89;
+	--color-stumbleupon: #eb4924;
+	--color-spotify: #1DB954;
+	--color-deezer: black;
+	--color-itunes: #EA4CC0;
+	--color-soundcloud: #ff5500;
+	--color-amazon: #FF9900;
+	--color-audible: #232F3E;
+	--color-pdf: red;
+	--color-bell: black;
+	--color-telegram: #2ca5e0;
+	--color-whatsapp: #25d366;
+	--color-google: #4285F4;
+	--color-chromecast: black;
+	--color-chrome: black;
+	--color-android: #a4c639;
+	--color-apple: #A2AAAD;
+	--color-playstation: #003791;
+	--color-quora: #b92b27;
+	--color-yahoo: #430297;
+	--color-foursquare: #45bbff;
+	--color-airbnb: #FF5A5F;
+	--color-btc: #f2a900;
+}
+
+
+
+.social-icon {
+	color: #fff;
+	border-radius: 25px;
+	padding: 15px;
+	margin: 5px;
+	transition: all 0.2s ease-in-out;
+	font-weight: 300;
+}
+
+.social-icon:hover {
+	opacity: 0.7;
+	border-radius: 0;
+}
+
+.social-icon a {
+	text-decoration: none;
+}
+
+
+.fa-clone {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-clone);
+}
+
+
+.fa-cut {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-cut);
+}
+
+
+.fa-paste {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-paste);
+}
+
+
+.fa-download {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-download);
+}
+
+
+.fa-envelope {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-mail);
+}
+
+
+.fa-youtube {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-youtube);
+}
+
+
+.fa-facebook {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-facebook);
+}
+
+
+.fa-instagram {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-instagram);
+}
+
+
+.fa-twitch {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-twitch);
+}
+
+
+.fa-tiktok {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-tiktok);
+}
+
+
+.fa-snapchat {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-snapchat);
+}
+
+
+.fa-twitter {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-twitter);
+}
+
+
+.fa-vimeo {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-vimeo);
+}
+
+
+.fa-linkedin {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-linkedin);
+}
+
+
+.fa-skype {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-skype);
+}
+
+
+.fa-tumblr {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-tumblr);
+}
+
+
+.fa-pinterest {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-pinterest);
+}
+
+
+.fa-flickr {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-flickr);
+}
+
+
+.fa-dribbble {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-dribbble);
+}
+
+
+.fa-stumbleupon {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-stumbleupon);
+}
+
+
+.fa-spotify {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-spotify);
+}
+
+
+.fa-deezer {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-deezer);
+}
+
+
+.fa-itunes {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-itunes);
+}
+
+
+.fa-soundcloud {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-soundcloud);
+}
+
+
+.fa-amazon {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-amazon);
+}
+
+
+.fa-audible {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-audible);
+}
+
+
+.fa-file-pdf {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-pdf);
+}
+
+
+.fa-bell {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-bell);
+}
+
+
+.fa-telegram {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-telegram);
+}
+
+
+.fa-whatsapp {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-whatsapp);
+}
+
+
+.fa-google {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-google);
+}
+
+
+.fa-chromecast {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-chromecast);
+}
+
+
+.fa-chrome {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-chrome);
+}
+
+
+.fa-android {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-android);
+}
+
+
+.fa-apple {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-apple);
+}
+
+
+.fa-playstation {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-playstation);
+}
+
+
+.fa-quora {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-quora);
+}
+
+
+.fa-yahoo {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-yahoo);
+}
+
+
+.fa-foursquare {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-foursquare);
+}
+
+
+.fa-airbnb {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-airbnb);
+}
+
+
+.fa-btc {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-btc);
+}
