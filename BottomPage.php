@@ -7,7 +7,7 @@
 				<a class="col" href="https://wa.me/<?=str_replace(' ', '', $irl['numeroWA'])?>" target=_blank title=Whatsapp><i class="social-icon fab fa-whatsapp"> Whatsapp</i></a>
 			<?php endif; ?>
 			<?php if (isset($irl['ig'])) : ?>
-				<a class="col" href=<?=$irl['ig']?> target=_blank title=Instagram><i class="social-icon fab fa-instagram"></i>Instagram</a>
+				<a class="col" href=<?=$irl['ig']?> target=_blank title=Instagram><i class="social-icon fab fa-instagram"> Instagram</i></a>
 			<?php endif; ?>
 			<?php if (isset($irl['yt'])) : ?>
 				<a class="col" href=<?=$irl['yt']?> target=_blank title=Instagram><i class="social-icon fab fa-youtube"></i></a>
