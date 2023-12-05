@@ -16,15 +16,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($est == false)
                 echo retError("Errore durante il caricamento del file.");
             else{
-                $uploadPath = "pic/" . getBaseName($character['name']).'.'.$est;
-                if (move_uploaded_file($image['tmp_name'], $uploadPath)) {
-                    $character['imgPath'] = "API/".$uploadPath;
-                    saveCharacter($character);
-                    
-                    echo retOK("Immagine caricata con successo!");
-                } else {
-                    echo retError("Errore durante il caricamento del file.");
+                $dir = findAPIPath()."pic";
+                
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0777, true);
                 }
+
+                try{
+
+                $uploadPath = $dir."/" . getBaseName($character['name']).'.'.$est;
+                $uploadRelativePath = "API/pic/" . getBaseName($character['name']).'.'.$est;
+
+                $ilFile = file_get_contents($image['tmp_name']);
+                
+                file_put_contents(str_replace('\\',"/",$uploadPath), $ilFile);
+
+                $character['imgPath'] = $uploadRelativePath;
+                saveCharacter($character);
+                
+                echo retOK("Immagine caricata con successo!");
+                } 
+                catch(Exception $e) {
+                    return retError($e->getMessage());
+                }
+
             }
         } else {
             echo retError("Errore nel file caricato.");

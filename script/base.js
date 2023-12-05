@@ -319,3 +319,27 @@ function IsAggiornato() {
 		}
 	});
 }
+
+function set_background_with_average_rgb(src) {
+	var canvas = document.createElement('canvas');
+	var context = canvas.getContext('2d');
+	var img = new Image();
+
+	// Setto crossOrigin per evitare problemi di CORS su immagini da domini esterni.
+	img.crossOrigin = 'Anonymous';
+
+	img.onload = function () {
+		// Disegno l'immagine nel canvas. La dimensione 1x1 è sufficiente per il calcolo medio del colore.
+		context.drawImage(img, 0, 0, 1, 1);
+		var data = context.getImageData(0, 0, 1, 1).data;
+
+		// Calcolo il colore medio e lo imposto come sfondo della pagina.
+		var colorStr = 'rgb(' + data[0] + ',' + data[1] + ',' + data[2] + ')';
+		document.body.style.backgroundColor = colorStr;
+	};
+
+	img.onerror = function () {
+	};
+
+	img.src = src;
+}

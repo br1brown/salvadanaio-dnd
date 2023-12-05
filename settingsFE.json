@@ -5,5 +5,5 @@
     "eliminaPersonaggio": false,
     "debiti": true,
     "inventario": true,
-    "propic": false
+    "propic": true
 }

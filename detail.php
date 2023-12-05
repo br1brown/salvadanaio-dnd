@@ -75,6 +75,7 @@ $title = "Salvadanaio Singolo";
 				} else {
 					$("#lbldel").html("Eliminare " + response.name);
 					document.title = "Portafoglio di " + response.name;
+					set_background_with_average_rgb(response.imgPath)
 					$.ajax({
 						url: getTemplateUrl("detail"),
 						type: 'POST',
