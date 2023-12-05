@@ -43,13 +43,10 @@ $codes = array(
 );
 
 ?>
-<head>
-	<title>Errore</title>
-	<?php include('header.php'); ?>
-</head>
-<body>
-	<canvas id="smoke-effect-canvas"
-		style="width:100%; height:100%; position: fixed;top: 0; left: 0; z-index: -100;"></canvas>
+<?php 
+$title = "Errore";
+?>
+<?php include('TopPage.php'); ?>
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 col-md-2">
