@@ -1,4 +1,5 @@
 <?php
+$ultimo_errore = "";
 function callApiEndpoint($urlAPI, $path) {
     $url = rtrim($urlAPI, '/') . '/' . ltrim($path, '/');
 
@@ -6,14 +7,17 @@ function callApiEndpoint($urlAPI, $path) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     if (curl_errno($ch)) {
+		$ultimo_errore = curl_error($ch);
         return null;
     }
 
     curl_close($ch);
     $oggetto = json_decode($response, true);
 
-	if (isset($oggetto['status']) && $oggetto['status'] === 'error') 
+	if (isset($oggetto['status']) && $oggetto['status'] === 'error') {
+		$ultimo_errore = $oggetto['message'];
 		return null;
+	}
 	return $oggetto;
 }
 
@@ -70,7 +74,7 @@ function callApiEndpoint($urlAPI, $path) {
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	
 	
-	<link rel="icon" type="image/png" href="asset/favicon.png">
+	<link rel="icon" type="image/png" href="<?= $favIcon?>">
 
 	<!-- ROBE PER IL MENU + SOCIAL anche quella prima per delle altre icone -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -95,6 +99,8 @@ function callApiEndpoint($urlAPI, $path) {
 	<link rel="stylesheet" href="style/manage_img.css">
 	<link rel="stylesheet" href="style/social.css">
 	<script src="script/base.js"></script>
+	<!-- SFONDO CON LE NUVOLE -->
+	<script src="script/jquery_bloodforge_smoke_effect.js"></script>
 </head>
 <script>
 	const APIEndPoint = '<?= $urlAPI ?>';
@@ -103,6 +109,17 @@ function callApiEndpoint($urlAPI, $path) {
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
 	<i class="fas fa-chevron-up"></i>
 </a>
+<?php if (isset($smoke) && $smoke["enable"]) : ?>
+<canvas id="smoke-effect-canvas" 
+        data-color="<?= $smoke['color'] ?>" 
+        data-opacity="<?= $smoke['opacity'] ?>" 
+        data-maximumVelocity="<?= $smoke['maximumVelocity'] ?>" 
+        data-particleRadius="<?= $smoke['particleRadius'] ?>" 
+        data-density="<?= $smoke['density'] ?>"
+        style="width:100%; height:100%; position: fixed; top: 0; left: 0; z-index: -100;">
+</canvas>
+<?php endif; ?>
+
 <?php if (isset($itemsMenu)) : ?>
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">

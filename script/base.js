@@ -27,6 +27,17 @@ $(document).ready(function () {
 		}, 400);
 		return false;
 	});
+
+	var fumo = $('#smoke-effect-canvas');
+	fumo.SmokeEffect({
+		color: fumo.data('color'),
+		opacity: fumo.data('opacity'),
+		maximumVelocity: fumo.data('maximumVelocity'),
+		particleRadius: fumo.data('particleRadius'),
+		density: fumo.data('density')
+	});
+
+
 });
 
 function handleError(xhr, status, error) {

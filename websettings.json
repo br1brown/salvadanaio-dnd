@@ -2,8 +2,17 @@
     "AppName": "Template",
     "description": "Descrizione",
     "keywords": "xxx,xxxx",
+    "favIcon": "asset/favicon.png",
     "APIEndPoint": "API",
     "footer": true,
+    "smoke": {
+        "enable": true,
+        "color": "#AFFFFF",
+        "opacity": 0.4,
+        "maximumVelocity": 100,
+        "particleRadius": 250,
+        "density": 5
+    },
     "itemsMenu": [
         {
             "nome": "Social",
