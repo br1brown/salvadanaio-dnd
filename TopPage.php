@@ -6,11 +6,15 @@ function callApiEndpoint($urlAPI, $path) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     if (curl_errno($ch)) {
-        throw new Exception(curl_error($ch));
+        return null;
     }
 
     curl_close($ch);
-    return json_decode($response, true);
+    $oggetto = json_decode($response, true);
+
+	if (isset($oggetto['status']) && $oggetto['status'] === 'error') 
+		return null;
+	return $oggetto;
 }
 
 ?>
@@ -24,7 +28,6 @@ function callApiEndpoint($urlAPI, $path) {
 			${$key} = $value;
 		}
 
-	// Controlla se $APIEndPoint inizia con 'http://' o 'https://'
 	if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
 		$urlAPI = $APIEndPoint;
 	} else {
@@ -34,7 +37,7 @@ function callApiEndpoint($urlAPI, $path) {
 
 	$irl = callApiEndpoint($urlAPI,"/anagrafica");
 
-	?>
+?>
 	<title><?php echo $title ?></title>
 
 	<meta charset="UTF-8">
