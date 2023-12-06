@@ -1,12 +1,15 @@
 <?php 
 $title = "Index";
+$rowsToShow = 3;
 
-include('TopPage.php'); ?>
+include('TopPage.php');
+$animali = callApiEndpoint($urlAPI,"animali");
+?>
 
 <div class="container-fluid">
 		<div class="row">
 			<div class="col-12 text-center text-light">
-				<h1 class=zoomma><b>Sono io</b></h1>
+				<h1><b>Sono io</b></h1>
 				<i>Performed by Br1Brown</i>
 			</div>
 		</div>
@@ -21,10 +24,10 @@ include('TopPage.php'); ?>
 		            </div>
 		            <div class="col-xs-8 col-sm-8 col-md-8">
 		                <!-- https://getbootstrap.com/docs/4.0/components/buttons/ -->
-		                <input type="button" data-type="success" id=success class="bottone btn btn-success btn-lg" value="SUCCESS">
-		                <input type="button" data-type="error" id=danger class="bottone btn btn-danger btn-lg" value="DANGER"><br>
-		                <input type="button" data-type="warning" id=warning class="bottone btn btn-warning btn-sm" value="WARNING">
-		                <input type="button" data-type="info" id=info class="bottone btn btn-info btn-sm" value="INFO">
+		                <input type="button" data-type="success" id=success class="zoomma bottone btn btn-success btn-lg" value="SUCCESS">
+		                <input type="button" data-type="error" id=danger class="zoomma bottone btn btn-danger btn-lg" value="DANGER"><br>
+		                <input type="button" data-type="warning" id=warning class="zoomma bottone btn btn-warning btn-sm" value="WARNING">
+		                <input type="button" data-type="info" id=info class="zoomma bottone btn btn-info btn-sm" value="INFO">
 		            </div>
 		        </div>
 		        <div class="row">
@@ -48,9 +51,9 @@ include('TopPage.php'); ?>
 			        <div class="card">
 			            <img src="https://via.placeholder.com/500/D3D3D3" class="card-img-top" alt="Immagine Card">
 			            <div class="card-body">
-			                <h5 class="card-title">Titolo Card</h5>
+			                <h5 class="card-title ">Titolo Card</h5>
 			                <p class="card-text">Testo breve per descrivere il contenuto della card.</p>
-			                <a class="bottone btn btn-primary">Vai da qualche parte</a>
+			                <a class="bottone btn btn-primary">Vai da qualche parte?</a>
 			            </div>
 			        </div>
 			    </div>
@@ -75,17 +78,29 @@ include('TopPage.php'); ?>
 			        </div>
 			    </div>
 			</div>
-			<div class="row">
-			    <div class="col">
-			        <ul class="list-group">
-			            <li class="list-group-item bg-transparent"><strong>Elefante -</strong> Un simpatico gigante grigio con le orecchie più grandi di una pala da neve e un naso così lungo che potrebbe essere usato come aspirapolvere.</li>
-			            <li class="list-group-item bg-transparent"><strong>Pinguino -</strong> Un buttafuori in frac, sembra sempre vestito per un gala, ma sembra avere dimenticato come si cammina senza sembrare ubriaco.</li>
-			            <li class="list-group-item bg-transparent"><strong>Giraffa -</strong> Un creatore di tendenze per le acconciature, con un collo così lungo da poter sbirciare i segreti della luna. Ha anche delle antenne sulla testa che usano per... beh, nessuno lo sa veramente.</li>
-			            <li class="list-group-item bg-transparent"><strong>Istrice -</strong> Un adorabile pungolo ambulante che porta sempre con sé i suoi aculei, nel caso dovesse improvvisare una partita di freccette.</li>
-			            <li class="list-group-item bg-transparent"><strong>Fenicottero -</strong> Un modello da passerella rosa su una gamba sola. Potrebbe sembrare che sia sempre sul punto di cadere, ma è solo il suo modo di divertirsi.</li>
-			        </ul>
-			    </div>
-			</div>
+			<?php if (isset($animali)) : ?>
+				<div class="row">
+					<div class="col">
+
+						<ul class="list-group">
+						<?php
+						foreach ($animali as $index => $animale) {
+
+							$hiddenClass = ($index >= $rowsToShow) ? 'hidden' : '';
+
+							echo '<li class="list-group-item bg-transparent'.$hiddenClass.'"><strong>' . $animale['nome'] . ' -</strong> ' . $animale['descrizione'] . '</li>';
+						}
+						?>
+						</ul>
+
+					<?php if (count($animali) > $rowsToShow ) : ?>
+						<div class="col-12 text-center">
+						<button id="loadMore" class="btn btn-outline-light"><i class="fa fa-solid fa-arrow-down"></i> Carica più</button>
+						</div>
+					<?php endif; ?>
+					</div>
+				</div>
+			<?php endif; ?>
 			
 		</div>
 		</div>
@@ -96,6 +111,26 @@ include('TopPage.php'); ?>
 <script>
 	
 	$(document).ready(function () {
+		const rowsToShow = <?php echo $rowsToShow; ?>;
+		let startIndex = rowsToShow; // Inizia dal sesto elemento poiché i primi 5 sono già visibili
+
+
+		// Nasconde tutte le righe che hanno la classe 'hidden'
+		$('li.hidden').hide();
+
+		$('#loadMore').click(function() {
+			// Mostra le prossime 5 righe
+			$('li.hidden').slice(0, rowsToShow).removeClass('hidden').fadeIn();
+        	startIndex += rowsToShow;
+
+			// Se non ci sono più righe da mostrare, nascondi il pulsante
+			if ($('li.hidden').length === 0) {
+				$('#loadMore').hide();
+			}
+		});
+
+
+
 	 $.ajax({
 		url: getApiUrl("anagrafica"),
 		type: 'GET',
