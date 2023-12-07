@@ -88,7 +88,7 @@ $animali = callApiEndpoint($urlAPI,"animali");
 
 							$hiddenClass = ($index >= $rowsToShow) ? 'hidden' : '';
 
-							echo '<li class="list-group-item bg-transparent'.$hiddenClass.'"><strong>' . $animale['nome'] . ' -</strong> ' . $animale['descrizione'] . '</li>';
+							echo '<li class="list-group-item bg-transparent '.$hiddenClass.'"><strong>' . $animale['nome'] . ' -</strong> ' . $animale['descrizione'] . '</li>';
 						}
 						?>
 						</ul>
@@ -119,7 +119,7 @@ $animali = callApiEndpoint($urlAPI,"animali");
 		$('li.hidden').hide();
 
 		$('#loadMore').click(function() {
-			// Mostra le prossime 5 righe
+			// Mostra le prossime n righe
 			$('li.hidden').slice(0, rowsToShow).removeClass('hidden').fadeIn();
         	startIndex += rowsToShow;
 
