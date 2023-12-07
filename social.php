@@ -64,14 +64,7 @@ $social = callApiEndpoint($urlAPI,"social");
 <script>
 	
 	$(document).ready(function () {
-	// $.ajax({
-		// url: getTemplateUrl("XXXX"),
-		// type: 'POST',
-		// dataType: 'json',
-		// data: { name: "aa" },
-		// success: genericSuccess,
-		// error: handleError
-		// });
+
 	});
 </script>
 

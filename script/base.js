@@ -44,18 +44,20 @@ function handleError(xhr, status, error) {
 	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
 }
 
-function genericSuccess(response) {
+function genericSuccess(response, callback) {
 	if (response.status === 'success') {
 		SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
-			if (window.ReloadAfterSuccess) {
-				ReloadAfterSuccess()
-			}
-			else {
-				location.reload();
+			if (typeof callback === "function") {
+				callback()
 			}
 		});
-	} else {
+	} else if (response.status === 'error') {
 		SweetAlert.fire('Errore', response.message, 'error');
+	}
+	else {
+		if (typeof callback === "function") {
+			callback(response)
+		}
 	}
 }
 

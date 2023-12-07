@@ -44,19 +44,20 @@ include('TopPage.php');
 
 <script>
 	
+
+
 	$(document).ready(function () {
-		const rowsToShow = <?php echo $rowsToShow; ?>;
-		let startIndex = rowsToShow; // Inizia dal sesto elemento poiché i primi 5 sono già visibili
 
 	 $.ajax({
-		url: getApiUrl("anagrafica"),
+		url: getApiUrl("social"),
 		type: 'GET',
 		dataType: 'json',
-		// data: { name: "aa" },
-		// success: genericSuccess,
-		success: function (a){
-			debugger;
+		success: function (response){
+			genericSuccess(response, function (response){
+				debugger;
+			})
 		},
+		//success: genericSuccess,
 		error: handleError
 		});
 	});
