@@ -1,9 +1,6 @@
 <?php 
 $title = "Index";
-$rowsToShow = 3;
-
 include('TopPage.php');
-$animali = callApiEndpoint($urlAPI,"animali");
 ?>
 
 <div class="container-fluid">
@@ -41,69 +38,6 @@ $animali = callApiEndpoint($urlAPI,"animali");
 		        </div>
 		    </div>
 		</div>
-		
-
-		<br>
-		<div class="row">
-		<div class="col-12 offset-md-2 col-md-8 text-center shadow rounded tutto">
-			<div class="row">
-			    <div class="col">
-			        <div class="card">
-			            <img src="https://via.placeholder.com/500/D3D3D3" class="card-img-top" alt="Immagine Card">
-			            <div class="card-body">
-			                <h5 class="card-title ">Titolo Card</h5>
-			                <p class="card-text">Testo breve per descrivere il contenuto della card.</p>
-			                <a class="bottone btn btn-primary">Vai da qualche parte?</a>
-			            </div>
-			        </div>
-			    </div>
-			    <div class="col">
-			        <div class="card">
-			            <img src="https://via.placeholder.com/450/D3D3D3" class="card-img-top" alt="Immagine Card">
-			            <div class="card-body">
-			                <h5 class="card-title">Titolo Card</h5>
-			                <p class="card-text">Testo breve per descrivere il contenuto della card.</p>
-			                <a class="bottone btn btn-primary">Vai da qualche parte</a>
-			            </div>
-			        </div>
-			    </div>
-			    <div class="col">
-			        <div class="card">
-			            <img src="https://via.placeholder.com/350/D3D3D3" class="card-img-top" alt="Immagine Card">
-			            <div class="card-body">
-			                <h5 class="card-title">Titolo Card</h5>
-			                <p class="card-text">Testo breve per descrivere il contenuto della card.</p>
-			                <a class="bottone btn btn-primary">Vai da qualche parte</a>
-			            </div>
-			        </div>
-			    </div>
-			</div>
-			<?php if (isset($animali)) : ?>
-				<div class="row">
-					<div class="col">
-
-						<ul class="list-group">
-						<?php
-						foreach ($animali as $index => $animale) {
-
-							$hiddenClass = ($index >= $rowsToShow) ? 'hidden' : '';
-
-							echo '<li class="list-group-item bg-transparent '.$hiddenClass.'"><strong>' . $animale['nome'] . ' -</strong> ' . $animale['descrizione'] . '</li>';
-						}
-						?>
-						</ul>
-
-					<?php if (count($animali) > $rowsToShow ) : ?>
-						<div class="col-12 text-center">
-						<button id="loadMore" class="btn btn-outline-light"><i class="fa fa-solid fa-arrow-down"></i> Carica più</button>
-						</div>
-					<?php endif; ?>
-					</div>
-				</div>
-			<?php endif; ?>
-			
-		</div>
-		</div>
 </div>
 
 <?php include('BottomPage.php'); ?>
@@ -113,23 +47,6 @@ $animali = callApiEndpoint($urlAPI,"animali");
 	$(document).ready(function () {
 		const rowsToShow = <?php echo $rowsToShow; ?>;
 		let startIndex = rowsToShow; // Inizia dal sesto elemento poiché i primi 5 sono già visibili
-
-
-		// Nasconde tutte le righe che hanno la classe 'hidden'
-		$('li.hidden').hide();
-
-		$('#loadMore').click(function() {
-			// Mostra le prossime n righe
-			$('li.hidden').slice(0, rowsToShow).removeClass('hidden').fadeIn();
-        	startIndex += rowsToShow;
-
-			// Se non ci sono più righe da mostrare, nascondi il pulsante
-			if ($('li.hidden').length === 0) {
-				$('#loadMore').hide();
-			}
-		});
-
-
 
 	 $.ajax({
 		url: getApiUrl("anagrafica"),
