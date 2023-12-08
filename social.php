@@ -1,7 +1,10 @@
 <?php 
 $title = "Social";
 include('TopPage.php');
+try {
 $social = callApiEndpoint($urlAPI,"social");
+} catch (Exception $e){
+}
 ?>
 
 <div class="container-fluid">
@@ -14,8 +17,8 @@ $social = callApiEndpoint($urlAPI,"social");
 			<a title=Mail><i class="muovi social-icon fa fa-envelope fa-mail"></i></a>
 			<a title="Pdf"><i class="muovi social-icon fas fa-file-pdf fa-pdf"></i></a>
 			<a title="Bell"><i class="muovi social-icon fas fa-bell"></i></a>
-			<?php if (isset($social)) : ?>
 			<hr>
+			<?php if (isset($social)) : ?>
 			<a href=<?=$social['telegram']?> target=_blank title="Telegram"><i class="social-icon fab fa-telegram"></i></a>
 			<a href=<?=$social['whatsapp']?> target=_blank title="Whatsapp"><i class="social-icon fab fa-whatsapp"></i></a>
 			<a href=<?=$social['skype']?> target=_blank title="Skype"><i class="social-icon fab fa-skype"></i></a>
@@ -52,7 +55,8 @@ $social = callApiEndpoint($urlAPI,"social");
 			<a href=<?=$social['playstation']?> target=_blank title="Playstation"><i class="social-icon fab fa-playstation"></i></a>
 			<a href=<?=$social['amazon']?> target=_blank title="Amazon"><i class="social-icon fab fa-amazon"></i></a>
 			<a href=<?=$social['airbnb']?> target=_blank title="Airbnb"><i class="social-icon fab fa-airbnb"></i></a>
-			<hr>
+			<?php else:?>
+			<p>Altri valori non trovati</p>
 			<?php endif; ?>
 
 		</div>
