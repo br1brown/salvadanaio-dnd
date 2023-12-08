@@ -1,48 +1,30 @@
 <?php
+require_once __DIR__.'/BLL/Repository.php';
+require_once __DIR__.'/BLL/Response.php';
 
-function findAPIPath($dir = __DIR__) {
-    $path = $dir . '/API/';
+use BLL\Response as response;
+use BLL\Repository as repository;
 
-    if (file_exists($path)) {
-        return $path;
-    } elseif ($dir === dirname($dir)) { // Se raggiungiamo la root senza trovare /API
-        return null;
-    } else {
-        return findAPIPath(dirname($dir)); // Cerca nella directory padre
-    }
-}
+/**
+ * Ottiene un oggetto e lo restituisce, eventualmente dopo aver applicato una callback.
+ * 
+ * @param string $nome Nome dell'oggetto da ottenere.
+ * @param callable|null $callback Funzione di callback da applicare ai dati.
+ * @return string Risposta JSON con i dati ottenuti o un messaggio di errore.
+ */
+function Echo_getObj($nome, $callback = null){
+    $ciLavoro = is_callable($callback);
+    try {
+        $jsonData = repository::getObj($nome, $ciLavoro);
 
-
-
-
-function getEncodeObj($nome, $callback = null){
-    $filePath = findAPIPath().'data/'.$nome.'.json';
-
-    if (file_exists($filePath) && is_readable($filePath)) {
-        $fileContent = file_get_contents($filePath);
-
-        $jsonData = json_decode($fileContent, true);
-            
-        if ($jsonData === null) {
-            return retError("Errore nella decodifica");
-        } else {
-            if (is_callable($callback)) {
-                $jsonData = $callback($jsonData);
-            }
-            return json_encode($jsonData);
+        if ($ciLavoro) {
+            $jsonData = json_encode($callback($jsonData));
         }
-    } else {
-        return retError("Impossibile leggere le informazioni ".$nome);
+
+    } catch(Exception $e) {
+        return response::retError($e->getMessage());
     }
-
-}
-
-function retError($stringa){
-    return json_encode(['status' => 'error', 'message' => $stringa]);
-}
-
-function retOK($stringa){
-    return json_encode(['status' => 'success', 'message' => $stringa]);
+    return $jsonData;
 }
 
 ?>

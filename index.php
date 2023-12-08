@@ -49,14 +49,16 @@ include('TopPage.php');
 	$(document).ready(function () {
 
 	 $.ajax({
-		url: getApiUrl("social"),
+		url: getApiUrl("social",{ nomi : "Facebook;twitter;Telegram"}),
 		type: 'GET',
 		dataType: 'json',
+		//così si prendono i dati
 		success: function (response){
 			genericSuccess(response, function (response){
 				debugger;
 			})
 		},
+		//così si gestisce il retOk e il retErr delle API
 		//success: genericSuccess,
 		error: handleError
 		});

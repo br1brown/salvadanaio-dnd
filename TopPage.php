@@ -1,26 +1,23 @@
 <?php
-$ultimo_errore = "";
 function callApiEndpoint($urlAPI, $path) {
     $url = rtrim($urlAPI, '/') . '/' . ltrim($path, '/');
-
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
+
     if (curl_errno($ch)) {
-		$ultimo_errore = curl_error($ch);
-        return null;
+        throw new Exception("Errore EndPoint: " . curl_error($ch));
     }
 
     curl_close($ch);
     $oggetto = json_decode($response, true);
 
-	if (isset($oggetto['status']) && $oggetto['status'] === 'error') {
-		$ultimo_errore = $oggetto['message'];
-		return null;
-	}
-	return $oggetto;
-}
+    if (isset($oggetto['status']) && $oggetto['status'] === 'error') {
+        throw new Exception("Errore API: " . $oggetto['message']);
+    }
 
+    return $oggetto;
+}
 ?>
 
 <!doctype html>
@@ -38,9 +35,10 @@ function callApiEndpoint($urlAPI, $path) {
 		$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 		$urlAPI =  $baseUrl.dirname($_SERVER['PHP_SELF'])."/".$APIEndPoint;
 	}
-
-	$irl = callApiEndpoint($urlAPI,"/anagrafica");
-
+	try{
+		$irl = callApiEndpoint($urlAPI,"anagrafica");
+	} catch (Exception $e){
+	}
 ?>
 	<title><?php echo $title ?></title>
 
@@ -118,9 +116,9 @@ function callApiEndpoint($urlAPI, $path) {
         data-density="<?= $smoke['density'] ?>"
         style="width:100%; height:100%; position: fixed; top: 0; left: 0; z-index: -100;">
 </canvas>
-<?php endif; ?>
-
-<?php if (isset($itemsMenu)) : ?>
+<?php endif; 
+//se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
+if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>
