@@ -18,6 +18,16 @@ function callApiEndpoint($urlAPI, $path) {
 
     return $oggetto;
 }
+
+
+function pathSRC($urlAPI, $path) {
+	if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
+		return $path;
+	} else {
+		$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+		return $urlAPI."/".$path;
+	}
+}
 ?>
 
 <!doctype html>
@@ -35,10 +45,8 @@ function callApiEndpoint($urlAPI, $path) {
 		$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 		$urlAPI =  $baseUrl.dirname($_SERVER['PHP_SELF'])."/".$APIEndPoint;
 	}
-	try{
-		$irl = callApiEndpoint($urlAPI,"anagrafica");
-	} catch (Exception $e){
-	}
+
+	$irl = callApiEndpoint($urlAPI,"/anagrafica");
 ?>
 	<title><?php echo $title ?></title>
 

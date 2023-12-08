@@ -28,12 +28,26 @@ class Repository {
      * Ottiene il nome del file JSON partendo da un nome base.
      * 
      * @param string $nome Nome base per il file.
-     * @return string Percorso completo del file JSON.
+     * @param string $ext estensione per il file, sempre .
+     * @return string Percorso completo del file json.
      */
-    private static function getFileName(string $nome): string{
-        return self::findAPIPath() . 'data/' . $nome . '.json';
+    private static function getFileName(string $nome, string $ext = "json"): string{
+        return self::findAPIPath() . 'data/' . $nome . '.'.$ext;
     }
 
+    /**
+     * Ottiene il file
+     * 
+     * @param string $filePath Nome per il file.
+     * @return string Contenuto completo del file
+     */
+    private static function getFileContent(string $filePath): string{
+        if (file_exists($filePath) && is_readable($filePath)) {
+            return file_get_contents($filePath);
+        } else {
+            throw new NotFoundException($nome);
+        }
+    }
     /**
      * Ottiene un oggetto da un file JSON. Se 'decodeInData' è vero, decodifica il contenuto del file.
      * 
@@ -43,26 +57,30 @@ class Repository {
      * @throws Exception Se il file non può essere letto o se la decodifica JSON fallisce.
      */
     public static function getObj(string $nome, bool $decodeInData = true): mixed{
-        $filePath = self::getFileName($nome);
+        $fileContent = self::getFileContent (self::getFileName($nome));
+        if ($decodeInData) {
+            $jsonData = json_decode($fileContent, true);
 
-        if (file_exists($filePath) && is_readable($filePath)) {
-            $fileContent = file_get_contents($filePath);
-            
-            if ($decodeInData) {
-                $jsonData = json_decode($fileContent, true);
-
-                if ($jsonData === null) {
-                    throw new DecodingException();
-                } else {
-                    return $jsonData;
-                }
+            if ($jsonData === null) {
+                throw new DecodingException();
             } else {
-                return $fileContent;
+                return $jsonData;
             }
-
         } else {
-            throw new NotFoundException($nome);
+            return $fileContent;
         }
+    }
+
+    /**
+     * Ottiene un oggetto da un file JSON. Se 'decodeInData' è vero, decodifica il contenuto del file.
+     * 
+     * @param string $nome Nome base per la stringa.
+     * @return mixed contenuto del file.
+     * @throws Exception Se il file non può essere letto o se la decodifica JSON fallisce.
+     */
+    public static function getTxt(string $nome): mixed{
+        $filePath = self::getFileName($nome,"txt");
+        return self::getFileContent ($filePath);
     }
 
     /**
