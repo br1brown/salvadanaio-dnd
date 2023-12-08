@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
+
 function callApiEndpoint($urlAPI, $path) {
     $url = rtrim($urlAPI, '/') . '/' . ltrim($path, '/');
     $ch = curl_init($url);
