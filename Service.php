@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
 class Service {
 
     /**
@@ -12,6 +11,7 @@ class Service {
      * @return Parsedown Il parser.
      */
     public function getparser() : Parsedown {
+        require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
         if (!isset($this->Parser))
           $this->Parser =   (new Parsedown());
         return $this->Parser;
