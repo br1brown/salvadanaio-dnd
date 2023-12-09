@@ -2,7 +2,7 @@
 $title = "Social";
 include('TopPage.php');
 try {
-$social = callApiEndpoint($urlAPI,"social");
+$social = $service->callApiEndpoint("social");
 } catch (Exception $e){
 }
 ?>

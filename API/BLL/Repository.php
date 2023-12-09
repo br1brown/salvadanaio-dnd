@@ -45,7 +45,7 @@ class Repository {
         if (file_exists($filePath) && is_readable($filePath)) {
             return file_get_contents($filePath);
         } else {
-            throw new NotFoundException($nome);
+            throw new NotFoundException(pathinfo(($filePath), PATHINFO_FILENAME));
         }
     }
     /**

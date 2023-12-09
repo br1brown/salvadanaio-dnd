@@ -1,54 +1,20 @@
 <?php
 require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
-
-function callApiEndpoint($urlAPI, $path) {
-    $url = rtrim($urlAPI, '/') . '/' . ltrim($path, '/');
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
-        throw new Exception("Errore EndPoint: " . curl_error($ch));
-    }
-
-    curl_close($ch);
-    $oggetto = json_decode($response, true);
-
-    if (isset($oggetto['status']) && $oggetto['status'] === 'error') {
-        throw new Exception("Errore API: " . $oggetto['message']);
-    }
-
-    return $oggetto;
-}
-
-
-function pathSRC($urlAPI, $path) {
-	if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
-		return $path;
-	} else {
-		$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-		return $urlAPI."/".$path;
+require_once __DIR__.'/Service.php';
+$service = new Service();
+$settings = $service->getSettings();
+foreach ($settings as $key => $value) {
+		${$key} = $value;
 	}
-}
+try {
+$irl = $service->callApiEndpoint("/anagrafica");
+} catch (Exception $e) {}
 ?>
 
 <!doctype html>
 <html lang="it">
 <head>
 	<?php
-	$settings = json_decode(file_get_contents('websettings.json'), true);
-	foreach ($settings as $key => $value) {
-			${$key} = $value;
-		}
-
-	if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
-		$urlAPI = $APIEndPoint;
-	} else {
-		$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-		$urlAPI =  $baseUrl.dirname($_SERVER['PHP_SELF'])."/".$APIEndPoint;
-	}
-
-	$irl = callApiEndpoint($urlAPI,"/anagrafica");
 ?>
 	<title><?php echo $title ?></title>
 
@@ -111,7 +77,7 @@ function pathSRC($urlAPI, $path) {
 	<script src="script/jquery_bloodforge_smoke_effect.js"></script>
 </head>
 <script>
-	const APIEndPoint = '<?= $urlAPI ?>';
+	const APIEndPoint = '<?= $service->urlAPI ?>';
 	</script>
 <body>	
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
