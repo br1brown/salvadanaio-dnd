@@ -1,10 +1,12 @@
 {
-    "AppName": "Template",
-    "description": "Descrizione",
-    "keywords": "xxx,xxxx",
-    "favIcon": "asset/favicon.png",
-    "APIEndPoint": "API",
-    "footer": true,
+    "meta": {
+        "MobileFriendly": true,
+        "mobileOptimizationWidth": 320,
+        "refreshIntervalInSeconds": 900,
+        "androidThemeColor": "black",
+        "iOSStatusBarStyle": "white",
+        "iOSFullScreenWebApp": true
+    },
     "smoke": {
         "enable": true,
         "color": "#AFFFFF",
@@ -13,6 +15,15 @@
         "particleRadius": 250,
         "density": 5
     },
+    "AppName": "Template",
+    "description": "Descrizione",
+    "keywords": [
+        "xxx",
+        "xxxx"
+    ],
+    "favIcon": "asset/favicon.png",
+    "APIEndPoint": "API",
+    "footer": true,
     "itemsMenu": [
         {
             "nome": "Social",

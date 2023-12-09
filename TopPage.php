@@ -3,8 +3,9 @@ require_once __DIR__.'/Service.php';
 $service = new Service();
 $settings = $service->getSettings();
 foreach ($settings as $key => $value) {
-		${$key} = $value;
-	}
+	${$key} = $value;
+}
+
 try {
 $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
@@ -21,33 +22,33 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 	
 	<meta name="description" content="<?= $description ?>">
-	<meta name="keywords" content="<?= $keywords ?>">
+	<meta name="keywords" content="<?= $meta['keywords'] ?>">
 	
 	<meta name="author" content="Br1Brown">
 	
 	<meta name="robots" content="index, follow">
 	<link rel="manifest" href="site.webmanifest">
 	
-	<meta name="HandheldFriendly" content="True">
-	<meta name="MobileOptimized" content="320">
+	<meta name="HandheldFriendly" content="<?= $meta['MobileFriendly']? "true":"false" ?>">
+	<meta name="MobileOptimized" content="<?= $meta['mobileOptimizationWidth'] ?>">
 	
 	<!-- Indica la frequenza con cui la pagina dovrebbe essere aggiornata -->
-	<meta http-equiv="refresh" content="900">
+	<meta http-equiv="refresh" content="<?= $meta['refreshIntervalInSeconds'] ?>">
 	
 	<!-- Colore tematico per il browser sui dispositivi Android -->
-	<meta name="theme-color" content="black" />
+	<meta name="theme-color" content="<?= $meta['androidThemeColor'] ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="white">
+	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $meta['iOSStatusBarStyle'] ?>">
 	
 	<!-- Definizione del nome del sito web quando salvato come app web sui dispositivi mobili -->
 	<meta name="application-name" content="<?= $AppName ?>" />
 	<!-- Definisce il titolo dell'app web per iOS -->
 	<meta name="apple-mobile-web-app-title" content="<?= $AppName?>">
 	<!-- Permette al sito web di funzionare a schermo intero su Safari iOS, simile a un'applicazione nativa -->
-	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="<?= $meta['iOSFullScreenWebApp']?"yes":"no" ?>">
 	
 	
-	<link rel="icon" type="image/png" href="<?= $favIcon?>">
+	<link rel="icon" type="image/png" href="<?=$service->baseURL($favIcon)?>">
 
 	<!-- ROBE PER IL MENU + SOCIAL anche quella prima per delle altre icone -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -68,12 +69,12 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
 	<!-- ROBA NOSTRA -->
-	<link rel="stylesheet" href="style/base.css">
-	<link rel="stylesheet" href="style/manage_img.css">
-	<link rel="stylesheet" href="style/social.css">
-	<script src="script/base.js"></script>
+	<link rel="stylesheet" href="<?=$service->baseURL("style/base.css")?>">
+	<link rel="stylesheet" href="<?=$service->baseURL("style/manage_img.css")?>">
+	<link rel="stylesheet" href="<?=$service->baseURL("style/social.css")?>">
+	<script src="<?=$service->baseURL("script/base.js")?>"></script>
 	<!-- SFONDO CON LE NUVOLE -->
-	<script src="script/jquery_bloodforge_smoke_effect.js"></script>
+	<script src="<?=$service->baseURL("script/jquery_bloodforge_smoke_effect.js")?>"></script>
 </head>
 <script>
 	const APIEndPoint = '<?= $service->urlAPI ?>';
