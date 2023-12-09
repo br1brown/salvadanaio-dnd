@@ -11,7 +11,7 @@
 - Adatto sia a giocatori principianti che esperti di D&D.
 
 ## Inizio Rapido
-1. Clona il repository sul tuo server con PHP 7.
+1. Clona il repository sul tuo server con PHP 8.1.4 *Testato*.
 2. Configura i file `settingsFE.json` e `API/config.json` secondo le tue esigenze.
 3. Avvia il server e accedi all'applicazione via web browser.
 
