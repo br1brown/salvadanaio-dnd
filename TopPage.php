@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
 require_once __DIR__.'/Service.php';
 $service = new Service();
 $settings = $service->getSettings();
