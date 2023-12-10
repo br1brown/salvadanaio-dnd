@@ -62,8 +62,17 @@ class Service {
      */
   public function __construct()
   {
-      $this->baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]").dirname($_SERVER['PHP_SELF'])."/";
-      
+      // Controllo prima la variabile $_SERVER['HTTPS']
+      $protocol = 'http'; // Impostazione predefinita a 'http'
+      if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+          $protocol = 'https'; // Se 'HTTPS' è attivo, usa 'https'
+      } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+          $protocol = 'https'; // Se 'HTTP_X_FORWARDED_PROTO' è 'https', usa 'https'
+      }
+
+      // Costruzione dell'URL
+      $this->baseUrl = $protocol . "://$_SERVER[HTTP_HOST]" . dirname($_SERVER['PHP_SELF']) . "/";
+                          
       $this->settings = json_decode(file_get_contents('websettings.json'), true);
       
 
