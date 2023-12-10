@@ -1,4 +1,4 @@
 {
-    "applyCORS": true,
+    "applyCORS": false,
     "allowedOrigins": []
 }
