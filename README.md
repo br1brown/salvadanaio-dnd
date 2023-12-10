@@ -30,3 +30,6 @@ Il template è suddiviso in due componenti principali:
    - `template_php` mostra la struttura richiesta per le pagine del sito.
 
 
+### Esempi Pratici
+
+Per visualizzare un esempio pratico di come il template [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/).
