@@ -121,7 +121,7 @@ class Service {
   /**
    * @var bool controllo gli SSL dell' endpoint?
    */
-  public bool $CheckSSL = false;
+  public bool $CheckSSL = true;
 
   /**
    * Esegue una chiamata all'endpoint dell'API utilizzando il metodo HTTP specificato e restituisce la risposta.
