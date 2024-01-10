@@ -5,7 +5,7 @@
 		<?php if (isset($irl)) : ?>
 		<div class="row text-center">
 			<?php if (isset($irl['numeroWA'])) : ?>
-				<a class="col" href="https://wa.me/<?=str_replace(' ', '', $irl['numeroWA'])?>" target=_blank title=Whatsapp><i class="social-icon fab fa-whatsapp"> Whatsapp</i></a>
+				<a class="col" href onClick="openEncodedLink('https://wa.me/', '<?=$service->convertiInEntitaHTML(str_replace(' ', '', $irl['numeroWA']))?>')" target=_blank title=Whatsapp><i class="social-icon fab fa-whatsapp"> Whatsapp</i></a>
 			<?php endif; ?>
 			<?php if (isset($irl['ig'])) : ?>
 				<a class="col" href=<?=$irl['ig']?> target=_blank title=Instagram><i class="social-icon fab fa-instagram"> Instagram</i></a>
@@ -25,13 +25,13 @@
 				<li><?=$irl['indirizzoSedeLegale']?></li>
 			<?php endif; ?>
 			<?php if (isset($irl['numeroTelefono'])) : ?>
-				<li>Telefono: <a href="tel:<?=str_replace(' ', '', $irl['numeroTelefono'])?>"><?=$irl['numeroTelefono']?></a></li>
+				<li>Telefono: <a href onClick="openEncodedLink('tel:','<?=$service->convertiInEntitaHTML(str_replace(' ', '', $irl['numeroTelefono']))?>')"><?=$service->convertiInEntitaHTML($irl['numeroTelefono'])?></a></li>
 			<?php endif; ?>
 			<?php if (isset($irl['pec'])) : ?>
-				<li>PEC: <a href="mailto:<?=$irl['pec']?>"><?=$irl['pec']?></a></li>
+				<li>PEC: <a href onClick="openEncodedLink('mailto:', '<?=$service->convertiInEntitaHTML($irl['pec'])?>')"><?=$service->convertiInEntitaHTML($irl['pec'])?></a></li>
 			<?php endif; ?>
 			<?php if (isset($irl['mail'])) : ?>
-				<li>Mail: <a href="mailto:<?=$irl['mail']?>"><?=$irl['mail']?></a></li>
+				<li>Mail: <a href onClick="openEncodedLink('mailto:', '<?=$service->convertiInEntitaHTML($irl['mail'])?>')"><?=$service->convertiInEntitaHTML($irl['mail'])?></a></li>
 			<?php endif; ?>
 			</ul>
 		</div>

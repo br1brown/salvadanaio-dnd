@@ -40,6 +40,23 @@ $(document).ready(function () {
 
 });
 
+
+function openEncodedLink(prefix, encodedStr) {
+	//var parser = new DOMParser();
+	// var decodedString = parser.parseFromString("&#" + encodedStr + ";", "text/html").documentElement.textContent;
+	var decodedString = encodedStr; //pare che il browser faccia lui le cose
+
+	var url = "";
+	if (prefix) {
+		url = prefix + decodedString;
+	} else {
+		url = decodedString;
+	}
+	debugger;
+	window.location.href = url;
+}
+
+
 function handleError(xhr, status, error) {
 	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
 }

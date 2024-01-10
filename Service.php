@@ -247,5 +247,27 @@ class Service {
 
 }
 
+
+    /**
+     * Converte una stringa in entità HTML.
+     *
+     * Questa funzione prende una stringa come input e la converte
+     * in entità HTML, utilizzando il valore ASCII di ogni carattere
+     * della stringa per formare l'entità. Questo è utile per
+     * visualizzare i caratteri speciali in HTML.
+     *
+     * @param string $stringa La stringa da convertire in entità HTML.
+     * @return string La stringa convertita in entità HTML.
+     */
+    function convertiInEntitaHTML($stringa) {
+        $risultato = '';
+        $lunghezza = strlen($stringa);
+        for ($i = 0; $i < $lunghezza; $i++) {
+            $risultato .= '&#' . ord($stringa[$i]) . ';';
+        }
+        return $risultato;
+    }
+
+
 }
 ?>
