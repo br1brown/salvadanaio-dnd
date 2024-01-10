@@ -16,6 +16,14 @@ body {
 	display: none;
 }
 
+/* Stile aggiuntivo per l'overflow orizzontale */
+.horizontal-scroll {
+	overflow-x: auto;
+	white-space: nowrap;
+	display: flex;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+}
 
 .tutto {
 	background-color: rgba(255, 255, 255, 0.7);
@@ -34,14 +42,6 @@ body {
 .row {
 	padding: 0;
 	padding-top: 10px;
-}
-
-.zoomma {
-	transition: transform .2s;
-}
-
-.zoomma:hover {
-	transform: scale(1.5);
 }
 
 .piccolill {
@@ -70,5 +70,15 @@ body {
 	.container-fluid {
 		overflow-x: hidden;
 		/*io basito... perché scrolla?*/
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	.zoomma {
+		transition: transform .2s;
+	}
+
+	.zoomma:hover {
+		transform: scale(1.5);
 	}
 }

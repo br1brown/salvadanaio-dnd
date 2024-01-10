@@ -1,6 +1,7 @@
 :root {
 	--color-clone: black;
 	--color-cut: black;
+	--color-link: black;
 	--color-paste: black;
 	--color-download: black;
 	--color-mail: black;
@@ -20,7 +21,7 @@
 	--color-dribbble: #ea4c89;
 	--color-stumbleupon: #eb4924;
 	--color-spotify: #1DB954;
-	--color-deezer: black;
+	--color-deezer: #191919;
 	--color-itunes: #EA4CC0;
 	--color-soundcloud: #ff5500;
 	--color-amazon: #FF9900;
@@ -62,6 +63,10 @@
 	text-decoration: none;
 }
 
+.fa-link {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	background: var(--color-link);
+}
 
 .fa-clone {
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
