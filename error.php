@@ -157,7 +157,6 @@ $title = "Errore " . $code. " - ". $codes[$code]['title'];
 $forceMenu = false;
 ?>
 <?php include('TopPage.php'); ?>
-	<div class="container-fluid">
 		<div class="row">
 			<div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
 				<?php

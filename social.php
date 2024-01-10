@@ -6,8 +6,6 @@ $social = $service->callApiEndpoint("social");
 } catch (Exception $e){
 }
 ?>
-
-<div class="container-fluid">
 	<div class="row">
 		<div class="col-12 offset-md-1 col-md-10 text-center tutto">
 			<a title=Clone><i class="muovi social-icon fa fa-clone"></i></a>
@@ -61,7 +59,6 @@ $social = $service->callApiEndpoint("social");
 
 		</div>
 	</div>
-</div>
 
 <?php include('BottomPage.php'); ?>
 

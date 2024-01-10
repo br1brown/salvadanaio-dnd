@@ -2,8 +2,6 @@
 $title = "Index";
 include('TopPage.php');
 ?>
-
-<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 text-center text-light">
 				<h1><b>Sono io</b></h1>
@@ -38,7 +36,6 @@ include('TopPage.php');
 		        </div>
 		    </div>
 		</div>
-</div>
 
 <?php include('BottomPage.php'); ?>
 
