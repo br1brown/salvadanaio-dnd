@@ -1,3 +1,4 @@
+</div>
 <?php if (isset($footer) && $footer == true) : ?>
 <footer style="font-size: 0.8rem;" class="container-fluid bg-dark text-light mt-3">
 	<div class="container py-2">
@@ -28,6 +29,9 @@
 			<?php endif; ?>
 			<?php if (isset($irl['pec'])) : ?>
 				<li>PEC: <a href="mailto:<?=$irl['pec']?>"><?=$irl['pec']?></a></li>
+			<?php endif; ?>
+			<?php if (isset($irl['mail'])) : ?>
+				<li>Mail: <a href="mailto:<?=$irl['mail']?>"><?=$irl['mail']?></a></li>
 			<?php endif; ?>
 			</ul>
 		</div>

@@ -93,6 +93,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
         style="width:100%; height:100%; position: fixed; top: 0; left: 0; z-index: -100;">
 </canvas>
 <?php endif; 
+$forceMenu = false;
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
 
@@ -114,9 +115,6 @@ if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
   </div>
 </nav>
 <?php endif; ?>
-
-
-
-
+<div class="container-fluid">
 
 <!-- qui comincia l'html diverso per tutti -->

@@ -2,6 +2,11 @@
     Order Allow,Deny
     Deny from all
 </FilesMatch>
+<FilesMatch "^websettings.json$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
 RewriteRule ^parsedown-1\.7\.4/ - [F,L]
 
 
