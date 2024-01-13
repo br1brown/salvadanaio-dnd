@@ -52,53 +52,7 @@ function openEncodedLink(prefix, encodedStr) {
 	} else {
 		url = decodedString;
 	}
-	debugger;
 	window.location.href = url;
-}
-
-
-function handleError(xhr, status, error) {
-	SweetAlert.fire('Errore ' + xhr.status, xhr.responseText, 'error');
-}
-
-function genericSuccess(response, callback) {
-	if (response.status === 'success') {
-		SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
-			if (typeof callback === "function") {
-				callback()
-			}
-		});
-	} else if (response.status === 'error') {
-		SweetAlert.fire('Errore', response.message, 'error');
-	}
-	else {
-		if (typeof callback === "function") {
-			callback(response)
-		}
-	}
-}
-
-function getApiMethod(action, metod, params = null) {
-	return APIEndPoint + "/" + action + "/" + metod + MakeGetQueryString(params);
-}
-function getApiUrl(action, params = null) {
-	return APIEndPoint + "/" + action + MakeGetQueryString(params);
-}
-
-
-function MakeGetQueryString(parametri) {
-	var ret = '';
-	if (!parametri || Object.keys(parametri).length === 0)
-		ret = '';
-	else
-		ret = Object.keys(parametri)
-			.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(parametri[key])}`)
-			.join('&');
-
-	if (ret != '')
-		return "?" + ret;
-	return ret;
-
 }
 
 function set_background_with_average_rgb(src) {

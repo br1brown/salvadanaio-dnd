@@ -40,24 +40,10 @@ include('TopPage.php');
 <?php include('BottomPage.php'); ?>
 
 <script>
-	
-
-
 	$(document).ready(function () {
-
-	 $.ajax({
-		url: getApiUrl("social",{ nomi : "Facebook;twitter;Telegram"}),
-		type: 'GET',
-		dataType: 'json',
-		//così si prendono i dati
-		success: function (response){
-			genericSuccess(response, function (response){
-				debugger;
-			})
-		},
-		//così si gestisce il retOk e il retErr delle API
-		//success: genericSuccess,
-		error: handleError
+		apiCall("social",{ nomi : "Facebook;twitter;Telegram"},
+		function (response){
+			debugger;
 		});
 	});
 </script>

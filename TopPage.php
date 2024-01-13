@@ -73,11 +73,14 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<link rel="stylesheet" href="<?=$service->baseURL("style/manage_img.css")?>">
 	<link rel="stylesheet" href="<?=$service->baseURL("style/social.css")?>">
 	<script src="<?=$service->baseURL("script/base.js")?>"></script>
+	<script src="<?=$service->baseURL("script/mangeAPI.js")?>"></script>
+	<script src="<?=$service->baseURL("script/addon.js")?>"></script>
 	<!-- SFONDO CON LE NUVOLE -->
 	<script src="<?=$service->baseURL("script/jquery_bloodforge_smoke_effect.js")?>"></script>
 </head>
 <script>
 	const APIEndPoint = '<?= $service->urlAPI ?>';
+	const APIKey = '<?= $service->APIkey ?>';
 	</script>
 <body>	
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">

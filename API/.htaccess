@@ -6,6 +6,10 @@
     Order Allow,Deny
     Deny from all
 </FilesMatch>
+<FilesMatch "^APIKeys.txt$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
 
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -1,4 +1,18 @@
 <?php
+
+$headers = getallheaders();
+
+// Leggi il file delle parole segrete
+$paroleSegrete = file('APIKeys.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+// Controlla se l'header 'X-Api-Key' esiste e corrisponde a una delle parole segrete
+if (!isset($headers['X-Api-Key']) || !in_array($headers['X-Api-Key'], $paroleSegrete)) {
+    http_response_code(403); // Forbidden
+    exit;
+}
+
+
+
 // Gestione CORS
 $fileconfigCORS = "CORSconfig.json";
 if (file_exists($fileconfigCORS)){

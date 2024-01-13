@@ -52,6 +52,11 @@ class Service {
     public string $urlAPI;
 
     /**
+     * @var string Chiave dell'API di servizio
+     */
+    public string $APIkey;
+
+    /**
      * @var string URL dell'Host
      */
     private string $baseUrl;
@@ -88,6 +93,7 @@ class Service {
       } else {
           $this->urlAPI = $this->baseUrl.$APIEndPoint;
       }
+      $this->APIkey  = $this->settings['APIkey'];
   }
 
   /**
@@ -164,13 +170,16 @@ class Service {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     }
-    // header per la definizione del Content-Type
-    $header = ["Content-Type: $contentType"];
+    // Inizializza gli header con 'Content-Type' e 'X-Api-Key'
+    $header = [
+        "Content-Type: $contentType",
+        "X-Api-Key: " . $this->APIkey
+    ];
+
     // Aggiungi gli header personalizzati agli header di default
     $header = array_merge($header, $headerPersonalizzati);
     // Imposta gli header HTTP
     curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-
     // Imposta il metodo HTTP e i dati
     switch (strtoupper($metodo)) {
         case "POST":

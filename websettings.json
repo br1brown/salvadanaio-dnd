@@ -1,4 +1,6 @@
 {
+    "APIEndPoint": "API",
+    "APIkey": "frontend",
     "meta": {
         "MobileFriendly": true,
         "mobileOptimizationWidth": 320,
@@ -22,7 +24,6 @@
         "xxxx"
     ],
     "favIcon": "asset/favicon.png",
-    "APIEndPoint": "API",
     "footer": true,
     "itemsMenu": [
         {
