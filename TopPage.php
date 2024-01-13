@@ -72,6 +72,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<link rel="stylesheet" href="<?=$service->baseURL("style/base.css")?>">
 	<link rel="stylesheet" href="<?=$service->baseURL("style/manage_img.css")?>">
 	<link rel="stylesheet" href="<?=$service->baseURL("style/social.css")?>">
+	<link rel="stylesheet" href="<?=$service->baseURL("style/addon.css")?>">
 	<script src="<?=$service->baseURL("script/base.js")?>"></script>
 	<script src="<?=$service->baseURL("script/mangeAPI.js")?>"></script>
 	<script src="<?=$service->baseURL("script/addon.js")?>"></script>
