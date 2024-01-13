@@ -25,13 +25,13 @@
 				<li><?=$irl['indirizzoSedeLegale']?></li>
 			<?php endif; ?>
 			<?php if (isset($irl['numeroTelefono'])) : ?>
-				<li>Telefono: <a href onClick="openEncodedLink('tel:','<?=$service->convertiInEntitaHTML(str_replace(' ', '', $irl['numeroTelefono']))?>')"><?=$service->convertiInEntitaHTML($irl['numeroTelefono'])?></a></li>
+				<li>Telefono: <?=$service->creaLinkCodificato(str_replace(' ', '', $irl['numeroTelefono']), 'tel:')?></li>
 			<?php endif; ?>
 			<?php if (isset($irl['pec'])) : ?>
-				<li>PEC: <a href onClick="openEncodedLink('mailto:', '<?=$service->convertiInEntitaHTML($irl['pec'])?>')"><?=$service->convertiInEntitaHTML($irl['pec'])?></a></li>
+				<li>PEC: <?=$service->creaLinkCodificato($irl['pec'], 'mailto:')?></li>
 			<?php endif; ?>
 			<?php if (isset($irl['mail'])) : ?>
-				<li>Mail: <a href onClick="openEncodedLink('mailto:', '<?=$service->convertiInEntitaHTML($irl['mail'])?>')"><?=$service->convertiInEntitaHTML($irl['mail'])?></a></li>
+				<li>Mail: <?=$service->creaLinkCodificato($irl['mail'], 'mailto:')?></li>
 			<?php endif; ?>
 			</ul>
 		</div>

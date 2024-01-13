@@ -277,6 +277,29 @@ class Service {
         return $risultato;
     }
 
+    /**
+     * Crea un link HTML con l'URL codificato e attributi personalizzabili.
+     *
+     * Questa funzione genera un link HTML che, quando cliccato, attiva una funzione JavaScript
+     * 'openEncodedLink' con un prefisso e un URL codificato come parametri.
+     * Gli attributi aggiuntivi come class, target, title, rel, id, style, data-* e aria-*
+     * possono essere inclusi per personalizzare ulteriormente il link.
+     *
+     * @param string $url L'URL da includere nel link.
+     * @param string $prefisso Il prefisso da utilizzare (es: 'mailto:', 'tel:'). Se non specificato, non viene usato alcun prefisso.
+     * @param array $attributiExtra Un array associativo di attributi HTML aggiuntivi e i loro valori. Esempio: ['class' => 'my-class', 'id' => 'my-id'].
+     * @return string Il codice HTML del link generato.
+     */
+    function creaLinkCodificato($url, $prefisso = '', $attributiExtra = []) {
+        $urlCodificato = $this->convertiInEntitaHTML($url);
+        $attributi = '';
 
+        foreach ($attributiExtra as $chiave => $valore) {
+            $attributi .= $chiave . '="' . htmlspecialchars($valore) . '" ';
+        }
+
+        return "<a href=\"#\" onClick=\"openEncodedLink('$prefisso', '$urlCodificato')\" $attributi>$urlCodificato</a>";
+    }
 }
+
 ?>
