@@ -24,6 +24,10 @@
         "xxxx"
     ],
     "favIcon": "asset/favicon.png",
+    "url": {
+        "PrivacyPolicy": "",
+        "CookiePolicy": ""
+    },
     "footer": true,
     "itemsMenu": [
         {
