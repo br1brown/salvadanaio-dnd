@@ -1,84 +1,155 @@
+/* Imposta il posizionamento e l'altezza minima dell'elemento html */
 html {
 	position: relative;
 	min-height: 100vh;
+	/* 100% dell'altezza del viewport */
 }
 
+/* Stile di base per il corpo del documento */
 body {
 	background-color: rgb(96, 96, 96);
+	/* Colore di sfondo */
 	font-family: Verdana, sans-serif;
+	/* Imposta il tipo di carattere */
 }
 
+/* Stile per il bottone 'Torna in alto' */
 .back-to-top {
 	z-index: 999;
+	/* Assicura che il bottone sia sopra gli altri elementi */
 	position: fixed;
+	/* Posizione fissa sullo schermo */
 	bottom: 25px;
+	/* Distanza dal bordo inferiore */
 	right: 25px;
+	/* Distanza dal bordo destro */
 	display: none;
+	/* Nasconde il bottone di default */
 }
 
-/* Stile aggiuntivo per l'overflow orizzontale */
+/* Stile per sezioni con overflow orizzontale */
 .horizontal-scroll {
 	overflow-x: auto;
+	/* Abilita lo scroll orizzontale se necessario */
 	white-space: nowrap;
+	/* Impedisce la rottura delle righe */
 	display: flex;
+	/* Utilizza flexbox per l'allineamento interno */
 	-webkit-overflow-scrolling: touch;
+	/* Migliora lo scroll su dispositivi touch */
 	scrollbar-width: none;
+	/* Nasconde la barra di scorrimento */
 }
 
+/* Stile generale per contenitori */
 .tutto {
 	background-color: rgba(255, 255, 255, 0.7);
+	/* Sfondo bianco semitrasparente */
 	border: 1px solid;
+	/* Bordo solido */
 	padding: 10px;
+	/* Padding interno */
 	box-shadow: 5px 10px 8px #888888;
+	/* Ombra esterna per effetto 3D */
 	vertical-align: middle;
+	/* Allineamento verticale */
 }
 
+/* Stile per i bordi dei contenitori */
 .bordo {
 	border: 1px solid;
+	/* Bordo solido */
 	padding: 10px;
+	/* Padding interno */
 	box-shadow: 5px 5px 4px #888888;
+	/* Ombra esterna più piccola */
 }
 
+/* Stile per le righe (.row) */
 .row {
 	padding: 0;
+	/* Annulla il padding */
 	padding-top: 10px;
+	/* Padding superiore */
 }
 
+/* Stile per testo di piccole dimensioni */
 .piccolill {
 	font-size: 0.5rem;
+	/* Dimensione molto piccola */
 }
 
 .piccolill-m {
 	font-size: 0.7rem;
+	/* Dimensione moderatamente piccola */
 }
 
+/* Stile per testo di grandi dimensioni */
 .grandill {
 	font-size: 1.3rem;
+	/* Dimensione grande */
 }
 
 .grandill-s {
 	font-size: 1rem;
+	/* Dimensione standard grande */
 }
 
 .grandill-m {
 	font-size: 1.5rem;
+	/* Dimensione molto grande */
 }
 
-
-
+/* Media query per schermi fino a 768px di larghezza */
 @media only screen and (max-width: 768px) {
 	.container-fluid {
 		overflow-x: hidden;
-		/*io basito... perché scrolla?*/
+		/* Nasconde l'overflow orizzontale */
+		/* Commento: il problema dello scroll potrebbe essere causato da margini o padding esterni */
 	}
 }
 
+/* Stile per l'effetto hover 'muovi' */
+.muovi:hover {
+	animation: shake 0.5s;
+	/* Avvia l'animazione 'shake' con durata di 0.5 secondi */
+	animation-iteration-count: infinite;
+	/* Ripete l'animazione all'infinito */
+}
+
+/* Definisce l'animazione 'shake' per l'effetto di scuotimento */
+@keyframes shake {
+
+	0%,
+	30%,
+	50%,
+	70%,
+	100% {
+		transform: translate(1px, 1px) rotate(0deg);
+	}
+
+	10%,
+	40%,
+	60%,
+	90% {
+		transform: translate(-1px, -2px) rotate(-1deg);
+	}
+
+	20%,
+	80% {
+		transform: translate(-3px, 0px) rotate(1deg);
+	}
+}
+
+/* Media query per schermi oltre 768px di larghezza */
 @media only screen and (min-width: 768px) {
 	.zoomma {
 		transition: transform .2s;
+		/* Transizione fluida per l'effetto zoom */
 	}
 
 	.zoomma:hover {
 		transform: scale(1.5);
+		/* Aumenta la dimensione all'hover */
 	}
 }
