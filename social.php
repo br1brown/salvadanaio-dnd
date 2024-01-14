@@ -1,10 +1,9 @@
 <?php 
 $title = "Social";
-include('TopPage.php');
-try {
+include('FE_utils/TopPage.php');
+
 $social = $service->callApiEndpoint("social");
-} catch (Exception $e){
-}
+
 ?>
 	<div class="row">
 		<div class="col-12 offset-md-1 col-md-10 text-center tutto">
@@ -60,7 +59,7 @@ $social = $service->callApiEndpoint("social");
 		</div>
 	</div>
 
-<?php include('BottomPage.php'); ?>
+<?php include('FE_utils/BottomPage.php'); ?>
 
 <script>
 	

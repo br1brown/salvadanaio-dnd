@@ -1,10 +1,10 @@
 <?php 
 $title = "Index";
-include('TopPage.php');
+include('FE_utils/TopPage.php');
 ?>
 		<div class="row">
 			<div class="col-12 text-center text-light">
-				<h1><b>Sono io</b></h1>
+				<h1><b><?=$title?></b></h1>
 				<i>Performed by Br1Brown</i>
 			</div>
 		</div>
@@ -37,7 +37,7 @@ include('TopPage.php');
 		    </div>
 		</div>
 
-<?php include('BottomPage.php'); ?>
+<?php include('FE_utils/BottomPage.php'); ?>
 
 <script>
 	$(document).ready(function () {

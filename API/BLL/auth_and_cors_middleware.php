@@ -1,5 +1,5 @@
 <?php
-$settingsfolder = "BLL/settings/";
+$settingsfolder = "BLL/auth_settings/";
 // Ottiene tutti gli header della richiesta HTTP
 $headers = getallheaders();
 

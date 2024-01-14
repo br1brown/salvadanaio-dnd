@@ -1,7 +1,3 @@
-<FilesMatch "^(Service|BottomPage|TopPage)\.php$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
 <FilesMatch "^websettings.json$">
     Order Allow,Deny
     Deny from all
