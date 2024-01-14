@@ -1,7 +1,5 @@
-
 # Template-Sito
-
-Il template ideale come punto di partenza per lo sviluppo di siti web generici, progettato per essere flessibile.
+Il template fornisce una base solida per lo sviluppo di siti web generici, integrando una comunicazione backend-frontend chiara e sicura. Essendo progettato per essere flessibile è ideale per progetti che necessitano di una separazione netta tra le funzionalità lato client e lato server anche per interfacciarsi con terze parti.
 
 ## Compatibilità: *8.1.4*
 **Importante**: Utilizza la versione 8.1.4 per garantire la massima compatibilità.
@@ -17,17 +15,22 @@ Il template è suddiviso in due componenti principali:
 
 1. **API Backend**
    - Le API sono collocate all'interno della cartella principale pur funzionando come un punto di accesso esterno.
-   - Gestiscono l'interazione con i dati, prevalentemente in formato JSON, è non in modo obbligato.
-    - La classe `BLL\Repository` in `funzioni_comuni.php` facilita la comunicazione con i dati.
-        - La classe `BLL\Repository` ha varie funzioni per interfacciarsi con i file ma nulla vieta di cambiare l'approccio per connettersi a un database.
-    - La classe `BLL\Response` è usata per la formattazzione degli errori o dei messaggi di Ok.
-   - Gli endpoint `social.php` e `anagrafica.php` dimostrano come utilizzare la funzione di comunicazione dati.
+   - **Middleware di Autenticazione e Gestione CORS (`BLL\auth_and_cors_middleware.php`):**
+     - Questo componente si occupa dell'autenticazione tramite API key e della configurazione del CORS.
+     - **Autenticazione API**: Utilizza un file di testo (`APIKeys.txt`) nella cartella `BLL/auth_settings/` per memorizzare e verificare le chiavi API. Blocca l'accesso con un codice di risposta HTTP 403 in caso di chiavi non valide o assenti.
+     - **Gestione CORS**: Configura le politiche CORS tramite un file JSON (`CORSconfig.json`). Permette la comunicazione cross-origin solo da origini specificate e supporta metodi e header HTTP selezionati.
+   - **Gestione dei Dati**:
+     - La classe `BLL\Repository` facilita la comunicazione con i dati, offrendo diverse funzioni per l'interfaccia con i file. È possibile modificare l'approccio per utilizzare un database.
+     - La classe `BLL\Response` è utilizzata per formattare risposte standard, inclusi messaggi di errore e conferma.
+   - **Inclusione di File Comuni**:
+     - Vengono inclusi file come `Repository.php`, `Response.php` e `funzioni_comuni.php` per supportare varie funzionalità comuni nel progetto.
+   - **Endpoint Esempio**:
+     - Gli endpoint `social.php` e `anagrafica.php` illustrano l'uso pratico delle funzioni di comunicazione dati.
 
 2. **Frontend**
    - La classe `Service` aiuta a interagire con le API e a gestire funzionalità comuni, inclusa la manipolazione degli URL.
    - Include una libreria per convertire Markdown in HTML.
    - Il file `websettings.json` contiene impostazioni di base per il funzionamento del sito, valori per i <meta> compresi.
-   - `template_php` mostra la struttura richiesta per le pagine del sito.
 
 
 ### Esempi Pratici
