@@ -1,16 +1,3 @@
-<FilesMatch "^(funzioni_comuni)\.php$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-<FilesMatch "^CORSconfig.json$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-<FilesMatch "^APIKeys.txt$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

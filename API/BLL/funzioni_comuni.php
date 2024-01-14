@@ -1,8 +1,4 @@
 <?php
-// Includi i file necessari
-require_once __DIR__.'/Repository.php';
-require_once __DIR__.'/Response.php';
-
 /**
  * Ottiene un oggetto e lo restituisce, eventualmente dopo aver applicato una callback.
  * 

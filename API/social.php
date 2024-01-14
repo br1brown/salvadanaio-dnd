@@ -1,5 +1,5 @@
 <?php
-include __DIR__.'/BLL/preload.php';
+include __DIR__.'/BLL/auth_and_cors_middleware.php';
 
 $nomi = isset($_GET['nomi'])? $_GET['nomi'] : [];
 
