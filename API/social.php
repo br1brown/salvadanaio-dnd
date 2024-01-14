@@ -1,5 +1,6 @@
 <?php
-include 'funzioni_comuni.php';
+include __DIR__.'/BLL/preload.php';
+
 $nomi = isset($_GET['nomi'])? $_GET['nomi'] : [];
 
 echo Echo_getObj("social",function ($data) use ($nomi) { // use ($variabile, $variabile2) 
