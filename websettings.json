@@ -1,11 +1,33 @@
 {
-    "APIEndPoint": "API",
-    "APIkey": "frontend",
+    "AppName": "Template",
+    "lang": "IT-it",
+    "description": "Descrizione",
     "meta": {
         "MobileFriendly": true,
         "iOSFullScreenWebApp": true,
         "mobileOptimizationWidth": 320,
-        "refreshIntervalInSeconds": 900
+        "refreshIntervalInSeconds": 900,
+        "keywords": [
+            "xxx",
+            "xxxx"
+        ]
+    },
+    "API": {
+        "EndPoint": "API",
+        "key": "frontend"
+    },
+    "favIcon": "asset/favicon.png",
+    "colorTema": "#212529",
+    "itemsMenu": [
+        {
+            "nome": "Social",
+            "route": "social"
+        }
+    ],
+    "footer": true,
+    "url": {
+        "PrivacyPolicy": "",
+        "CookiePolicy": ""
     },
     "smoke": {
         "enable": true,
@@ -14,25 +36,5 @@
         "maximumVelocity": 100,
         "particleRadius": 250,
         "density": 5
-    },
-    "AppName": "Template",
-    "lang": "IT-it",
-    "description": "Descrizione",
-    "keywords": [
-        "xxx",
-        "xxxx"
-    ],
-    "favIcon": "asset/favicon.png",
-    "colorBase": "#212529",
-    "url": {
-        "PrivacyPolicy": "",
-        "CookiePolicy": ""
-    },
-    "footer": true,
-    "itemsMenu": [
-        {
-            "nome": "Social",
-            "route": "social"
-        }
-    ]
+    }
 }

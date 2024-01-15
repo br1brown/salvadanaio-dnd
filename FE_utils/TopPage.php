@@ -20,7 +20,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 	
 	<meta name="description" content="<?= $description ?>">
-	<meta name="keywords" content="<?= $meta['keywords'] ?>">
+	<meta name="keywords" content="<?= $meta['string_All_keywords'] ?>">
 	
 	<meta name="author" content="Br1Brown">
 	
@@ -70,7 +70,8 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<!-- ROBA NOSTRA -->
 	<style>
 	:root {
-		--coloreBase: <?php echo $colorBase??"#606060"; ?>;
+		--coloreBase: <?php echo $colorBase; ?>;
+		--coloreTema: <?php echo $colorTema; ?>;
 	}
 	</style>
 
@@ -105,7 +106,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
 
-<nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:<?=$colorTema?>">
+<nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

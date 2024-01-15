@@ -18,11 +18,6 @@ class Service {
     }
 
     /**
-     * @var string le keyword in una stringa
-     */
-    public string $keywords = "";
-
-    /**
      * @var array Impostazioni dell'applicativo
      */
     private array $settings;
@@ -30,18 +25,33 @@ class Service {
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['APIEndPoint','keywords'];
+    private $excludeKeys = ['API'];
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
      *
      * @return array Impostazioni filtrate.
      */
     public function getSettings() {
+
         $data = array_filter($this->settings, function($key) {
             return !in_array($key, $this->excludeKeys);
         }, ARRAY_FILTER_USE_KEY);
 
-        $data['meta']['keywords'] = $this->keywords;
+        
+        $szkeywords = "";
+        foreach ($data['meta']["keywords"] as $keyword) {
+            $szkeywords  .= trim($keyword) . ",";
+        }
+
+        $data['meta']['string_All_keywords'] = rtrim($szkeywords, ",");
+
+        if (!isset($data['colorTema']) || empty($data['colorTema'])) {
+            $data['colorTema'] = "#606060"; 
+        }        
+        if (!isset($data['colorBase']) || empty($data['colorBase'])) {
+           $data['colorBase'] = $this->lightenColor($data['colorTema']);
+        }
+        $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
 
         return $data; 
     }
@@ -79,27 +89,15 @@ class Service {
         $this->baseUrl = $protocol . "://$_SERVER[HTTP_HOST]" . dirname($_SERVER['PHP_SELF']) . "/";
                             
         $this->settings = json_decode(file_get_contents('websettings.json'), true);
-        
-        foreach ($this->settings["keywords"] as $keyword) {
-            $this->keywords .= trim($keyword) . ",";
-        }
-        $this->keywords = rtrim($this->keywords, ",");
 
-        if (!isset($this->settings['colorBase']) || empty($this->settings['colorBase'])) {
-            $this->settings['colorBase'] = "#606060"; 
-        }        
-        if (!isset($this->settings['colorTema']) || empty($this->settings['colorTema'])) {
-            $this->settings['colorTema'] = $this->darkenColor($this->settings['colorBase']);
-        }
-        $this->settings['isDarkTextPreferred'] = $this->isDarkTextPreferred($this->settings['colorTema']);
+        $this->APIkey  = $this->settings['API']['key'];
 
-        $APIEndPoint = $this->settings['APIEndPoint'];
+        $APIEndPoint = $this->settings['API']['EndPoint'];
         if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
             $this->urlAPI = $APIEndPoint;
         } else {
             $this->urlAPI = $this->baseUrl.$APIEndPoint;
         }
-        $this->APIkey  = $this->settings['APIkey'];
     }
 
 
@@ -336,6 +334,7 @@ class Service {
         // Restituisce true per il testo scuro se la luminosità è superiore a 0.5, altrimenti false per il testo chiaro
         return $luminance > 0.5;
     }
+
     /**
      * Scurisce un colore HEX dato di un fattore specificato.
      *
@@ -361,6 +360,33 @@ class Service {
         // Converti di nuovo in HEX e restituisci
         return sprintf("#%02x%02x%02x", $r, $g, $b);
     }
+
+    /**
+     * Schiarisce un colore HEX dato di un fattore specificato.
+     *
+     * Questa funzione converte il colore HEX in formato RGB, applica un fattore di schiarimento ai valori RGB,
+     * e poi converte i valori RGB schiariti di nuovo in formato HEX. È utile per creare varianti di colore più chiare.
+     *
+     * @param string $hexColor Il colore originale in formato HEX (es. '#ffcc00').
+     * @param float $lightenFactor Il fattore di schiarimento, dove 1.0 lascia il colore invariato e 2.0 lo rende il più chiaro possibile. Default a 1.2.
+     * @return string Il colore HEX schiarito.
+     */
+    function lightenColor($hexColor, $lightenFactor = 1.2) {
+        // Converti HEX in RGB
+        $hex = ltrim($hexColor, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        // Applica il fattore di schiarimento
+        $r = min(255, $r * $lightenFactor);
+        $g = min(255, $g * $lightenFactor);
+        $b = min(255, $b * $lightenFactor);
+
+        // Converti di nuovo in HEX e restituisci
+        return sprintf("#%02x%02x%02x", $r, $g, $b);
+    }
+
 }
 
 ?>
