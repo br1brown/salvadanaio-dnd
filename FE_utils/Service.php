@@ -13,7 +13,7 @@ class Service {
      */
     public function getparser() : Parsedown {
         if (!isset($this->Parser))
-          $this->Parser =   (new Parsedown());
+            $this->Parser =   (new Parsedown());
         return $this->Parser;
     }
 
@@ -65,85 +65,93 @@ class Service {
      * Costruttore della classe Service.
      * Legge le impostazioni dal file JSON e inizializza l'URL dell'API.
      */
-  public function __construct()
-  {
-      // Controllo prima la variabile $_SERVER['HTTPS']
-      $protocol = 'http'; // Impostazione predefinita a 'http'
-      if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-          $protocol = 'https'; // Se 'HTTPS' è attivo, usa 'https'
-      } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-          $protocol = 'https'; // Se 'HTTP_X_FORWARDED_PROTO' è 'https', usa 'https'
-      }
+    public function __construct()
+    {
+        // Controllo prima la variabile $_SERVER['HTTPS']
+        $protocol = 'http'; // Impostazione predefinita a 'http'
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            $protocol = 'https'; // Se 'HTTPS' è attivo, usa 'https'
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $protocol = 'https'; // Se 'HTTP_X_FORWARDED_PROTO' è 'https', usa 'https'
+        }
 
-      // Costruzione dell'URL
-      $this->baseUrl = $protocol . "://$_SERVER[HTTP_HOST]" . dirname($_SERVER['PHP_SELF']) . "/";
-                          
-      $this->settings = json_decode(file_get_contents('websettings.json'), true);
-      
+        // Costruzione dell'URL
+        $this->baseUrl = $protocol . "://$_SERVER[HTTP_HOST]" . dirname($_SERVER['PHP_SELF']) . "/";
+                            
+        $this->settings = json_decode(file_get_contents('websettings.json'), true);
+        
+        foreach ($this->settings["keywords"] as $keyword) {
+            $this->keywords .= trim($keyword) . ",";
+        }
+        $this->keywords = rtrim($this->keywords, ",");
 
-      foreach ($this->settings["keywords"] as $keyword) {
-          $this->keywords .= trim($keyword) . ",";
-      }
-      $this->keywords = rtrim($this->keywords, ",");
+        if (!isset($this->settings['colorBase']) || empty($this->settings['colorBase'])) {
+            $this->settings['colorBase'] = "#606060"; 
+        }        
+        if (!isset($this->settings['colorTema']) || empty($this->settings['colorTema'])) {
+            $this->settings['colorTema'] = $this->darkenColor($this->settings['colorBase']);
+        }
+        $this->settings['isDarkTextPreferred'] = $this->isDarkTextPreferred($this->settings['colorTema']);
+
+        $APIEndPoint = $this->settings['APIEndPoint'];
+        if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
+            $this->urlAPI = $APIEndPoint;
+        } else {
+            $this->urlAPI = $this->baseUrl.$APIEndPoint;
+        }
+        $this->APIkey  = $this->settings['APIkey'];
+    }
 
 
-      $APIEndPoint = $this->settings['APIEndPoint'];
-      if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
-          $this->urlAPI = $APIEndPoint;
-      } else {
-          $this->urlAPI = $this->baseUrl.$APIEndPoint;
-      }
-      $this->APIkey  = $this->settings['APIkey'];
-  }
 
-  /**
-   * Restituisce il percorso completo dell'URL per una risorsa nelle API.
-   * 
-   * @param string $path Percorso della risorsa.
-   * @return string URL completo della risorsa.
-   */
-  public function APIbaseURL($path) {
-      if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
-          return $path;
-      } else {
-          return rtrim($this->urlAPI, '/') . '/' . $path;
-      }
-  }
+    /**
+     * Restituisce il percorso completo dell'URL per una risorsa nelle API.
+     * 
+     * @param string $path Percorso della risorsa.
+     * @return string URL completo della risorsa.
+     */
+    public function APIbaseURL($path) {
+        if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
+            return $path;
+        } else {
+            return rtrim($this->urlAPI, '/') . '/' . $path;
+        }
+    }
 
-  /**
-   * Restituisce il percorso completo dell'URL per una risorsa.
-   * 
-   * @param string $path Percorso della risorsa.
-   * @return string URL completo della risorsa.
-   */
-  public function baseURL($path) {
-      if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
-          return $path;
-      } else { 
-          return rtrim($this->baseUrl, '/') . '/' . $path;
-      }
-  }
+    /**
+     * Restituisce il percorso completo dell'URL per una risorsa.
+     * 
+     * @param string $path Percorso della risorsa.
+     * @return string URL completo della risorsa.
+     */
+    public function baseURL($path) {
+        if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
+            return $path;
+        } else { 
+            return rtrim($this->baseUrl, '/') . '/' . $path;
+        }
+    }
 
-  /**
-   * @var bool controllo gli SSL dell' endpoint?
-   */
-  public bool $CheckSSL = true;
+    /**
+     * @var bool controllo gli SSL dell' endpoint?
+     */
+    public bool $CheckSSL = true;
 
-  /**
-   * Esegue una chiamata all'endpoint dell'API utilizzando il metodo HTTP specificato e restituisce la risposta.
-   * 
-   * @param string $pathOrEndpoint Il percorso dell'endpoint o interno dell'API.
-   * @param string $metodo Il metodo HTTP da utilizzare per la chiamata (ad es. 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'). Di default è 'GET'.
-   * @param array $dati I dati da inviare con la richiesta, utili per i metodi come 'POST', 'PUT'.
-   * @param string $contentType Il Content Type della richiesta, di default è 'application/json'.
-   * @param array $headerPersonalizzati Header HTTP personalizzati da includere nella richiesta.
-   * @param int $timeoutTotale Il timeout totale per la richiesta in secondi. Di default è 30 secondi.
-   * @param int $timeoutConnessione Il timeout per la connessione in secondi. Di default è 10 secondi.
-   * @return array Risposta dell'API decodificata in formato array.
-   * @throws InvalidArgumentException Se i parametri obbligatori non sono validi.
-   * @throws Exception In caso di errore nella chiamata all'endpoint o nella risposta dell'API.
-   */
-  public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json', array $headerPersonalizzati = [], int $timeoutTotale = 30, int $timeoutConnessione = 10) {
+    /**
+     * Esegue una chiamata all'endpoint dell'API utilizzando il metodo HTTP specificato e restituisce la risposta.
+     * 
+     * @param string $pathOrEndpoint Il percorso dell'endpoint o interno dell'API.
+     * @param string $metodo Il metodo HTTP da utilizzare per la chiamata (ad es. 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'). Di default è 'GET'.
+     * @param array $dati I dati da inviare con la richiesta, utili per i metodi come 'POST', 'PUT'.
+     * @param string $contentType Il Content Type della richiesta, di default è 'application/json'.
+     * @param array $headerPersonalizzati Header HTTP personalizzati da includere nella richiesta.
+     * @param int $timeoutTotale Il timeout totale per la richiesta in secondi. Di default è 30 secondi.
+     * @param int $timeoutConnessione Il timeout per la connessione in secondi. Di default è 10 secondi.
+     * @return array Risposta dell'API decodificata in formato array.
+     * @throws InvalidArgumentException Se i parametri obbligatori non sono validi.
+     * @throws Exception In caso di errore nella chiamata all'endpoint o nella risposta dell'API.
+     */
+    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json', array $headerPersonalizzati = [], int $timeoutTotale = 30, int $timeoutConnessione = 10) {
     // Validazione del parametro $pathOrEndpoint
     if (empty($pathOrEndpoint)) {
         throw new InvalidArgumentException("Il parametro 'pathOrEndpoint' non può essere vuoto.");
@@ -254,7 +262,7 @@ class Service {
     // Restituisci l'oggetto decodificato o la risposta grezza
     return $oggetto;
 
-}
+    }
 
 
     /**
@@ -268,7 +276,7 @@ class Service {
      * @param string $stringa La stringa da convertire in entità HTML.
      * @return string La stringa convertita in entità HTML.
      */
-    function convertiInEntitaHTML($stringa) {
+    public function convertiInEntitaHTML($stringa) {
         $risultato = '';
         $lunghezza = strlen($stringa);
         for ($i = 0; $i < $lunghezza; $i++) {
@@ -299,6 +307,59 @@ class Service {
         }
 
         return "<a href=\"#\" onClick=\"openEncodedLink('$prefisso', '$urlCodificato')\" $attributi>$urlCodificato</a>";
+    }
+
+
+    /**
+     * Determina se è preferibile il testo di colore scuro o chiaro basato sulla luminosità del colore di sfondo.
+     *
+     * Questa funzione calcola la luminosità di un colore dato in formato HEX e restituisce un valore booleano.
+     * Restituisce 'true' se un testo scuro (nero) è preferibile per garantire una buona leggibilità sullo sfondo,
+     * altrimenti 'false' per un testo chiaro (bianco). Utilizza una formula di luminosità relativa che
+     * tiene conto della diversa sensibilità dell'occhio umano ai colori rosso, verde e blu.
+     *
+     * @param string $hexColor Il colore di sfondo in formato HEX, come una stringa (es. '#ffcc00').
+     * @return bool Restituisce 'true' se il testo scuro è preferibile, altrimenti 'false'.
+     */
+    function isDarkTextPreferred($hexColor) {
+        // Rimuove il carattere # se presente
+        $hex = ltrim($hexColor, '#');
+
+        // Converte HEX in RGB
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        // Calcola la luminosità
+        $luminance = (0.2126 * $r + 0.7152 * $g + 0.0722 * $b) / 255;
+
+        // Restituisce true per il testo scuro se la luminosità è superiore a 0.5, altrimenti false per il testo chiaro
+        return $luminance > 0.5;
+    }
+    /**
+     * Scurisce un colore HEX dato di un fattore specificato.
+     *
+     * Questa funzione converte il colore HEX in formato RGB, applica un fattore di scurimento ai valori RGB,
+     * e poi converte i valori RGB scuriti di nuovo in formato HEX. È utile per creare varianti di colore più scure.
+     *
+     * @param string $hexColor Il colore originale in formato HEX (es. '#ffcc00').
+     * @param float $darkenFactor Il fattore di scurimento, dove 1.0 lascia il colore invariato e 0.0 lo rende nero. Default a 0.2.
+     * @return string Il colore HEX scurito.
+     */
+    function darkenColor($hexColor, $darkenFactor = 0.2) {
+        // Converti HEX in RGB
+        $hex = ltrim($hexColor, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        // Applica il fattore di scurimento
+        $r = max(0, $r - $r * $darkenFactor);
+        $g = max(0, $g - $g * $darkenFactor);
+        $b = max(0, $b - $b * $darkenFactor);
+
+        // Converti di nuovo in HEX e restituisci
+        return sprintf("#%02x%02x%02x", $r, $g, $b);
     }
 }
 

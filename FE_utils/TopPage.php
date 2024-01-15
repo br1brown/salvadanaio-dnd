@@ -5,9 +5,6 @@ $settings = $service->getSettings();
 foreach ($settings as $key => $value) {
 	${$key} = $value;
 }
-$colorBase = $colorBase ?? "#606060";
-$colorTema = $colorTema ?? "#635656";
-
 try {
 $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
@@ -108,7 +105,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:<?=$colorTema?>">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

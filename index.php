@@ -3,7 +3,7 @@ $title = "Index";
 include('FE_utils/TopPage.php');
 ?>
 		<div class="row">
-			<div class="col-12 text-center text-light">
+			<div class="col-12 text-center <?=$isDarkTextPreferred? "text-dark":"text-light" ?>">
 				<h1><b><?=$title?></b></h1>
 				<i>Performed by Br1Brown</i>
 			</div>

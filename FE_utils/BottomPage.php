@@ -1,6 +1,8 @@
 </div>
-<?php if (isset($footer) && $footer == true) : ?>
-<footer style="font-size: 0.8rem;" class="container-fluid bg-dark text-light mt-3">
+<?php if (isset($footer) && $footer == true) : 
+	
+	?>
+<footer style="font-size: 0.8rem; background-color:<?=$colorTema?>" class="container-fluid mt-3 <?=$isDarkTextPreferred? "text-dark":"text-light" ?>">
 	<div class="container py-2">
 		<?php // Controllo se almeno una delle chiavi è impostata e non vuota
 		if ((isset($irl['numeroWA']) && !empty($irl['numeroWA'])) ||
@@ -84,7 +86,7 @@
 		<?php
 		endif; ?>
 		<div class="row">
-		<div class="col text-center text-light">
+		<div class="col text-center">
 			<p>© 2023 <?= $AppName?>. Tutti i diritti riservati.</p>
 		</div>
 		</div>

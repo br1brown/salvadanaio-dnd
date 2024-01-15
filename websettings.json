@@ -9,7 +9,7 @@
     },
     "smoke": {
         "enable": true,
-        "color": "#AFFFFF",
+        "color": "#8fc7ff",
         "opacity": 0.4,
         "maximumVelocity": 100,
         "particleRadius": 250,
@@ -23,8 +23,7 @@
         "xxxx"
     ],
     "favIcon": "asset/favicon.png",
-    "colorBase": "#606060",
-    "colorTema": "#635656",
+    "colorBase": "#212529",
     "url": {
         "PrivacyPolicy": "",
         "CookiePolicy": ""
