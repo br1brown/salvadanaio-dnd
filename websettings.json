@@ -3,11 +3,9 @@
     "APIkey": "frontend",
     "meta": {
         "MobileFriendly": true,
+        "iOSFullScreenWebApp": true,
         "mobileOptimizationWidth": 320,
-        "refreshIntervalInSeconds": 900,
-        "androidThemeColor": "black",
-        "iOSStatusBarStyle": "white",
-        "iOSFullScreenWebApp": true
+        "refreshIntervalInSeconds": 900
     },
     "smoke": {
         "enable": true,
@@ -18,12 +16,15 @@
         "density": 5
     },
     "AppName": "Template",
+    "lang": "IT-it",
     "description": "Descrizione",
     "keywords": [
         "xxx",
         "xxxx"
     ],
     "favIcon": "asset/favicon.png",
+    "colorBase": "#606060",
+    "colorTema": "#635656",
     "url": {
         "PrivacyPolicy": "",
         "CookiePolicy": ""

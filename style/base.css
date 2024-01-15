@@ -7,7 +7,7 @@ html {
 
 /* Stile di base per il corpo del documento */
 body {
-	background-color: rgb(96, 96, 96);
+	background-color: var(--coloreBase);
 	/* Colore di sfondo */
 	font-family: Verdana, sans-serif;
 	/* Imposta il tipo di carattere */

@@ -5,14 +5,15 @@ $settings = $service->getSettings();
 foreach ($settings as $key => $value) {
 	${$key} = $value;
 }
+$colorBase = $colorBase ?? "#606060";
+$colorTema = $colorTema ?? "#635656";
 
 try {
 $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
 ?>
-
 <!doctype html>
-<html lang="it">
+<html lang="<?= $lang ?>">
 <head>
 	<?php
 ?>
@@ -27,7 +28,8 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<meta name="author" content="Br1Brown">
 	
 	<meta name="robots" content="index, follow">
-	<link rel="manifest" href="site.webmanifest">
+	
+	<link rel="manifest" href="webmanifest.php">
 	
 	<meta name="HandheldFriendly" content="<?= $meta['MobileFriendly']? "true":"false" ?>">
 	<meta name="MobileOptimized" content="<?= $meta['mobileOptimizationWidth'] ?>">
@@ -36,9 +38,9 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<meta http-equiv="refresh" content="<?= $meta['refreshIntervalInSeconds'] ?>">
 	
 	<!-- Colore tematico per il browser sui dispositivi Android -->
-	<meta name="theme-color" content="<?= $meta['androidThemeColor'] ?>" />
+	<meta name="theme-color" content="<?= $colorBase ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $meta['iOSStatusBarStyle'] ?>">
+	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorTema ?>">
 	
 	<!-- Definizione del nome del sito web quando salvato come app web sui dispositivi mobili -->
 	<meta name="application-name" content="<?= $AppName ?>" />
@@ -69,6 +71,12 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
 	<!-- ROBA NOSTRA -->
+	<style>
+	:root {
+		--coloreBase: <?php echo $colorBase??"#606060"; ?>;
+	}
+	</style>
+
 	<link rel="stylesheet" href="<?=$service->baseURL("style/base.css")?>">
 	<link rel="stylesheet" href="<?=$service->baseURL("style/manage_img.css")?>">
 	<link rel="stylesheet" href="<?=$service->baseURL("style/social.css")?>">

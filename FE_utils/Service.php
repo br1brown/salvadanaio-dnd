@@ -59,7 +59,7 @@ class Service {
     /**
      * @var string URL dell'Host
      */
-    private string $baseUrl;
+    public string $baseUrl;
 
     /**
      * Costruttore della classe Service.
