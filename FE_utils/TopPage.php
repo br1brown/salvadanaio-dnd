@@ -104,7 +104,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 </canvas>
 <?php endif; 
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
-if (isset($itemsMenu) && ((isset($forceMenu))?($forceMenu == true):true)): ?>
+if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMenu == true):true)): ?>
 
 <nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>

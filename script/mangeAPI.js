@@ -49,7 +49,7 @@ function apiCall(endpoint, data, callback = null, type = 'GET', dataType = 'json
 		error: handleError
 	};
 
-	if (type !== 'GET') {
+	if (type !== 'GET' && !(!data)) {
 		settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
 	}
 
