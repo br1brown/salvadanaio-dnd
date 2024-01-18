@@ -2,6 +2,12 @@
 require_once __DIR__.'/Service.php';
 $service = new Service();
 $settings = $service->getSettings();
+if (!isset($title))
+	$title = $settings['AppName'];
+
+if (!isset($singledescription))
+	$singledescription = $settings['description'];
+
 $meta = $service->getMeta($title, $singledescription);
 foreach ($settings as $key => $value) {
 	${$key} = $value;
