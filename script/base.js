@@ -29,13 +29,14 @@ $(document).ready(function () {
 	 * Imposta l'effetto fumo su un elemento canvas specificato.
 	 */
 	var fumo = $('#smoke-effect-canvas');
-	fumo.SmokeEffect({
-		color: fumo.data('color'), // Colore del fumo
-		opacity: fumo.data('opacity'), // Opacità del fumo
-		maximumVelocity: fumo.data('maximumVelocity'), // Velocità massima delle particelle
-		particleRadius: fumo.data('particleRadius'), // Raggio delle particelle di fumo
-		density: fumo.data('density') // Densità del fumo
-	});
+	if (fumo.length)
+		fumo.SmokeEffect({
+			color: fumo.data('color'), // Colore del fumo
+			opacity: fumo.data('opacity'), // Opacità del fumo
+			maximumVelocity: fumo.data('maximumVelocity'), // Velocità massima delle particelle
+			particleRadius: fumo.data('particleRadius'), // Raggio delle particelle di fumo
+			density: fumo.data('density') // Densità del fumo
+		});
 
 	/**
 	 * Gestisce lo scorrimento orizzontale su elementi con classe 'horizontal-scroll'.
