@@ -4,8 +4,9 @@
  * Modifica l'array del menu direttamente per riferimento.
  *
  * @param array &$itemsMenu Riferimento all'array del menu ottenuto dal JSON statico.
+ * @param Service Il servizio per le utilità front end
  */
-function dynamicMenu(&$itemsMenu) {
+function dynamicMenu($Service, &$itemsMenu) {
     // Qui puoi modificare direttamente l'array $itemsMenu.
 
     // Esempio: Aggiungere un nuovo elemento al menu

@@ -54,9 +54,7 @@ class Service {
            $data['colorBase'] = $this->lightenColor($data['colorTema']);
         }
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
-        
-        dynamicMenu($data['itemsMenu']);
-        
+                
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = true;
 
@@ -116,6 +114,8 @@ class Service {
         } else {
             $this->urlAPI = $this->baseUrl.$APIEndPoint;
         }
+
+        dynamicMenu($this, $this->settings['itemsMenu']);
     }
 
     /**
