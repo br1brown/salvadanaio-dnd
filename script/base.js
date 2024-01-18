@@ -132,3 +132,42 @@ function copyToClipboard(testoDaCopiare, idElemento) {
 		});
 	}
 }
+
+/**
+ * Gestisce l'animazione e lo stato di un oggetto durante un periodo di tempo definito.
+ * 
+ * @param {Object} myobj - Selettore jQuery per identificare l'oggetto.
+ * @param {number} durata - Durata dell'animazione in millisecondi.
+ */
+function disattivaper(myobj, durata) {
+	// Funzione per aggiungere lo stile di caricamento e disabilitare l'oggetto
+	function iniziaCaricamento() {
+		myobj.prop('disabled', true).addClass('obj-loading');
+	}
+
+	// Funzione per aggiornare lo sfondo del oggetto
+	function updateProgress(value) {
+		var percentage = (value / durata) * 100;
+		myobj.css('background-size', percentage + '% 100%');
+	}
+
+	// Funzione per terminare il caricamento e riabilitare l'oggetto
+	function terminaCaricamento() {
+		myobj.prop('disabled', false).removeClass('obj-loading');
+	}
+
+	// Inizia l'animazione
+	iniziaCaricamento();
+
+	// Imposta un timer per riattivare l'oggetto dopo la durata specificata e aggiornare il progresso
+	var startTime = Date.now();
+	var interval = setInterval(function () {
+		var elapsedTime = Date.now() - startTime;
+		updateProgress(elapsedTime);
+
+		if (elapsedTime >= durata) {
+			clearInterval(interval);
+			terminaCaricamento();
+		}
+	}, 100);
+}
