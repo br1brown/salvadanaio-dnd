@@ -12,7 +12,8 @@ $irl = $service->callApiEndpoint("/anagrafica");
 <!doctype html>
 <html lang="<?= $lang ?>">
 <head>
-	<?php
+<?php
+$clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 ?>
 	<title><?php echo $title ?></title>
 
