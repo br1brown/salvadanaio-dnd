@@ -65,6 +65,12 @@ body {
 	/* Ombra esterna più piccola */
 }
 
+.obj-loading {
+	background-size: 10% 80%;
+	background-image: linear-gradient(to right, var(--coloreTema) 20%, var(--coloreBase) 100%);
+	background-repeat: no-repeat;
+}
+
 /* Stile per le righe (.row) */
 .row {
 	padding: 0;
