@@ -127,8 +127,6 @@ function copyToClipboard(testoDaCopiare, idElemento) {
 		return new Promise((resolve, reject) => {
 			// Esegue il comando di copia e risolve o rifiuta la Promise in base al risultato
 			document.execCommand('copy') ? resolve() : reject();
-			// Rimuove l'area di testo dal documento
-			areaTesto.remove();
 		});
 	}
 }

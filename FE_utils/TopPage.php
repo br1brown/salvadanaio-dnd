@@ -2,9 +2,12 @@
 require_once __DIR__.'/Service.php';
 $service = new Service();
 $settings = $service->getSettings();
+$meta = $service->getMeta($title, $singledescription);
 foreach ($settings as $key => $value) {
 	${$key} = $value;
 }
+
+
 try {
 $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
@@ -15,15 +18,15 @@ $irl = $service->callApiEndpoint("/anagrafica");
 <?php
 $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 ?>
-	<title><?php echo $title ?></title>
+	<title><?php echo $meta['title']; ?></title>
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 	
-	<meta name="description" content="<?= $description ?>">
+	<meta name="description" content="<?= $meta['description'] ?>">
 	<meta name="keywords" content="<?= $meta['string_All_keywords'] ?>">
-	<?php if(isset($author)) : ?>
-	<meta name="author" content="<?= $author?>">
+	<?php if(isset($meta['author'])) : ?>
+		<meta name="author" content="<?= $meta['author']?>">
 	<?php endif; ?>
 	
 	<meta name="robots" content="index, follow">

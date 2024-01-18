@@ -27,7 +27,8 @@ class Service {
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['API'];
+    private $excludeKeys = ['API',"meta"];
+    
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
      *
@@ -38,14 +39,6 @@ class Service {
         $data = array_filter($this->settings, function($key) {
             return !in_array($key, $this->excludeKeys);
         }, ARRAY_FILTER_USE_KEY);
-
-        
-        $szkeywords = "";
-        foreach ($data['meta']["keywords"] as $keyword) {
-            $szkeywords  .= trim($keyword) . ",";
-        }
-
-        $data['meta']['string_All_keywords'] = rtrim($szkeywords, ",");
 
         if (!isset($data['colorTema']) || empty($data['colorTema'])) {
             $data['colorTema'] = "#606060"; 
@@ -58,19 +51,45 @@ class Service {
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;
 
+        return $data; 
+    }
+
+    /**
+     * Restituisce le impostazioni dei metatag e header
+     *
+     * @return array Impostazioni filtrate.
+     */
+    public function getMeta($title, $description = null) {
+
+        $meta = $this->settings['meta'];
+
+        $meta['title'] = $title?? $this->settings['AppName'];
+        $meta['description'] = $description?? $this->settings['description'];
+
+        $szkeywords = "";
+        foreach ($this->settings['meta']["keywords"] as $keyword) {
+            $szkeywords  .= trim($keyword) . ",";
+        }
+
+        $meta['string_All_keywords'] = rtrim($szkeywords, ",");
+
+        $havesmoke = isset($this->settings['smoke']) && $this->settings['smoke']["enable"];
+
         $firstLoadCss = ["base.css"]; 
         $lastLoadCss = ["addon.css"]; 
         $additionalCss = $this->getFileList("style", "css",  array_merge($firstLoadCss, $lastLoadCss));
-        $data['meta']['ordercss'] = array_merge($firstLoadCss, $additionalCss, $lastLoadCss);
+        $meta['ordercss'] = array_merge($firstLoadCss, $additionalCss, $lastLoadCss);
 
         $firstLoadjs = ["base.js"]; 
         $lastLoadjs = ["addon.js"]; 
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
         $additionaljs = $this->getFileList("script", "js", array_merge($firstLoadjs, $excludeJs, $lastLoadjs) );
-        $data['meta']['orderjs'] = array_merge($firstLoadjs, $additionaljs, $lastLoadjs);
+        $meta['orderjs'] = array_merge($firstLoadjs, $additionaljs, $lastLoadjs);
 
-        return $data; 
+        return $meta; 
     }
+
+
 
     /**
      * @var string URL dell'API di servizio
