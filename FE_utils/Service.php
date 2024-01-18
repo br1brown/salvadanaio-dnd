@@ -56,7 +56,7 @@ class Service {
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
                 
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
-        $data['havesmoke'] = true;
+        $data['havesmoke'] = $havesmoke;
 
         $firstLoadCss = ["base.css"]; 
         $lastLoadCss = ["addon.css"]; 
