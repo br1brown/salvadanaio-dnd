@@ -1,5 +1,7 @@
 <?php
+require_once __DIR__.'/funzioni.php';
 require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
+
 class Service {
 
     /**
@@ -52,6 +54,22 @@ class Service {
            $data['colorBase'] = $this->lightenColor($data['colorTema']);
         }
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
+        
+        dynamicMenu($data['itemsMenu']);
+        
+        $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
+        $data['havesmoke'] = true;
+
+        $firstLoadCss = ["base.css"]; 
+        $lastLoadCss = ["addon.css"]; 
+        $additionalCss = $this->getFileList("style", "css",  array_merge($firstLoadCss, $lastLoadCss));
+        $data['meta']['ordercss'] = array_merge($firstLoadCss, $additionalCss, $lastLoadCss);
+
+        $firstLoadjs = ["base.js"]; 
+        $lastLoadjs = ["addon.js"]; 
+        $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
+        $additionaljs = $this->getFileList("script", "js", array_merge($firstLoadjs, $excludeJs, $lastLoadjs) );
+        $data['meta']['orderjs'] = array_merge($firstLoadjs, $additionaljs, $lastLoadjs);
 
         return $data; 
     }
@@ -100,6 +118,28 @@ class Service {
         }
     }
 
+    /**
+     * Ottiene un elenco di percorsi relativi di file con una specifica estensione in una data directory,
+     * escludendo i file specificati.
+     *
+     * @param string $directory Il percorso della directory da esplorare.
+     * @param string $extension L'estensione dei file da includere nell'elenco.
+     * @param array $excludeFiles Array contenente i nomi dei file da escludere.
+     * @return array Array di stringhe, ognuna rappresentante il percorso relativo di un file.
+     */
+    function getFileList($directory, $extension, $excludeFiles = array()) {
+        $fileList = array();
+        $absolutePath = realpath($directory) . '/';
+        foreach (glob($absolutePath . "*." . $extension) as $file) {
+            $relativePath = str_replace($absolutePath, '', $file);
+            // Assicurarsi di escludere sia i percorsi completi che i soli nomi di file
+            $fileName = basename($relativePath);
+            if (!in_array($fileName, $excludeFiles) && !in_array($relativePath, $excludeFiles)) {
+                $fileList[] = $relativePath;
+            }
+        }
+        return $fileList;
+    }
 
 
     /**

@@ -21,11 +21,11 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	
 	<meta name="description" content="<?= $description ?>">
 	<meta name="keywords" content="<?= $meta['string_All_keywords'] ?>">
-	
-	<meta name="author" content="Br1Brown">
+	<?php if(isset($author)) : ?>
+	<meta name="author" content="<?= $author?>">
+	<?php endif; ?>
 	
 	<meta name="robots" content="index, follow">
-	
 	<link rel="manifest" href="webmanifest.php">
 	
 	<meta name="HandheldFriendly" content="<?= $meta['MobileFriendly']? "true":"false" ?>">
@@ -37,7 +37,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 	<!-- Colore tematico per il browser sui dispositivi Android -->
 	<meta name="theme-color" content="<?= $colorBase ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorTema ?>">
+	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorBase ?>">
 	
 	<!-- Definizione del nome del sito web quando salvato come app web sui dispositivi mobili -->
 	<meta name="application-name" content="<?= $AppName ?>" />
@@ -74,16 +74,15 @@ $irl = $service->callApiEndpoint("/anagrafica");
 		--coloreTema: <?php echo $colorTema; ?>;
 	}
 	</style>
+<?php
 
-	<link rel="stylesheet" href="<?=$service->baseURL("style/base.css")?>">
-	<link rel="stylesheet" href="<?=$service->baseURL("style/manage_img.css")?>">
-	<link rel="stylesheet" href="<?=$service->baseURL("style/social.css")?>">
-	<link rel="stylesheet" href="<?=$service->baseURL("style/addon.css")?>">
-	<script src="<?=$service->baseURL("script/base.js")?>"></script>
-	<script src="<?=$service->baseURL("script/mangeAPI.js")?>"></script>
-	<script src="<?=$service->baseURL("script/addon.js")?>"></script>
-	<!-- SFONDO CON LE NUVOLE -->
-	<script src="<?=$service->baseURL("script/jquery_bloodforge_smoke_effect.js")?>"></script>
+foreach ($meta['ordercss'] as $value): ?>
+    <link rel="stylesheet" href="<?=$service->baseURL("style/".$value)?>">
+<?php endforeach;
+foreach ($meta['orderjs'] as $value): ?>
+    <script src="<?=$service->baseURL("script/".$value)?>"></script>
+<?php endforeach; ?>
+
 </head>
 <script>
 	const APIEndPoint = '<?= $service->urlAPI ?>';
@@ -93,7 +92,8 @@ $irl = $service->callApiEndpoint("/anagrafica");
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
 	<i class="fas fa-chevron-up"></i>
 </a>
-<?php if (isset($smoke) && $smoke["enable"]) : ?>
+<?php 
+if ($havesmoke) : ?>
 <canvas id="smoke-effect-canvas" 
         data-color="<?= $smoke['color'] ?>" 
         data-opacity="<?= $smoke['opacity'] ?>" 
@@ -105,7 +105,6 @@ $irl = $service->callApiEndpoint("/anagrafica");
 <?php endif; 
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMenu == true):true)): ?>
-
 <nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
