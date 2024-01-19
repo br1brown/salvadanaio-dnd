@@ -1,18 +1,15 @@
 <?php
 require_once __DIR__.'/Service.php';
+
 $service = new Service();
+
 $settings = $service->getSettings();
-if (!isset($title))
-	$title = $settings['AppName'];
+$meta = $service->getMeta();
 
-if (!isset($singledescription))
-	$singledescription = $settings['description'];
-
-$meta = $service->getMeta($title, $singledescription);
+require_once __DIR__.'/headeraddon.php';
 foreach ($settings as $key => $value) {
 	${$key} = $value;
 }
-
 
 try {
 $irl = $service->callApiEndpoint("/anagrafica");
@@ -24,7 +21,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 <?php
 $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 ?>
-	<title><?php echo $meta['title']; ?></title>
+	<title><?= $meta['title']; ?></title>
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
@@ -45,9 +42,9 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<meta http-equiv="refresh" content="<?= $meta['refreshIntervalInSeconds'] ?>">
 	
 	<!-- Colore tematico per il browser sui dispositivi Android -->
-	<meta name="theme-color" content="<?= $colorBase ?>" />
+	<meta name="theme-color" content="<?= $colorTema ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorBase ?>">
+	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorTema ?>">
 	
 	<!-- Definizione del nome del sito web quando salvato come app web sui dispositivi mobili -->
 	<meta name="application-name" content="<?= $AppName ?>" />
@@ -80,8 +77,8 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<!-- ROBA NOSTRA -->
 	<style>
 	:root {
-		--coloreBase: <?php echo $colorBase; ?>;
-		--coloreTema: <?php echo $colorTema; ?>;
+		--coloreBase: <?= $colorBase; ?>;
+		--coloreTema: <?= $colorTema; ?>;
 	}
 	</style>
 <?php

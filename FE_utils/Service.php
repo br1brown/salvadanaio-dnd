@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__.'/funzioni.php';
 require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
 
 class Service {
@@ -59,12 +58,8 @@ class Service {
      *
      * @return array Impostazioni filtrate.
      */
-    public function getMeta($title, $description = null) {
-
+    public function getMeta() {
         $meta = $this->settings['meta'];
-
-        $meta['title'] = $title?? $this->settings['AppName'];
-        $meta['description'] = $description?? $this->settings['description'];
 
         $szkeywords = "";
         foreach ($this->settings['meta']["keywords"] as $keyword) {
@@ -133,8 +128,6 @@ class Service {
         } else {
             $this->urlAPI = $this->baseUrl.$APIEndPoint;
         }
-
-        dynamicMenu($this, $this->settings['itemsMenu']);
     }
 
     /**

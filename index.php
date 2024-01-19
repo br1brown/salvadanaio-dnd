@@ -1,6 +1,6 @@
 <?php 
-$title = "Index";
-$singledescription = "Pagina principale";
+$title = "Home";
+// $singledescription = "Pagina principale";
 include('FE_utils/TopPage.php');
 ?>
 		<div class="row">
