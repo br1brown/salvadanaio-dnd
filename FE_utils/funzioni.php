@@ -1,4 +1,17 @@
 <?php
+require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
+
+$parser = null;
+function Markdown_HTML($mark){
+
+if (!isset($parser))
+    $parser = new Parsedown();
+
+return $parser->text($mark);
+
+}
+
+
 
 /**
  * Modifica l'array del menu direttamente per riferimento.
