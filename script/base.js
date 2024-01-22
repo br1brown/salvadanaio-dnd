@@ -106,27 +106,36 @@ function set_background_with_average_rgb(src) {
  * @returns {Promise} - Ritorna una Promise che risolve se la copia è riuscita, altrimenti la rifiuta.
  * 
  * Esempio di utilizzo:
- * copyToClipboard('idElemento', 'Testo da copiare').then(() => {
+ * copyToClipboard('Testo da copiare').then(() => {
  *     console.log('Testo copiato con successo!');
  * }).catch(() => {
  *     console.error('Errore nella copia del testo.');
  * });
  */
-function copyToClipboard(testoDaCopiare, idElemento) {
+function copyToClipboard(testoDaCopiare) {
 	// Controlla se l'API Clipboard di navigator è disponibile e se il contesto è sicuro (https)
 	if (navigator.clipboard && window.isSecureContext) {
 		// Usa il metodo writeText dell'API Clipboard di navigator per copiare il testo
 		return navigator.clipboard.writeText(testoDaCopiare);
 	} else {
-		// Metodo alternativo usando un elemento
-		let areaTesto = document.getElementById(idElemento);
-		// Imposta il focus e seleziona il testo nell'area di testo
-		areaTesto.focus();
-		areaTesto.select();
+		// Metodo alternativo creando un elemento input temporaneo
+		let tempInput = document.createElement("input");
+		tempInput.style.position = "absolute";
+		tempInput.style.left = "-9999px";
+		tempInput.value = testoDaCopiare;
+		document.body.appendChild(tempInput);
+		tempInput.select();
+
 		// Crea una nuova Promise per gestire la copia
 		return new Promise((resolve, reject) => {
 			// Esegue il comando di copia e risolve o rifiuta la Promise in base al risultato
-			document.execCommand('copy') ? resolve() : reject();
+			if (document.execCommand('copy')) {
+				resolve();
+			} else {
+				reject();
+			}
+			// Rimuove l'elemento temporaneo dal DOM
+			document.body.removeChild(tempInput);
 		});
 	}
 }
