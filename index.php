@@ -54,7 +54,6 @@ include('FE_utils/TopPage.php');
 
 		$('#img_generica').attr('src', imageCreata.urlImmagine());
 
-
 		apiCall("social",{ nomi : "Facebook;twitter;Telegram"},
 		function (response){
 			debugger;

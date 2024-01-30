@@ -237,4 +237,24 @@ class Img_txtCenter {
 		link.href = this.urlImmagine();
 		link.click();
 	}
+
+
+	/**
+	 * Questo metodo converte il canvas in un Blob e lo condivide utilizzando l'API Web Share
+	 */
+	condividiImmagine(title) {
+		this.tela.toBlob(blob => {
+			if (navigator.share) {
+				navigator.share({
+					title: title,
+					files: [new File([blob], 'immagine.png', { type: 'image/png' })],
+				})
+					.then(() => console.log('Condivisione riuscita!'))
+					.catch((error) => console.log('Errore nella condivisione:', error));
+			} else {
+				scaricaImmagine();
+				console.log('API Web Share non supportata in questo browser');
+			}
+		}, 'image/png');
+	}
 }
