@@ -11,7 +11,7 @@ $(document).ready(function () {
         if (tipo && tipo != "") {
             swal.fire(tipo + ": Sono io", val, tipo);
         } else {
-            swal.fire("Sono io di Br1Brown", val);
+            swal.fire("Sono Br1Brown", val);
         }
     });
 });
