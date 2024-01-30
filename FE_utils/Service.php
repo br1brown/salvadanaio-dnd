@@ -53,17 +53,32 @@ class Service {
         $meta['string_All_keywords'] = rtrim($szkeywords, ",");
 
         $havesmoke = isset($this->settings['smoke']) && $this->settings['smoke']["enable"];
+ 
+        $meta['localcss'] = $this->prepareAssets("style", "css",["base.css"], ["addon.css"]);
 
-        $firstLoadCss = ["base.css"]; 
-        $lastLoadCss = ["addon.css"]; 
-        $additionalCss = $this->getFileList("style", "css",  array_merge($firstLoadCss, $lastLoadCss));
-        $meta['ordercss'] = array_merge($firstLoadCss, $additionalCss, $lastLoadCss);
-
-        $firstLoadjs = ["base.js"]; 
-        $lastLoadjs = ["addon.js"]; 
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
-        $additionaljs = $this->getFileList("script", "js", array_merge($firstLoadjs, $excludeJs, $lastLoadjs) );
-        $meta['orderjs'] = array_merge($firstLoadjs, $additionaljs, $lastLoadjs);
+        $meta['localjs'] = $this->prepareAssets("script", "js", ["base.js"], ["addon.js"], $excludeJs);
+        
+        $meta['ext_link'] = [
+            'ROBE PER IL MENU + SOCIAL' => [
+                ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'],
+                ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'],
+            ],
+            'jquery vari' => [
+                ['type' => 'js', 'url' => 'https://code.jquery.com/jquery-3.7.1.min.js'],
+                ['type' => 'js', 'url' => 'https://code.jquery.com/ui/1.13.2/jquery-ui.min.js'],
+            ],
+            'bootstrap' => [
+                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'],
+                ['type' => 'css', 'url' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css'],
+            ],
+            'GLI ALERT' => [
+                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/sweetalert2@10'],
+            ],
+            'Optional: include a polyfill for ES6 Promises for IE11' => [
+                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/promise-polyfill'],
+            ],
+        ];
 
         return $meta; 
     }
@@ -113,30 +128,37 @@ class Service {
             $this->urlAPI = $this->baseUrl.$APIEndPoint;
         }
     }
-
     /**
-     * Ottiene un elenco di percorsi relativi di file con una specifica estensione in una data directory,
-     * escludendo i file specificati.
+     * Prepara e ordina gli asset (CSS o JS) per il caricamento, basandosi su file specifici da caricare per primi e per ultimi,
+     * e includendo file addizionali dalla directory specificata, escludendo quelli non necessari.
      *
-     * @param string $directory Il percorso della directory da esplorare.
-     * @param string $extension L'estensione dei file da includere nell'elenco.
-     * @param array $excludeFiles Array contenente i nomi dei file da escludere.
-     * @return array Array di stringhe, ognuna rappresentante il percorso relativo di un file.
+     * @param string $directory Il percorso della directory da esplorare per file addizionali.
+     * @param string $extension L'estensione dei file (ad esempio, 'css' o 'js').
+     * @param array $firstLoad Array di file da caricare per primi.
+     * @param array $lastLoad Array di file da caricare per ultimi.
+     * @param array $excludeFiles Array di file da escludere dall'elenco addizionale.
+     * @return array Array ordinato di percorsi di file da caricare.
      */
-    function getFileList($directory, $extension, $excludeFiles = array()) {
-        $fileList = array();
-        $absolutePath = realpath($directory) . '/';
-        foreach (glob($absolutePath . "*." . $extension) as $file) {
-            $relativePath = str_replace($absolutePath, '', $file);
-            // Assicurarsi di escludere sia i percorsi completi che i soli nomi di file
-            $fileName = basename($relativePath);
-            if (!in_array($fileName, $excludeFiles) && !in_array($relativePath, $excludeFiles)) {
-                $fileList[] = $relativePath;
+    function prepareAssets($directory, $extension, $firstLoad, $lastLoad, $excludeFiles = []) {
+        // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
+        $getFileList = function($directory, $extension, $excludeFiles) {
+            $fileList = array();
+            $absolutePath = realpath($directory) . '/';
+            foreach (glob($absolutePath . "*." . $extension) as $file) {
+                $relativePath = str_replace($absolutePath, '', $file);
+                $fileName = basename($relativePath);
+                if (!in_array($fileName, $excludeFiles) && !in_array($relativePath, $excludeFiles)) {
+                    $fileList[] = $relativePath;
+                }
             }
-        }
-        return $fileList;
-    }
+            return $fileList;
+        };
 
+        // Combina i file da caricare per primi, file addizionali e file da caricare per ultimi
+        $allFiles = array_merge($firstLoad, $excludeFiles, $lastLoad);
+        $additionalFiles = $getFileList($directory, $extension, $allFiles);
+        return array_merge($firstLoad, $additionalFiles, $lastLoad);
+    }
 
     /**
      * Restituisce il percorso completo dell'URL per una risorsa nelle API.

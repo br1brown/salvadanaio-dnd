@@ -6,7 +6,9 @@ include('FE_utils/TopPage.php');
 		<div class="row">
 			<div class="col-12 text-center <?=$isDarkTextPreferred? "text-dark":"text-light" ?>">
 				<h1><b><?=$title?></b></h1>
-				<i>Performed by Br1Brown</i>
+				<?php if(isset($meta['author'])) : ?>
+					<i>Performed by <?= $meta['author']?></i>
+				<?php endif; ?>
 			</div>
 		</div>
 		<div class="row">
@@ -14,7 +16,7 @@ include('FE_utils/TopPage.php');
 		        <div class="row">
 		            <div class="p-3 col-xs-4 col-sm-4 col-md-4">
 		                <div class="polaroid ruotadestra">
-		                    <img src="https://via.placeholder.com/550x360/D3D3D3" alt="Foto Generica">
+		                    <img id=img_generica src="https://via.placeholder.com/550x360/D3D3D3" alt="Foto Generica">
 		                    <p class="caption">Immagine</p>
 		                </div>
 		            </div>
@@ -42,6 +44,17 @@ include('FE_utils/TopPage.php');
 
 <script>
 	$(document).ready(function () {
+
+		var imageCreata = new CreaImmagine(
+								"Questa è un'immagine generica generata dinamicamente!\n\ncolorata come vuole il colore di sfondo di questo sito (<?= $colorTema ?>)",
+								'<?= $colorTema ?>',
+								'<?= $isDarkTextPreferred?"black": "white" ?>'
+								)
+					.costruisci();
+
+		$('#img_generica').attr('src', imageCreata.urlImmagine());
+
+
 		apiCall("social",{ nomi : "Facebook;twitter;Telegram"},
 		function (response){
 			debugger;

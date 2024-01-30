@@ -27,7 +27,11 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 	
 	<meta name="description" content="<?= $meta['description'] ?>">
+
+	<?php if(isset($meta['string_All_keywords'])) : ?>
 	<meta name="keywords" content="<?= $meta['string_All_keywords'] ?>">
+	<?php endif; ?>
+	
 	<?php if(isset($meta['author'])) : ?>
 		<meta name="author" content="<?= $meta['author']?>">
 	<?php endif; ?>
@@ -53,42 +57,35 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<!-- Permette al sito web di funzionare a schermo intero su Safari iOS, simile a un'applicazione nativa -->
 	<meta name="apple-mobile-web-app-capable" content="<?= $meta['iOSFullScreenWebApp']?"yes":"no" ?>">
 	
-	
 	<link rel="icon" type="image/png" href="<?=$service->baseURL($favIcon)?>">
+	<?php
 
-	<!-- ROBE PER IL MENU + SOCIAL anche quella prima per delle altre icone -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	foreach ($meta['ext_link'] as $comment => $links):
+    echo "\n	<!-- $comment -->\n";
+    foreach ($links as $link) {
+        if ($link['type'] == 'css') {
+            echo '	<link rel="stylesheet" href="' . $link['url'] . '">' . "\n";
+        } else if ($link['type'] == 'js') {
+            echo '	<script src="' . $link['url'] . '"></script>' . "\n";
+        }
+    }
+	endforeach;
 
-	<!-- jquery -->
-	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	foreach ($meta['localcss'] as $value):
+	echo "\n	<link rel=\"stylesheet\" href=".$service->baseURL("style/".$value).">";
+	endforeach;
 
-	<!-- bootstrap -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	foreach ($meta['localjs'] as $value):
+	 echo "\n	<script src=".$service->baseURL("script/".$value)."></script>";
+	endforeach; ?>
 
-	<!-- GLI ALERT -->
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-	<!-- Optional: include a polyfill for ES6 Promises for IE11 -->
-	<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
-
-	<!-- ROBA NOSTRA -->
 	<style>
 	:root {
 		--coloreBase: <?= $colorBase; ?>;
 		--coloreTema: <?= $colorTema; ?>;
 	}
 	</style>
-<?php
-
-foreach ($meta['ordercss'] as $value): ?>
-    <link rel="stylesheet" href="<?=$service->baseURL("style/".$value)?>">
-<?php endforeach;
-foreach ($meta['orderjs'] as $value): ?>
-    <script src="<?=$service->baseURL("script/".$value)?>"></script>
-<?php endforeach; ?>
 
 </head>
 <script>
@@ -112,7 +109,7 @@ if ($havesmoke) : ?>
 <?php endif; 
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMenu == true):true)): ?>
-<nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
+<nav class="p-1 navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
   <a class="navbar-brand" href="index"><?= $AppName ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
