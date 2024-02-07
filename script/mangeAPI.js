@@ -36,6 +36,9 @@ function getApiUrl(action, params = null) {
  * @param {string} [dataType='json'] - Il tipo di dati attesi nella risposta.
  */
 function apiCall(endpoint, data, callback = null, type = 'GET', dataType = 'json') {
+
+	data.lang = lang;
+
 	let settings = {
 		url: type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint),
 		type: type,

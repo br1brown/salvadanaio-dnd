@@ -265,6 +265,8 @@ class Service {
 
     $url = $this->APIbaseURL($pathOrEndpoint);
 
+    $dati['lang'] = $this->lang;
+
     if (strtoupper($metodo) === "GET" && !empty($dati)) {
         $url .= '?' . http_build_query($dati);
     }
