@@ -13,6 +13,15 @@ body {
 	/* Imposta il tipo di carattere */
 }
 
+.fillColoreSfondo {
+	background-color: var(--coloreTema);
+}
+
+.fillColoreSfondo:hover,
+.fillColoreSfondo:focus {
+	background-color: var(--coloreBase);
+}
+
 /* Stile per il bottone 'Torna in alto' */
 .back-to-top {
 	z-index: 999;

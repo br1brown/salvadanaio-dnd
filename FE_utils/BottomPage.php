@@ -2,7 +2,7 @@
 <?php if (isset($footer) && $footer == true) : 
 	
 	?>
-<footer style="font-size: 0.8rem; background-color:var(--coloreTema)" class="container-fluid mt-3 <?=$clsTxt?>">
+<footer style="font-size: 0.8rem;" class="container-fluid mt-3 fillColoreSfondo <?=$clsTxt?>">
 	<div class="container py-2">
 		<?php // Controllo se almeno una delle chiavi è impostata e non vuota
 		if ((isset($irl['numeroWA']) && !empty($irl['numeroWA'])) ||
@@ -93,4 +93,7 @@
 	</div>
 	</footer>
 <?php endif; ?>
+
+
+
 </body>

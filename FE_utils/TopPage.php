@@ -16,7 +16,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
 ?>
 <!doctype html>
-<html lang="<?= $lang ?>">
+<html lang="<?= $service->lang ?>">
 <head>
 <?php
 $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
@@ -91,6 +91,7 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 <script>
 	const APIEndPoint = '<?= $service->urlAPI ?>';
 	const APIKey = '<?= $service->APIkey ?>';
+	const lang = '<?= $service->lang ?>';
 	</script>
 <body>	
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
@@ -109,8 +110,8 @@ if ($havesmoke) : ?>
 <?php endif; 
 //se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMenu == true):true)): ?>
-<nav class="p-1 navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?>" style="background-color:var(--coloreTema)">
-  <a class="navbar-brand" href="index"><?= $AppName ?></a>
+<nav class="navbar navbar-expand-sm <?=$isDarkTextPreferred? "navbar-light":"navbar-dark" ?> fillColoreSfondo">
+  <a class="navbar-brand" href="<?= $service->createRoute("index")?>"><?= $AppName ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -119,14 +120,28 @@ if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMe
 	<?php
 	foreach($itemsMenu as $key=>$value): ?>
 		<li class="nav-item<?=pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == $value['route']? " active":"" ?>">
-			<a class="nav-link" href="<?=$value['route']?>"><?= ucfirst($value['nome']);?></span></a>
+			<a class="nav-link" href="<?= $service->createRoute($value['route'])?>"><?= ucfirst($value['nome']);?></span></a>
 		</li>
 	<?php endforeach; ?>
-
     </ul>
+	<div class="ml-auto">
+      <div class="dropdown fillColoreSfondo">
+        <button class="nav-link w-100 dropdown-toggle fillColoreSfondo <?=$clsTxt?>" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Seleziona Lingua
+        </button>
+        <div class="dropdown-menu dropdown-menu-right fillColoreSfondo" aria-labelledby="dropdownMenuButton">
+			<a href="javascript:setLanguage('it')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Italiano</a>
+			<a href="javascript:setLanguage('en')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">English</a>
+			<a href="javascript:setLanguage('de')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Deutsch</a>
+			<a href="javascript:setLanguage('es')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Español</a>
+			<a href="javascript:setLanguage('fr')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Français</a>
+		</div>
+      </div>
+    </div>
   </div>
 </nav>
 <?php endif; ?>
+
 <div class="container-fluid">
 
 <!-- qui comincia l'html diverso per tutti -->

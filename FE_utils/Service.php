@@ -10,7 +10,7 @@ class Service {
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['API',"meta"];
+    private $excludeKeys = ['API',"meta",'lang'];
     
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
@@ -65,12 +65,12 @@ class Service {
                 ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'],
             ],
             'jquery vari' => [
-                ['type' => 'js', 'url' => 'https://code.jquery.com/jquery-3.7.1.min.js'],
-                ['type' => 'js', 'url' => 'https://code.jquery.com/ui/1.13.2/jquery-ui.min.js'],
+                ['type' => 'js', 'url' => 'https://code.jquery.com/jquery-3.5.1.js'],
+                ['type' => 'js', 'url' => 'https://code.jquery.com/ui/1.12.1/jquery-ui.js'],
             ],
             'bootstrap' => [
-                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'],
-                ['type' => 'css', 'url' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css'],
+                ['type' => 'js', 'url' => 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'],
+                ['type' => 'css', 'url' => 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'],
             ],
             'GLI ALERT' => [
                 ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/sweetalert2@10'],
@@ -84,6 +84,11 @@ class Service {
     }
 
 
+
+    /**
+     * @var string lingua della pagina
+     */
+    public string $lang;
 
     /**
      * @var string URL dell'API di servizio
@@ -119,7 +124,11 @@ class Service {
                             
         $this->settings = json_decode(file_get_contents('websettings.json'), true);
 
-        $this->APIkey  = $this->settings['API']['key'];
+        $this->lang = $this->settings['lang'];
+        if (isset($_GET["lang"]) && !empty($_GET["lang"]))
+        $this->lang = $_GET["lang"];
+
+        $this->APIkey = $this->settings['API']['key'];
 
         $APIEndPoint = $this->settings['API']['EndPoint'];
         if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
@@ -186,6 +195,41 @@ class Service {
         } else { 
             return rtrim($this->baseUrl, '/') . '/' . $path;
         }
+    }
+
+    /**
+     * Restituisce la route con la lingua settata
+     * 
+     * @param string $route route
+     * @return string route
+     */
+    public function createRoute($route) {
+        //la lingua è il default
+        if ($this->settings['lang'] == $this->lang)
+            return $route;
+
+        // Parsa l'URL e decomponilo nei suoi componenti
+        $parsedUrl = parse_url($route);
+        
+        // Prepara l'array dei parametri della query
+        $queryParams = [];
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $queryParams);
+        }
+
+        // Aggiungi o modifica il parametro della lingua
+        $queryParams['lang'] = $this->lang;
+
+        // Ricostruisci la query string
+        $queryString = http_build_query($queryParams);
+
+        // Ricostruisci l'URL
+        $newUrl = $parsedUrl['path'] . '?' . $queryString;
+        if (isset($parsedUrl['scheme'])) {
+            $newUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $newUrl;
+        }
+
+        return $newUrl;
     }
 
     /**

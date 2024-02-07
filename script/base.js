@@ -2,6 +2,7 @@
  * Funzione di inizializzazione eseguita al caricamento completo del DOM.
  */
 $(document).ready(function () {
+
 	/**
 	 * Gestisce l'evento di scorrimento della finestra.
 	 */
@@ -177,4 +178,17 @@ function disattivaper(myobj, durata) {
 			terminaCaricamento();
 		}
 	}, 100);
+}
+
+/**
+ * Setta ala linga dell'applicativo
+ * @param {string} lang - codice lingua
+ */
+function setLanguage(lang) {
+	let searchParams = new URLSearchParams(window.location.search);
+	searchParams.set('lang', lang); // Imposta o aggiorna il parametro 'lang'
+
+	// Costruisce l'URL con i parametri aggiornati
+	let newUrl = window.location.pathname + '?' + searchParams.toString() + window.location.hash;
+	window.location.href = newUrl; // Reindirizza l'utente all'URL aggiornato
 }
