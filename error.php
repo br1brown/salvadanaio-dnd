@@ -174,7 +174,7 @@ $forceMenu = false;
     </div>
 </body>
 <script>
-	$(document).ready(function () {
+	inizializzazioneApp.then(() => {
 
 
 	});

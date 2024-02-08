@@ -58,8 +58,16 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<meta name="apple-mobile-web-app-capable" content="<?= $meta['iOSFullScreenWebApp']?"yes":"no" ?>">
 	
 	<link rel="icon" type="image/png" href="<?=$service->baseURL($favIcon)?>">
+	
+	
+	<script>
+		const APIEndPoint = '<?= $service->urlAPI ?>';
+		const APIKey = '<?= $service->APIkey ?>';
+		const lang = '<?= $service->lang ?>';
+		let _pathtraduzione = '<?=$service->_pathjsonLang($service->lang)?>';
+	</script>
+	
 	<?php
-
 	foreach ($meta['ext_link'] as $comment => $links):
     echo "\n	<!-- $comment -->\n";
     foreach ($links as $link) {
@@ -71,15 +79,17 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
     }
 	endforeach;
 
+
+	foreach ($meta['localjs'] as $value):
+	 echo "\n	<script src=".$service->baseURL("script/".$value)."></script>";
+	endforeach;
+
+
 	foreach ($meta['localcss'] as $value):
 	echo "\n	<link rel=\"stylesheet\" href=".$service->baseURL("style/".$value).">";
 	endforeach;
 
-	foreach ($meta['localjs'] as $value):
-	 echo "\n	<script src=".$service->baseURL("script/".$value)."></script>";
-	endforeach; ?>
-
-
+	?>	
 	<style>
 	:root {
 		--coloreBase: <?= $colorBase; ?>;
@@ -88,11 +98,6 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	</style>
 
 </head>
-<script>
-	const APIEndPoint = '<?= $service->urlAPI ?>';
-	const APIKey = '<?= $service->APIkey ?>';
-	const lang = '<?= $service->lang ?>';
-	</script>
 <body>	
 <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
 	<i class="fas fa-chevron-up"></i>
@@ -124,21 +129,25 @@ if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMe
 		</li>
 	<?php endforeach; ?>
     </ul>
-	<div class="ml-auto">
-      <div class="dropdown fillColoreSfondo">
-        <button class="nav-link w-100 dropdown-toggle fillColoreSfondo <?=$clsTxt?>" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Seleziona Lingua
-        </button>
-        <div class="dropdown-menu dropdown-menu-right fillColoreSfondo" aria-labelledby="dropdownMenuButton">
-			<a href="javascript:setLanguage('it')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Italiano</a>
-			<a href="javascript:setLanguage('en')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">English</a>
-			<a href="javascript:setLanguage('de')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Deutsch</a>
-			<a href="javascript:setLanguage('es')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Español</a>
-			<a href="javascript:setLanguage('fr')" class="dropdown-item fillColoreSfondo <?=$clsTxt?>">Français</a>
+	<?php
+	$lingueDisponibili = $service->getLingueDisponibili();
+
+	// Controlla se ci sono più di una lingua disponibile
+	if (count($lingueDisponibili) > 1): ?>
+		<div class="ml-auto">
+		<div class="dropdown fillColoreSfondo">
+			<button class="nav-link w-100 dropdown-toggle fillColoreSfondo <?= $clsTxt ?>" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<?= $service->traduci("selezionaLingua"); ?>
+			</button>
+			<div class="dropdown-menu dropdown-menu-right fillColoreSfondo" aria-labelledby="dropdownMenuButton">
+			<?php foreach ($lingueDisponibili as $lingua): ?>
+				<a href="javascript:setLanguage('<?= $lingua ?>')" class="dropdown-item<?=$service->lang == $lingua?" active ": " "?>fillColoreSfondo <?= $clsTxt ?>"> <?= strtoupper($lingua) ?> </a>
+			<?php endforeach; ?>
+			</div>
 		</div>
-      </div>
-    </div>
-  </div>
+		</div>
+	<?php endif; ?>
+
 </nav>
 <?php endif; ?>
 

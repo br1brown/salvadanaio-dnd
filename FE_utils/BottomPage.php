@@ -50,35 +50,35 @@
 							<li><?=$irl['indirizzoSedeLegale']?></li>
 						<?php endif; ?>
 						<?php if (isset($irl['numeroTelefono'])) : ?>
-							<li>Telefono: <?=$service->creaLinkCodificato(str_replace(' ', '', $irl['numeroTelefono']), 'tel:')?></li>
+							<li><?= $service->traduci("telefono");?>: <?=$service->creaLinkCodificato(str_replace(' ', '', $irl['numeroTelefono']), 'tel:')?></li>
 						<?php endif; ?>
 						<?php if (isset($irl['pec'])) : ?>
-							<li>PEC: <?=$service->creaLinkCodificato($irl['pec'], 'mailto:')?></li>
+							<li><?= $service->traduci("PEC");?>: <?=$service->creaLinkCodificato($irl['pec'], 'mailto:')?></li>
 						<?php endif; ?>
 						<?php if (isset($irl['mail'])) : ?>
-							<li>Mail: <?=$service->creaLinkCodificato($irl['mail'], 'mailto:')?></li>
+							<li><?= $service->traduci("mail");?>: <?=$service->creaLinkCodificato($irl['mail'], 'mailto:')?></li>
 						<?php endif; ?>
 					</ul>
 				</div>
 				<div class="col-12 col-sm-6">
 					<ul class="list-unstyled">
 						<?php if (isset($irl['partitaIVA'])) : ?>
-							<li>Partita IVA: <code><?=$irl['partitaIVA']?></code></li>
+							<li><?= $service->traduci("partitaiva");?>: <code><?=$irl['partitaIVA']?></code></li>
 						<?php endif; ?>
 						<?php if (isset($irl['registroImprese'])) : ?>
-							<li>Ufficio del Registro delle Imprese d’Iscrizione: <code><?=$irl['registroImprese']?></code></li>
+							<li><?= $service->traduci("registroimprese");?>: <code><?=$irl['registroImprese']?></code></li>
 						<?php endif; ?>
 						<?php if (isset($irl['numeroIscrizione'])) : ?>
-							<li>Numero di Iscrizione all’Albo: <code><?=$irl['numeroIscrizione']?></code></li>
+							<li><?= $service->traduci("iscrizionealbo");?>: <code><?=$irl['numeroIscrizione']?></code></li>
 						<?php endif; ?>
 						<?php if (isset($irl['numeroREA'])) : ?>
-							<li>Numero REA: <code><?=$irl['numeroREA']?></code></li>
+							<li><?= $service->traduci("numerorea");?>: <code><?=$irl['numeroREA']?></code></li>
 						<?php endif; ?>
 						<?php if (isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy'])) : ?>
-							<li class="pt-3"><a href="<?=$url['PrivacyPolicy']?>">Privacy policy</a></li>
+							<li class="pt-3"><a href="<?=$url['PrivacyPolicy']?>"><?= $service->traduci("privacypolicy");?></a></li>
 						<?php endif; ?>
 						<?php if (isset($url['CookiePolicy']) && !empty($url['CookiePolicy'])) : ?>
-							<li><a href="<?=$url['CookiePolicy']?>">Cookie policy sito web</a></li>
+							<li><a href="<?=$url['CookiePolicy']?>"><?= $service->traduci("cookiepolicy");?></a></li>
 						<?php endif; ?>
 					</ul>
 				</div>
@@ -87,7 +87,7 @@
 		endif; ?>
 		<div class="row">
 		<div class="col text-center">
-			<p>© 2023 <?= $AppName?>. Tutti i diritti riservati.</p>
+			<p>© 2023 <?= $AppName?>. <?= $service->traduci("dirittiriservati");?>.</p>
 		</div>
 		</div>
 	</div>

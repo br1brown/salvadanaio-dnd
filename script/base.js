@@ -1,7 +1,14 @@
+// Aggrega tutte le dipendenze in una singola Promessa
+var inizializzazioneApp = Promise.all([
+	traduzioneCaricata,
+	new Promise(resolve => $(document).ready(resolve))
+]);
+
+
 /**
  * Funzione di inizializzazione eseguita al caricamento completo del DOM.
  */
-$(document).ready(function () {
+inizializzazioneApp.then(() => {
 
 	/**
 	 * Gestisce l'evento di scorrimento della finestra.

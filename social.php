@@ -62,7 +62,7 @@ $social = $service->callApiEndpoint("social");
 <?php include('FE_utils/BottomPage.php'); ?>
 
 <script>
-	$(document).ready(function () {
+	inizializzazioneApp.then(() => {
 
 	});
 </script>

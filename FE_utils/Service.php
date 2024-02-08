@@ -2,6 +2,9 @@
 
 class Service {
 
+    /** @var array Le traduzioni caricate per la lingua corrente */
+    public $traduzione = [];
+    
     /**
      * @var array Impostazioni dell'applicativo
      */
@@ -57,7 +60,7 @@ class Service {
         $meta['localcss'] = $this->prepareAssets("style", "css",["base.css"], ["addon.css"]);
 
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
-        $meta['localjs'] = $this->prepareAssets("script", "js", ["base.js"], ["addon.js"], $excludeJs);
+        $meta['localjs'] = $this->prepareAssets("script", "js", ["lingua.js","base.js"], ["addon.js"], $excludeJs);
         
         $meta['ext_link'] = [
             'ROBE PER IL MENU + SOCIAL' => [
@@ -124,9 +127,7 @@ class Service {
                             
         $this->settings = json_decode(file_get_contents('websettings.json'), true);
 
-        $this->lang = $this->settings['lang'];
-        if (isset($_GET["lang"]) && !empty($_GET["lang"]))
-        $this->lang = $_GET["lang"];
+        $this->caricaLingua();
 
         $this->APIkey = $this->settings['API']['key'];
 
@@ -137,6 +138,57 @@ class Service {
             $this->urlAPI = $this->baseUrl.$APIEndPoint;
         }
     }
+
+    public function _pathjsonLang($l){
+        return "FE_utils/lang/{$l}.json";
+    }
+    
+    /**
+     * Carica le traduzioni per la lingua impostata se il file esiste.
+     */
+    private function caricaLingua() {
+        $this->lang = $this->settings['lang'];
+        if (isset($_GET["lang"]) && !empty($_GET["lang"]))
+        $this->lang = $_GET["lang"];
+        $percorsoFile = $this->_pathjsonLang($this->lang);
+        
+        if (file_exists($percorsoFile)) {
+            $this->traduzione = json_decode(file_get_contents($percorsoFile), true);
+        }
+    }
+
+    /**
+     * Restituisce l'elenco delle lingue disponibili basato sui file nella cartella lang.
+     * @return array Un array con le lingue disponibili.
+     */
+    public function getLingueDisponibili() {
+        $lingue = [];
+        $lingue[] = $this->lang;
+
+        $files = glob($this->_pathjsonLang("*"));
+        foreach ($files as $file) {
+            $lingua = basename($file, '.json');
+            
+            if ($lingua !== $this->lang) {
+                $lingue[] = $lingua;
+            }
+        }
+        
+        return $lingue;
+    }
+
+
+    /**
+     * Tenta di tradurre una stringa (identificatore di traduzione) nella lingua corrente impostata per l'istanza.
+     * @param string $sz L'identificatore della stringa da tradurre
+     * @return string La stringa tradotta se disponibile; altrimenti, restituisce l'identificatore originale
+     */
+    function traduci($sz) {
+        if (isset($this->traduzione[$sz]) && !empty($this->traduzione[$sz]))
+            return $this->traduzione[$sz]; 
+        return $sz;
+    }
+
     /**
      * Prepara e ordina gli asset (CSS o JS) per il caricamento, basandosi su file specifici da caricare per primi e per ultimi,
      * e includendo file addizionali dalla directory specificata, escludendo quelli non necessari.
