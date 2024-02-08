@@ -168,10 +168,10 @@ class Service {
         $files = glob($this->_pathjsonLang("*"));
         foreach ($files as $file) {
             $lingua = basename($file, '.json');
-            
-            if ($lingua !== $this->lang) {
+            if (!str_starts_with($lingua, '_') && $lingua !== $this->lang)
                 $lingue[] = $lingua;
-            }
+            
+            
         }
         
         return $lingue;
