@@ -30,6 +30,8 @@ Il template è suddiviso in due componenti principali:
    - La classe `Service` aiuta a interagire con le API e a gestire funzionalità comuni, inclusa la manipolazione degli URL.
    - Include una libreria per convertire Markdown in HTML.
    - Il file `websettings.json` contiene impostazioni di base per il funzionamento del sito, valori per i <meta> compresi.
+   - Dentro `FE_utils/lang/` ci sono i file per le lingue, che hanno il codice lingua nel nome (se iniziano con `_` l'utente non le vedrà)
+    - In javascript c'è una funzione chiamata `traduci` a cui passi la chiave contenuta nel file e restituisce la stringa tradotta, analogamente dentro `$service` che funziona nel medesimo modo.
 
 
 ### Esempi Pratici
