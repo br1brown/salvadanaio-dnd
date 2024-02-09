@@ -31,7 +31,7 @@ class Repository {
      * @param string $ext estensione per il file, sempre .
      * @return string Percorso completo del file json.
      */
-    private static function getFileName(string $nome, string $ext = "json"): string{
+    public static function getFileName(string $nome, string $ext = "json"): string{
         return self::findAPIPath() . 'data/' . $nome . '.'.$ext;
     }
 
@@ -41,7 +41,7 @@ class Repository {
      * @param string $filePath Nome per il file.
      * @return string Contenuto completo del file
      */
-    private static function getFileContent(string $filePath): string{
+    public static function getFileContent(string $filePath): string{
         if (file_exists($filePath) && is_readable($filePath)) {
             return file_get_contents($filePath);
         } else {
