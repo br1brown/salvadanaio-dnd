@@ -13,6 +13,9 @@ include('FE_utils/TopPage.php');
 		</div>
 		<div class="row">
 		    <div class="offset-1 col-10 offset-md-2 col-md-8 shadow rounded tutto text-center">
+				<div class="row">
+					<p class=col><?= $irl['infoBase']?></p>
+				</div>
 		        <div class="row">
 		            <div class="p-3 col-xs-4 col-sm-4 col-md-4">
 		                <div class="polaroid ruotadestra">

@@ -16,7 +16,8 @@ function Echo_getObj($nome, $callback = null){
 
         // Se esiste una callback valida, la applica ai dati ottenuti
         if ($ciLavoro) {
-            $jsonData = json_encode($callback($jsonData));
+            $l = isset($_GET["lang"]) ? filter_input(INPUT_GET, "lang", FILTER_SANITIZE_STRING) : BLL\Repository::getDefaultLang();
+            $jsonData = json_encode($callback($jsonData, $l));
         }
 
     } catch(Exception $e) {

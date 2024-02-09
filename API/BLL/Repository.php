@@ -204,5 +204,9 @@ class Repository {
         file_put_contents($filename, $fileContent);
     }
 
+    public static function getDefaultLang(): string{
+        return "it";
+    }
+
 }
 ?>

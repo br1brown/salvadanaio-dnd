@@ -1,5 +1,1 @@
-﻿# Ignora tutto nella cartella
-API/data/*
-# Non ignorare il file .htaccess
-!API/data/.htaccess
-
+﻿
