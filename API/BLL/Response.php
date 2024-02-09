@@ -23,16 +23,23 @@ class Response {
 
 
     /**
-     * Controlla se la richiesta HTTP corrente è una POST
-     * @throws Exception Se il metodo della richiesta HTTP non è POST, lancia un'eccezione con un messaggio di errore.
+     * Controlla se la richiesta HTTP corrente è una richiesta
+     * @param string $metodo Metodo indicato
+     * @return bool Se il metodo della richiesta HTTP è quello indicato
      */
-    public static function SiamoInPost(): void{
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            throw new Exception('Metodo HTTP non supportato');
-        }
+    public static function SiamoIn($metodo): bool{
+        return ($_SERVER['REQUEST_METHOD'] === $metodo);
     }
 
-        /**
+     /**
+     * Recuperai dati in "php://input"
+     * @return array Se il metodo della richiesta HTTP è quello indicato
+     */
+    public static function datiinput(): array{
+        return json_decode(file_get_contents('php://input'), true);
+    }
+
+     /**
      * Traduce i valori specificati di una lista di array associativi nella lingua desiderata.
      * 
      * @param array $lista La lista da tradurre.

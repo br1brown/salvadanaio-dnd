@@ -1,9 +1,9 @@
 <?php
 include __DIR__.'/BLL/auth_and_cors_middleware.php';
+function eseguiGET(){
 
-$nomi = isset($_GET['nomi'])? $_GET['nomi'] : [];
-
-echo Echo_getObj("social",function ($data) use ($nomi) { // use ($variabile, $variabile2) 
+echo Echo_getObj("social",function ($data) { // use ($variabile, $variabile2) 
+    $nomi = isset($_GET['nomi'])? $_GET['nomi'] : [];
     
     if (empty($nomi)) 
         return $data;
@@ -27,4 +27,6 @@ echo Echo_getObj("social",function ($data) use ($nomi) { // use ($variabile, $va
 
     return $risultati;    
 });
+}
+include __DIR__.'/BLL/gestione_metodi.php';
 ?>
