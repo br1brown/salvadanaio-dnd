@@ -17,8 +17,7 @@ body {
 	background-color: var(--coloreTema);
 }
 
-.fillColoreSfondo:hover,
-.fillColoreSfondo:focus {
+.dropdown-menu .dropdown-item.fillColoreSfondo:hover {
 	background-color: var(--coloreBase);
 }
 

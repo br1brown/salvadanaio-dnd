@@ -147,9 +147,9 @@ class Service {
      * Carica le traduzioni per la lingua impostata se il file esiste.
      */
     private function caricaLingua() {
-        $this->lang = $this->settings['lang'];
+        $this->lang = strtolower($this->settings['lang']);
         if (isset($_GET["lang"]) && !empty($_GET["lang"]))
-        $this->lang = $_GET["lang"];
+        $this->lang = strtolower($_GET["lang"]);
         $percorsoFile = $this->_pathjsonLang($this->lang);
         
         if (file_exists($percorsoFile)) {
@@ -167,7 +167,7 @@ class Service {
 
         $files = glob($this->_pathjsonLang("*"));
         foreach ($files as $file) {
-            $lingua = basename($file, '.json');
+            $lingua = strtolower(basename($file, '.json'));
             if (!str_starts_with($lingua, '_') && $lingua !== $this->lang)
                 $lingue[] = $lingua;
             
