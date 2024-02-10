@@ -33,6 +33,13 @@ class Service {
            $data['colorBase'] = $this->lightenColor($data['colorTema']);
         }
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
+
+        
+        $data["colori"]['colorBase'] = $data['colorBase'];
+        $data["colori"]['colorTema'] = $data['colorTema'];
+        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred']==true ? 0.4 : 0);
+        $data["colori"]['colorPrimaryScuro'] = $this->darkenColor($data["colori"]['colorPrimary'], 0.2);
+
                 
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;

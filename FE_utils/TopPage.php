@@ -92,8 +92,9 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	?>	
 	<style>
 	:root {
-		--coloreBase: <?= $colorBase; ?>;
-		--coloreTema: <?= $colorTema; ?>;
+		<?php foreach ($colori as $chiave => $colore): ?>
+			--<?= $chiave; ?>: <?= $colore; ?>;
+		<?php endforeach; ?>
 	}
 	</style>
 

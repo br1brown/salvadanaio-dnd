@@ -7,18 +7,30 @@ html {
 
 /* Stile di base per il corpo del documento */
 body {
-	background-color: var(--coloreBase);
+	background-color: var(--colorBase);
 	/* Colore di sfondo */
-	font-family: Verdana, sans-serif;
+	font-family: 'Frutiger Aero', Arial, Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
 	/* Imposta il tipo di carattere */
 }
 
+.btn-primary {
+	background-color: var(--colorPrimary);
+	border-color: var(--colorPrimary);
+}
+
+.btn-primary:active,
+.btn-primary:hover,
+.btn-primary:focus {
+	background-color: var(--colorPrimaryScuro);
+	border-color: var(--colorPrimaryScuro);
+}
+
 .fillColoreSfondo {
-	background-color: var(--coloreTema);
+	background-color: var(--colorTema);
 }
 
 .dropdown-menu .dropdown-item.fillColoreSfondo:hover {
-	background-color: var(--coloreBase);
+	background-color: var(--colorBase);
 }
 
 /* Stile per il bottone 'Torna in alto' */
@@ -75,7 +87,7 @@ body {
 
 .obj-loading {
 	background-size: 10% 80%;
-	background-image: linear-gradient(to right, var(--coloreTema) 20%, var(--coloreBase) 100%);
+	background-image: linear-gradient(to right, var(--colorTema) 20%, var(--colorBase) 100%);
 	background-repeat: no-repeat;
 }
 
