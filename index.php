@@ -25,7 +25,7 @@ include('FE_utils/TopPage.php');
 		            </div>
 		            <div class="col-xs-8 col-sm-8 col-md-8">
 		                <!-- https://getbootstrap.com/docs/4.0/components/buttons/ -->
-		                <input type="button" data-type="error" id=danger class="bottone btn btn-primary btn-lg" value="<?= $service->traduci("conferma");?>"><br>
+		                <input type="button" class="bottone btn btn-primary btn-lg" value="<?= $service->traduci("conferma");?>"><br>
 		                <input type="button" data-type="success" id=success class="zoomma bottone btn btn-success btn-lg" value="<?= $service->traduci("successo");?>">
 		                <input type="button" data-type="error" id=danger class="zoomma bottone btn btn-danger btn-lg" value="<?= $service->traduci("errore");?>"><br>
 		                <input type="button" data-type="warning" id=warning class="zoomma bottone btn btn-warning btn-sm" value="<?= $service->traduci("attenzione");?>">

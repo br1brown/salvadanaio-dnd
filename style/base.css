@@ -9,7 +9,7 @@ html {
 body {
 	background-color: var(--colorBase);
 	/* Colore di sfondo */
-	font-family: 'Frutiger Aero', Arial, Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+	font-family: Geneva, Verdana, sans-serif;
 	/* Imposta il tipo di carattere */
 }
 
@@ -23,6 +23,14 @@ body {
 .btn-primary:focus {
 	background-color: var(--colorPrimaryScuro);
 	border-color: var(--colorPrimaryScuro);
+}
+
+.btn-primary:checked,
+.btn-primary:focus-visible,
+.btn-primary:checked,
+.btn-primary:disabled {
+	background-color: var(--colorBase);
+	border-color: var(--colorPrimary);
 }
 
 .fillColoreSfondo {

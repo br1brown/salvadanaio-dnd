@@ -126,7 +126,7 @@ if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMe
 	<?php
 	foreach($itemsMenu as $key=>$value): ?>
 		<li class="nav-item<?=pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == $value['route']? " active":"" ?>">
-			<a class="nav-link" href="<?= $service->createRoute($value['route'])?>"><?= ucfirst($value['nome']);?></span></a>
+			<a class="nav-link" href="<?= $service->createRoute($value['route'])?>"><?= $service->traduci(ucfirst($value['nome']));?></span></a>
 		</li>
 	<?php endforeach; ?>
     </ul>
