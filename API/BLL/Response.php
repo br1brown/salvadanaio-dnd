@@ -33,10 +33,17 @@ class Response {
 
      /**
      * Recuperai dati in "php://input"
-     * @return array Se il metodo della richiesta HTTP è quello indicato
+     * @return mixed Se il metodo della richiesta HTTP è quello indicato
      */
-    public static function datiinput(): array{
-        return json_decode(file_get_contents('php://input'), true);
+    public static function datiinput(){
+        $result = file_get_contents('php://input');
+        try{
+            return json_decode($result, true);
+        }
+        catch (Exception $e) {
+            parse_str($result,$rawData);
+            return $rawData;
+        }
     }
 
      /**
