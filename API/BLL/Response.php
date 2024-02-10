@@ -32,8 +32,8 @@ class Response {
     }
 
      /**
-     * Recuperai dati in "php://input"
-     * @return mixed Se il metodo della richiesta HTTP è quello indicato
+     * Recupera i dati in "php://input"
+     * @return mixed "php://input" Parsato se possibile
      */
     public static function datiinput(){
         $result = file_get_contents('php://input');

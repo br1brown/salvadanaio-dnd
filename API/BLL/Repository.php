@@ -9,7 +9,7 @@ class Repository {
      * @param string $dir Percorso della directory da cui iniziare la ricerca.
      * @return string|null Percorso della directory 'API' se trovata, altrimenti null.
      */
-    private static function findAPIPath(string $dir = __DIR__): ?string {
+    public static function findAPIPath(string $dir = __DIR__): ?string {
         $path = $dir . '/API/';
 
         // Controlla se il percorso esiste e in caso affermativo lo restituisce.

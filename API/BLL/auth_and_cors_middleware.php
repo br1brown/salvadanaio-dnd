@@ -1,10 +1,17 @@
 <?php
+
+// Includi i file necessari
+require_once __DIR__.'/Repository.php';
+require_once __DIR__.'/Response.php';
+include __DIR__.'/funzioni_comuni.php';
+
+
 $settingsfolder = "BLL/auth_settings/";
 // Ottiene tutti gli header della richiesta HTTP
 $headers = getallheaders();
 
 // Legge il file contenente le API keys autorizzate
-$paroleSegrete = file($settingsfolder.'APIKeys.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$paroleSegrete = file(BLL\Repository::findAPIPath().$settingsfolder.'APIKeys.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 // Controlla se l'header 'X-Api-Key' esiste e se corrisponde a una delle API keys autorizzate
 if (!isset($headers['X-Api-Key']) || !in_array($headers['X-Api-Key'], $paroleSegrete)) {
@@ -13,7 +20,7 @@ if (!isset($headers['X-Api-Key']) || !in_array($headers['X-Api-Key'], $paroleSeg
 }
 
 // Gestione delle impostazioni CORS
-$fileconfigCORS = $settingsfolder."CORSconfig.json";
+$fileconfigCORS = BLL\Repository::findAPIPath().$settingsfolder."CORSconfig.json";
 // Controlla se esiste il file di configurazione CORS
 if (file_exists($fileconfigCORS)){
     // Decodifica il file JSON di configurazione CORS
@@ -40,8 +47,4 @@ if (file_exists($fileconfigCORS)){
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
     }
 }
-// Includi i file necessari
-require_once __DIR__.'/Repository.php';
-require_once __DIR__.'/Response.php';
 
-include __DIR__.'/funzioni_comuni.php';
