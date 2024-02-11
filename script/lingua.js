@@ -20,5 +20,7 @@ var traduzioneCaricata = new Promise((resolve, reject) => {
 // Funzione per tradurre una chiave
 function traduci(chiave) {
     // Restituisce la traduzione se disponibile, altrimenti la chiave stessa
-    return traduzione[chiave] || chiave;
+    if (traduzione)
+        return traduzione[chiave] || chiave;
+    return chiave;
 }

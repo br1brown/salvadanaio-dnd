@@ -95,13 +95,13 @@ function handleError(xhr, status, error) {
  */
 function genericSuccess(response, callback) {
 	if (response.status === 'success') {
-		SweetAlert.fire('Ottimo!', response.message, 'success').then(() => {
+		SweetAlert.fire(traduci('ottimo') + "!", (response.message), 'success').then(() => {
 			if (typeof callback === "function") {
 				callback();
 			}
 		});
 	} else if (response.status === 'error') {
-		SweetAlert.fire('Errore', response.message, 'error');
+		SweetAlert.fire(traduci('errore'), traduci(response.message), 'error');
 	} else {
 		if (typeof callback === "function") {
 			callback(response);

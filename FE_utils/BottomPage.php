@@ -2,7 +2,7 @@
 <?php if (isset($footer) && $footer == true) : 
 	
 	?>
-<footer style="font-size: 0.8rem;" class="container-fluid mt-3 fillColoreSfondo <?=$clsTxt?>">
+<footer style="margin-bottom:0; font-size: 0.8rem;" class="container-fluid mt-3 fillColoreSfondo <?=$clsTxt?>">
 	<div class="container py-2">
 		<?php // Controllo se almeno una delle chiavi è impostata e non vuota
 		if ((isset($irl['numeroWA']) && !empty($irl['numeroWA'])) ||
@@ -87,7 +87,7 @@
 		endif; ?>
 		<div class="row">
 		<div class="col text-center">
-			<p>© 2023 <?= $AppName?>. <?= $service->traduci("dirittiriservati");?>.</p>
+			<p>© 2023 <a href="<?= $service->createRoute("index")?>"><?= $AppName?></a>. <?= $service->traduci("dirittiriservati");?>.</p>
 		</div>
 		</div>
 	</div>
