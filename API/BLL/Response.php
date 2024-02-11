@@ -7,8 +7,10 @@ class Response {
      * @param string $message Messaggio di successo.
      * @return string JSON response.
      */
-    public static function retOK(string $message): string {
-        return json_encode(['status' => 'success', 'message' => $message]);
+    public static function retOK(string $message = null): string {
+        if ($message != null)
+            return json_encode(['status' => 'success', 'message' => $message]);
+        return json_encode(['status' => 'success']);
     }
 
     /**
