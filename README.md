@@ -33,4 +33,45 @@ Il template è organizzato in due componenti principali:
    - Funzioni di traduzione (`traduci` in JavaScript e analogamente in `$service`) permettono di ottenere stringhe tradotte dai file JSON.
 
 ### Esempi Pratici
-Per vedere il template in azione, visita [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/).
+Per vedere il template in azione, visita [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/)
+
+
+
+--- --- ---
+
+
+# Creare progetti dal template
+
+Se stai iniziando un nuovo progetto e vuoi utilizzare il template come fondamento, ma non sai come fare, segui questi passi per configurare il tuo ambiente di sviluppo. Questa guida assume che tu abbia Git sul PC e anche solo una conoscenza di base.
+
+## 1. Inizia con il TUO Main
+Prima di tutto, prepara il tuo ambiente di lavoro principale, lo qui ho chiamato basicamente `main`.
+```bash
+git checkout -b main
+```
+
+## 2. Aggiungi il Remote del Template
+Ora che hai il tuo branch `main` configurato, procedi aggiungendo il mio template come un remote nel tuo progetto Git.
+```bash
+git remote add template https://github.com/br1brown/template-sito.git
+```
+
+## 3. Crea un Branch per il Template
+Poi, crea un branch locale che servirà da riferimento al main del template.
+```bash
+git fetch template
+git branch template template/main
+```
+Questo aiuta a separare il contenuto del template dalle tue modifiche personali.
+
+## 4. Integra il Template nel Tuo Progetto
+Tira le modifiche dal template al tuo progetto. Utilizza `--allow-unrelated-histories` per permettere a Git di fondere le storie non correlate, dato che stai iniziando un nuovo progetto.
+```bash
+git pull template main --allow-unrelated-histories
+```
+
+## 5. Prova il Merge dal Template
+Poi, giusto per sicurezza, prova a mergiare dal branch `template` al tuo `main` per confermare che tutto si integri correttamente.
+```bash
+git merge template
+```
