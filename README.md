@@ -1,53 +1,19 @@
-# Template per Sito Web
+# Salvadanaio D&D
 
-Questo template offre una solida base per lo sviluppo di siti web, fornendo già molte funzioni utili.
-È progettato con flessibilità in mente, rendendolo ideale per progetti che richiedono una distinta separazione delle funzionalità client-server.
+## Introduzione
+**Salvadanaio D&D** è un'applicazione web creata per semplificare la gestione delle finanze per i giocatori di *Dungeons & Dragons* e i Dungeon Master. Grazie a questo strumento, è possibile monitorare e gestire le ricchezze dei personaggi in maniera efficace, utilizzando file JSON per la memorizzazione dei dati anziché un database convenzionale.
 
-## Compatibilità
-- **Versione Consigliata:** 8.1.4. È importante utilizzare questa versione per assicurare la piena compatibilità del template.
+## Funzionalità principali
+- **Gestione Facilitata**: Controllo agevole dei personaggi e delle loro risorse finanziarie.
+- **Interfaccia Utente Intuitiva**: Facilita operazioni rapide e complesse attraverso un'interfaccia chiara.
+- **Transazioni Automatizzate**: Gestione delle transazioni finanziarie con calcolo automatico dei cambi.
+- **Facile Configurazione**: Personalizza facilmente l'esperienza di gioco secondo le tue preferenze.
+- **Versatile**: Ideale per giocatori di D&D di tutti i livelli, dai principianti agli esperti.
 
-## Comunicazione API
-Il template si distingue per la sua configurazione nella comunicazione con le API, che sono impostate per funzionare come se fossero ospitate su un server esterno. Questo permette di effettuare chiamate alle stesse sia dal sito web che da applicazioni di terze parti, _(utilizzando le librerie cURL per il frontend)_.
+## Guida Rapida all'Installazione
+1. Clonare il repository nel proprio server, assicurandosi che sia compatibile con PHP 8.1.4 o versioni testate.
+2. Modificare il file `API\data\configmoney.json` per adeguarlo alle proprie necessità di gestione valutaria.
+3. Avviare il server e accedere all'applicazione tramite un browser web.
 
-### Struttura
-Il template è organizzato in due componenti principali:
-
-1. **API Backend**
-   - Collocato nella cartella `API` sotto la rout principale, funziona come un accesso esterno.
-   - **Middleware di Autenticazione e Gestione CORS (`BLL\auth_and_cors_middleware.php`):**
-     - Gestisce l'autenticazione tramite API key e la configurazione CORS, utilizzando un file di testo (`APIKeys.txt`) per le chiavi API e un file JSON (`CORSconfig.json`) per le politiche CORS.
-   - **Gestione Dati:**
-     - La classe `BLL\Repository` facilita la gestione dei dati, con opzioni per adattarsi a diversi sistemi di archiviazione.
-     - `BLL\Response` standardizza le risposte, inclusi errori e conferme.
-   - **Inclusione File Comuni:**
-     - Supporta funzionalità comuni che si trovano in `funzioni_comuni.php`.
-   - **Esempi di Endpoint:**
-     - `social.php` e `anagrafica.php` dimostrano l'utilizzo delle API per la comunicazione dati.
-
-2. **Frontend**
-   - La classe `Service` semplifica l'interazione con le API e la gestione delle funzionalità comuni, inclusa la manipolazione degli URL.
-   - Integra una libreria per convertire il Markdown in HTML.
-   - `websettings.json` contiene le impostazioni di base del sito, inclusi i valori per i tag <meta>.
-   - La gestione multilingua avviene tramite vari file JSON suddivisi per lingua all'interno di `FE_utils/lang/{codice lingua ISO 639-1}`,
-    - Se la cartella inizia con un carattere `_` la lingue verrà esclusa.
-   - Funzioni di traduzione (`traduci` in JavaScript e analogamente in `$service`) permettono di ottenere stringhe tradotte dai file JSON.
-
-### Esempi Pratici
-Per vedere il template in azione, visita [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/)
-
-
-
---- --- ---
-
-
-# Creare progetti dal template
-Se stai iniziando un nuovo progetto e vuoi utilizzare il template come fondamento, ma non sai come fare, esegui questo script nella cartella della repository.
-```bash
-git checkout -b main
-git remote add template https://github.com/br1brown/template-sito.git
-git fetch template
-git branch template template/main
-git pull template main --allow-unrelated-histories
-git merge --squash template
-git commit -m "Template Importato"
-```
+## Aggiungere Nuovi Personaggi
+Per aggiungere nuovi personaggi, utilizzare una richiesta POST all'indirizzo `/API/characters` inserendo nel form il nome desiderato nella chiave `nome`. Assicurarsi di impostare correttamente l'header `X-Api-Key` usando le chiavi che si trovano nel file di configurazione `API\BLL\auth_settings\APIKeys.txt` per garantire il corretto funzionamento della richiesta.

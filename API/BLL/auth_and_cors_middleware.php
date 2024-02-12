@@ -47,4 +47,5 @@ if (file_exists($fileconfigCORS)){
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
     }
 }
+require_once __DIR__.'/Personaggio.php';
 

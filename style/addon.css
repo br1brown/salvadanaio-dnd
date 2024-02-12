@@ -1,0 +1,27 @@
+.platinum-color {
+    color: #e5e4e2;
+    /* Colore per Platino */
+}
+
+.gold-color {
+    color: #ffd700;
+    /* Colore per Oro */
+}
+
+.silver-color {
+    color: #c0c0c0;
+    /* Colore per Argento */
+}
+
+.copper-color {
+    color: #b87333;
+    /* Colore per Rame */
+}
+
+.portafoglio {
+    background-image: linear-gradient(rgba(175, 227, 255, 0.6), var(--colorTema), rgba(175, 227, 255, 0.6));
+}
+
+.bordo-ico {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}

@@ -1,36 +1,28 @@
 {
-    "AppName": "Template",
+    "AppName": "Salvadanaio DnD",
     "lang": "it",
-    "description": "Descrizione",
+    "description": "Permette di gestire il portafoglio dei personaggi della propria campagna senza dover fare i conti e le equivalenze",
     "meta": {
         "MobileFriendly": true,
         "iOSFullScreenWebApp": true,
         "mobileOptimizationWidth": 320,
         "refreshIntervalInSeconds": 900,
-        "keywords": [
-            "xxx",
-            "xxxx"
-        ]
+        "keywords": []
     },
     "API": {
         "EndPoint": "API",
         "key": "frontend"
     },
     "favIcon": "asset/favicon.png",
-    "colorTema": "#212529",
-    "itemsMenu": [
-        {
-            "nome": "Social",
-            "route": "social"
-        }
-    ],
+    "colorTema": "#91e8f2",
+    "itemsMenu": [],
     "footer": true,
     "url": {
         "PrivacyPolicy": "",
         "CookiePolicy": ""
     },
     "smoke": {
-        "enable": true,
+        "enable": false,
         "color": "#8fc7ff",
         "opacity": 0.4,
         "maximumVelocity": 100,

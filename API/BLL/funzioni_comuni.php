@@ -29,4 +29,21 @@ function Echo_getObj($nome, $callback = null){
     return $jsonData;
 }
 
+function ManeggiaSoldi($tipo, $dati) {
+    $canReceiveChange = isset($dati['canReceiveChange']) ? filter_var($dati['canReceiveChange'], FILTER_VALIDATE_BOOLEAN) : str_starts_with($tipo, 'settle');
+    $description = isset($dati['description']) ? $dati['description'] : "";
+    $itemdescription = isset($dati['itemdescription']) ? $dati['itemdescription'] : "";
+    
+    $pers = new BLL\Personaggio($dati['basename']);
+
+    echo $pers->manageCharacterCoins($tipo,
+        intval($dati['platinum']),
+        intval($dati['gold']),
+        intval($dati['silver']),
+        intval($dati['copper']),
+        $description,
+        $canReceiveChange,
+        $itemdescription
+    );
+}
 ?>

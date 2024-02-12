@@ -44,4 +44,20 @@ function dynamicMenu($Service, &$itemsMenu) {
 
     // Non è necessario restituire l'array, poiché è stato passato per riferimento
 }
+
+
+
+
+function renderSoldi($obj){
+	$ret = "";
+	$primamoneta = "<span style='white-space: nowrap;'>";
+	$dopomoneta= "</span>&nbsp";
+	
+	if(isset($obj['platinum']) && $obj['platinum'] != 0) $ret .= "{$primamoneta}<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$obj['platinum']}{$dopomoneta}";
+	if(isset($obj['gold']) && $obj['gold'] != 0) $ret .= "{$primamoneta}<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$obj['gold']}{$dopomoneta}";
+	if(isset($obj['silver']) && $obj['silver'] != 0) $ret .= "{$primamoneta}<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$obj['silver']}{$dopomoneta}";
+	if(isset($obj['copper']) && $obj['copper'] != 0) $ret .= "{$primamoneta}<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$obj['copper']}{$dopomoneta}";
+
+	return $ret;
+}
 ?>

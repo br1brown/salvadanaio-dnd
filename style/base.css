@@ -9,7 +9,7 @@ html {
 body {
 	background-color: var(--colorBase);
 	/* Colore di sfondo */
-	font-family: Geneva, Verdana, sans-serif;
+	font-family: 'Frutiger Aero', Arial, Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
 	/* Imposta il tipo di carattere */
 }
 

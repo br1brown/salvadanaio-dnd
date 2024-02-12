@@ -1,66 +1,54 @@
 <?php 
-$title = "Home";
+$title = "Salvadanaio";
 // $singledescription = "Pagina principale";
 include('FE_utils/TopPage.php');
+
+$personaggi = $service->callApiEndpoint("characters");
+
+foreach ($personaggi as $personaggio) {
+
 ?>
-		<div class="row">
-			<div class="col-12 text-center <?=$isDarkTextPreferred? "text-dark":"text-light" ?>">
-				<h1><b><?=$title?></b></h1>
-				<?php if(isset($meta['author'])) : ?>
-					<i>By <?= $meta['author']?></i>
-				<?php endif; ?>
+
+<div class="row">
+	<div class="col-12 text-center">
+		<div class="col-12 col-md-6">
+			<div class="card m-2 portafoglio rounded text-dark">
+				<div class="card-body">
+					<h5 class="card-title">
+						<a href="<?= $service->createRoute("detail?basename=".$personaggio["basename"])?>" class=col><?= $personaggio["name"]; ?><a>
+					</h5>
+					<p class="card-text">
+					<div class="row text-center">
+						<span class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i> <?= $service->traduci("platino")?>: <?= $personaggio["cash"]["platinum"]; ?></span>
+					</div>
+					<div class="row small text-center">
+						<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i> <?= $service->traduci("oro")?>: <?= $personaggio["cash"]["gold"]; ?></span>
+						<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i> <?= $service->traduci("argento")?>: <?= $personaggio["cash"]["silver"]; ?></span>
+					</div>
+					<div class="row small text-center">
+						<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i> <?= $service->traduci("rame")?>: <?= $personaggio["cash"]["copper"]; ?></span>
+					</div>
+					</p>
+					<div class="text-center mt-3">
+						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', true)" class="btn btn-outline-success btn-sm">
+						<i class="fas fa-coins"></i>
+						</button>
+						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', false)" class="btn btn-outline-danger btn-sm">
+						<i class="fas fa-shopping-cart"></i>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row">
-		    <div class="offset-1 col-10 offset-md-2 col-md-8 shadow rounded tutto text-center">
-				<div class="row">
-					<p class=col><?= $irl['infoBase']?></p>
-				</div>
-		        <div class="row">
-		            <div class="p-3 col-xs-4 col-sm-4 col-md-4">
-		                <div class="polaroid ruotadestra">
-		                    <img id=img_generica src="https://via.placeholder.com/550x360/D3D3D3" alt="Foto Generica">
-		                    <p class="caption">...</p>
-		                </div>
-		            </div>
-		            <div class="col-xs-8 col-sm-8 col-md-8">
-		                <!-- https://getbootstrap.com/docs/4.0/components/buttons/ -->
-		                <input type="button" class="bottone btn btn-primary btn-lg" value="<?= $service->traduci("conferma");?>"><br>
-		                <input type="button" data-type="success" id=success class="zoomma bottone btn btn-success btn-lg" value="<?= $service->traduci("successo");?>">
-		                <input type="button" data-type="error" id=danger class="zoomma bottone btn btn-danger btn-lg" value="<?= $service->traduci("errore");?>"><br>
-		                <input type="button" data-type="warning" id=warning class="zoomma bottone btn btn-warning btn-sm" value="<?= $service->traduci("attenzione");?>">
-		                <input type="button" data-type="info" id=info class="zoomma bottone btn btn-info btn-sm" value="<?= $service->traduci("info");?>">
-		            </div>
-		        </div>
-		        <div class="row">
-		            <div class="text-center col-xs-12 col-sm-12 col-md-12">
-		                <input type="button" id=primary class="bottone btn btn-outline-primary btn-sm" value="SUBMIT">
-		                <input type="button" id=secondary class="bottone btn btn-outline-secondary btn-sm" value="SECONDARY">
-		                <input type="button" id=dark class="bottone btn btn-outline-dark btn-sm" value="DARK">
-		                <input type="button" id=light class="bottone btn btn-outline-light btn-sm" value="LIGHT">
-		                <input type="button" id=link class="bottone btn btn-outline-link btn-sm" value="LINK">
-		            </div>
-		        </div>
-		    </div>
-		</div>
-
-<?php include('FE_utils/BottomPage.php'); ?>
+	</div>
+</div>
+<?php
+	}
+include('FE_utils/BottomPage.php'); ?>
 
 <script>
 	inizializzazioneApp.then(() => {
-		var testo = traduci('imgDinamica');
-		var imageCreata = new CreaImmagine(testo,
-								'<?= $colorTema ?>',
-								'<?= $isDarkTextPreferred?"black": "white" ?>'
-								)
-					.costruisci();
 
-		$('#img_generica').attr('src', imageCreata.urlImmagine());
-
-		apiCall("social",{ nomi : "Facebook;twitter;Telegram"},
-		function (response){
-			debugger;
-		});
 	});
 </script>
 

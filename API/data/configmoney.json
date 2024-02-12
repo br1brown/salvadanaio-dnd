@@ -1,0 +1,6 @@
+{
+    "platinum": 1000,
+    "gold": 100,
+    "silver": 10,
+    "info_dev": "copper = 1 default - il numero indica quanti copper vale ogni valuta"
+}

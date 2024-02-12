@@ -1,3 +1,21 @@
 {
-    "imgDinamica": "Questa è un'immagine generica generata dinamicamente!"
+    "salvadanaio": "Salvadanaio",
+    "ricevi": "Ricevi",
+    "spendi": "Spendi",
+    "ricalcolaMonete": "Ricalcolo monete",
+    "platino": "Platino",
+    "oro": "Oro",
+    "argento": "Argento",
+    "rame": "Rame",
+    "faiDebito": "Fai Debito",
+    "denaro": "Denaro",
+    "faiCredito": "Fai Credito",
+    "debito": "Debito",
+    "credito": "Credito",
+    "debiti": "Debiti",
+    "crediti": "Crediti",
+    "tipo": "Tipo",
+    "nonInficiaSulleSommeSomme": "Non inficerà sulle somme possedute",
+    "modificheSuSoldi": "Le modifiche saranno effettive sui soldi posseduti",
+    "personaggioNonTrovato": "Personaggio non trovato"
 }

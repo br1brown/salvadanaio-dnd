@@ -1,1 +1,3 @@
 ﻿API/data/*
+!API/data/personaggi.json
+!API/data/configmoney.json
