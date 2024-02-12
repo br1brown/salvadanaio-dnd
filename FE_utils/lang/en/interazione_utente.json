@@ -2,6 +2,7 @@
     "attenzione": "Attention",
     "info": "Information",
     "conferma": "Confirm",
+    "successo": "Success",
     "annulla": "Cancel",
     "cronologia": "History",
     "opzioni": "Options",
@@ -36,5 +37,6 @@
     "no": "No",
     "aggiorna": "Update",
     "cerca": "Search",
-    "selezionaLingua": "Select Language"
+    "selezionaLingua": "Select Language",
+    "ottimo": "Great"
 }

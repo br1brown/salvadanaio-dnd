@@ -1,5 +1,6 @@
 {
     "datiMancanti": "Some data missing",
+    "descrizioneMancante": "Enter description",
     "erroreValidazione": "Validation error",
     "valoreNegativo": "Negative value",
     "nessunaVariazione": "No change",
