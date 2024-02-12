@@ -1,5 +1,6 @@
 {
     "erroreInternoDelServer": "Errore interno del server",
     "erroreServer": "Errore interno, server non disponibile, o funzionalità non supportata",
-    "comunicazioneNonRiuscita": "Risposta non compatibile, conflitto nella richiesta, risposta upstream invalida, o timeout del gateway"
+    "comunicazioneNonRiuscita": "Risposta non compatibile, conflitto nella richiesta, risposta upstream invalida, o timeout del gateway",
+    "erroreLogin": "Errore nel login"
 }

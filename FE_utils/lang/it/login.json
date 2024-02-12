@@ -1,0 +1,17 @@
+{
+    "accedi": "Accedi",
+    "nomeUtente": "Nome utente",
+    "password": "Password",
+    "ricordami": "Ricordami",
+    "passwordDimenticata": "Hai dimenticato la password?",
+    "esci": "Esci",
+    "registrati": "Registrati",
+    "creaAccount": "Crea un account",
+    "bentornato": "Bentornato",
+    "nomeUtentePlaceholder": "Inserisci il tuo nome utente",
+    "passwordPlaceholder": "Inserisci la tua password",
+    "loginNonValido": "Nome utente o password non validi",
+    "loginEffettuatoConSuccesso": "Login effettuato con successo",
+    "logoutEffettuatoConSuccesso": "Logout effettuato con successo",
+    "registrazioneCompletataConSuccesso": "Registrazione completata con successo"
+}

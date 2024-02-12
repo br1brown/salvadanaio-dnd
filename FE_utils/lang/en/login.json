@@ -1,0 +1,17 @@
+{
+    "accedi": "Login",
+    "nomeUtente": "Username",
+    "password": "Password",
+    "ricordami": "Remember Me",
+    "passwordDimenticata": "Forgot Your Password?",
+    "esci": "Logout",
+    "registrati": "Sign Up",
+    "creaAccount": "Create Account",
+    "bentornato": "Welcome Back",
+    "nomeUtentePlaceholder": "Enter your username",
+    "passwordPlaceholder": "Enter your password",
+    "loginNonValido": "Invalid username or password",
+    "loginEffettuatoConSuccesso": "Login Successful",
+    "logoutEffettuatoConSuccesso": "Logout Successful",
+    "registrazioneCompletataConSuccesso": "Registration Successful"
+}

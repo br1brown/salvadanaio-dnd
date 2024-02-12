@@ -5,5 +5,6 @@
     "valoreNegativo": "Valore negativo",
     "nessunaVariazione": "Nessuna variazione",
     "seiSicuro": "Sei sicuro?",
-    "vuoiEliminareQuesto": "Vuoi davvero eliminare questo elemento?"
+    "vuoiEliminareQuesto": "Vuoi davvero eliminare questo elemento?",
+    "campoObbligatorio": "Questo campo è obbligatorio"
 }
