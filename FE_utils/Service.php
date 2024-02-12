@@ -1,10 +1,8 @@
 <?php
+require_once __DIR__.'/Traduzione.php';
 
 class Service {
 
-    /** @var array Le traduzioni caricate per la lingua corrente */
-    public $traduzione = [];
-    
     /**
      * @var array Impostazioni dell'applicativo
      */
@@ -32,6 +30,13 @@ class Service {
         if (!isset($data['colorBase']) || empty($data['colorBase'])) {
            $data['colorBase'] = $this->lightenColor($data['colorTema']);
         }
+        
+        $data["colori"]['colorBase'] = $data['colorBase'];
+        $data["colori"]['colorTema'] = $data['colorTema'];
+        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], 0.4);
+        $data["colori"]['colorPrimaryScuro'] = $this->darkenColor($data["colori"]['colorPrimary'], 0.2);
+
+
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
 
         
@@ -93,12 +98,16 @@ class Service {
         return $meta; 
     }
 
-
+    /**
+     * @var Traduzione Correnete della pagina
+     */
+    public Traduzione $_traduzione;
 
     /**
-     * @var string lingua della pagina
+     * @var string URL dellendpoint con le traduzioni
      */
-    public string $lang;
+    public string $pathLang;
+
 
     /**
      * @var string URL dell'API di servizio
@@ -146,22 +155,16 @@ class Service {
         }
     }
 
-    public function _pathjsonLang($l){
-        return "FE_utils/lang/{$l}.json";
-    }
-    
     /**
      * Carica le traduzioni per la lingua impostata se il file esiste.
      */
     private function caricaLingua() {
-        $this->lang = strtolower($this->settings['lang']);
+        $lang = strtolower($this->settings['lang']);
         if (isset($_GET["lang"]) && !empty($_GET["lang"]))
-        $this->lang = strtolower($_GET["lang"]);
-        $percorsoFile = $this->_pathjsonLang($this->lang);
-        
-        if (file_exists($percorsoFile)) {
-            $this->traduzione = json_decode(file_get_contents($percorsoFile), true);
-        }
+            $lang = strtolower($_GET["lang"]);
+
+        $this->pathLang= $this->baseURL("FE_utils/getLang?lang=".$lang);
+        $this->_traduzione = new Traduzione($lang);
     }
 
     /**
@@ -170,32 +173,26 @@ class Service {
      */
     public function getLingueDisponibili() {
         $lingue = [];
-        $lingue[] = $this->lang;
+        $lingue[] = $this->_traduzione->lang;
 
-        $files = glob($this->_pathjsonLang("*"));
-        foreach ($files as $file) {
-            $lingua = strtolower(basename($file, '.json'));
-            if (!str_starts_with($lingua, '_') && $lingua !== $this->lang)
-                $lingue[] = $lingua;
-            
-            
-        }
-        
-        return $lingue;
+        return array_unique(array_merge($lingue, Traduzione::listaLingue()));
     }
 
 
     /**
-     * Tenta di tradurre una stringa (identificatore di traduzione) nella lingua corrente impostata per l'istanza.
      * @param string $sz L'identificatore della stringa da tradurre
-     * @return string La stringa tradotta se disponibile; altrimenti, restituisce l'identificatore originale
+     * @return string La stringa tradotta
      */
     function traduci($sz) {
-        if (isset($this->traduzione[$sz]) && !empty($this->traduzione[$sz]))
-            return $this->traduzione[$sz]; 
-        return $sz;
+        return $this->_traduzione->traduci($sz);
     }
 
+    /**
+     * @return string Lingua corrente
+     */
+    function currentLang() {
+        return $this->_traduzione->lang;
+    }
     /**
      * Prepara e ordina gli asset (CSS o JS) per il caricamento, basandosi su file specifici da caricare per primi e per ultimi,
      * e includendo file addizionali dalla directory specificata, escludendo quelli non necessari.
@@ -264,7 +261,7 @@ class Service {
      */
     public function createRoute($route) {
         //la lingua è il default
-        if ($this->settings['lang'] == $this->lang)
+        if ($this->settings['lang'] == $this->_traduzione->lang)
             return $route;
 
         // Parsa l'URL e decomponilo nei suoi componenti
@@ -277,7 +274,7 @@ class Service {
         }
 
         // Aggiungi o modifica il parametro della lingua
-        $queryParams['lang'] = $this->lang;
+        $queryParams['lang'] = $this->_traduzione->lang;
 
         // Ricostruisci la query string
         $queryString = http_build_query($queryParams);
@@ -324,7 +321,7 @@ class Service {
 
     $url = $this->APIbaseURL($pathOrEndpoint);
 
-    $dati['lang'] = $this->lang;
+    $dati['lang'] = $this->_traduzione->lang;
 
     if (strtoupper($metodo) === "GET" && !empty($dati)) {
         $url .= '?' . http_build_query($dati);

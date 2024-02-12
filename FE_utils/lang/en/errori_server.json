@@ -1,0 +1,5 @@
+{
+    "erroreInternoDelServer": "Internal server error",
+    "erroreServer": "Internal error, server unavailable, or feature not supported",
+    "comunicazioneNonRiuscita": "Incompatible response, request conflict, invalid upstream response, or gateway timeout"
+}

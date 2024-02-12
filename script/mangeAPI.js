@@ -70,12 +70,12 @@ function handleError(xhr, status, error) {
 	// Log dell'errore per il debugging
 	console.error(`Errore API: ${status} - ${error}`, xhr.responseText);
 
-	let errorMessage = 'Si è verificato un errore imprevisto';
+	let errorMessage = traduci("erroreImprevisto");
 
 	if (xhr.status === 404) {
-		errorMessage = 'Risorsa non trovata';
+		errorMessage = traduci("risorsaNonTrovata");
 	} else if (xhr.status === 500) {
-		errorMessage = 'Errore interno del server';
+		errorMessage = traduci("erroreInternoDelServer");
 	} else if (xhr.responseText) {
 		try {
 			const response = JSON.parse(xhr.responseText);
@@ -84,7 +84,7 @@ function handleError(xhr, status, error) {
 			// xhr.responseText non è JSON, usa il messaggio di errore generico
 		}
 	}
-	SweetAlert.fire('Errore ' + xhr.status, errorMessage, 'error');
+	SweetAlert.fire(traduci("errore") + ' ' + xhr.status, errorMessage, 'error');
 }
 
 /**

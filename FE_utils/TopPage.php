@@ -16,7 +16,7 @@ $irl = $service->callApiEndpoint("/anagrafica");
 } catch (Exception $e) {}
 ?>
 <!doctype html>
-<html lang="<?= $service->lang ?>">
+<html lang="<?= $service->currentLang() ?>">
 <head>
 <?php
 $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
@@ -63,8 +63,8 @@ $clsTxt = $isDarkTextPreferred? "text-dark":"text-light";
 	<script>
 		const APIEndPoint = '<?= $service->urlAPI ?>';
 		const APIKey = '<?= $service->APIkey ?>';
-		const lang = '<?= $service->lang ?>';
-		let _pathtraduzione = '<?=$service->_pathjsonLang($service->lang)?>';
+		const lang = '<?= $service->currentLang() ?>';
+		let _pathtraduzione = '<?=$service->pathLang?>';
 	</script>
 	
 	<?php
@@ -141,8 +141,8 @@ if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu))?($forceMe
 			<?= $service->traduci("selezionaLingua"); ?>
 			</button>
 			<div class="dropdown-menu dropdown-menu-right fillColoreSfondo" aria-labelledby="dropdownMenuButton">
-			<?php foreach ($lingueDisponibili as $lingua): ?>
-				<a href="javascript:setLanguage('<?= $lingua ?>')" class="dropdown-item<?=$service->lang == $lingua?" active ": " "?>fillColoreSfondo <?= $clsTxt ?>"> <?= strtoupper($lingua) ?> </a>
+			<?php foreach ($lingueDisponibili as $lingua):?>
+				<a href="javascript:setLanguage('<?= $lingua ?>')" class="dropdown-item<?=$service->currentLang() == $lingua?" active ": " "?>fillColoreSfondo <?= $clsTxt ?>"> <?= strtoupper($lingua) ?> </a>
 			<?php endforeach; ?>
 			</div>
 		</div>

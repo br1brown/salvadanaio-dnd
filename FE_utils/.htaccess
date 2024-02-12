@@ -4,3 +4,6 @@ Allow from all
 <Files "markparsing.php">
     Allow from all
 </Files>
+<Files "getLang.php">
+    Allow from all
+</Files>

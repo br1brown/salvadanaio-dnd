@@ -1,0 +1,12 @@
+{
+    "errore": "Errore",
+    "erroreImprevisto": "Si è verificato un errore imprevisto",
+    "sintassiNonCorretta": "Sintassi non corretta o URI troppo lungo",
+    "risorsaNonTrovata": "Risorsa non trovata o non disponibile",
+    "autenticazioneRichiesta": "Autenticazione necessaria",
+    "accessoRistretto": "Accesso bloccato, permessi insufficienti o bloccato per motivi legali",
+    "protocolloNonSupportato": "HTTP non supportato o negoziazione del contenuto assente",
+    "problemiDiRete": "Problema di rete rilevato o condizioni dell'header non soddisfatte",
+    "troppeRichieste": "Troppe richieste",
+    "azioneNonPermessa": "Azione non permessa"
+}
