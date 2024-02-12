@@ -1,39 +1,36 @@
-# Template-Sito
-Il template fornisce una base solida per lo sviluppo di siti web generici, integrando una comunicazione backend-frontend chiara e sicura. Essendo progettato per essere flessibile è ideale per progetti che necessitano di una separazione netta tra le funzionalità lato client e lato server anche per interfacciarsi con terze parti.
+# Template per Sito Web
 
-## Compatibilità: *8.1.4*
-**Importante**: Utilizza la versione 8.1.4 per garantire la compatibilità.
+Questo template offre una solida base per lo sviluppo di siti web, fornendo già molte funzioni utili.
+È progettato con flessibilità in mente, rendendolo ideale per progetti che richiedono una distinta separazione delle funzionalità client-server.
 
-## Comunicazione con API
-Questo template è caratterizzato da una particolare configurazione nella comunicazione con le API:
-- **Comunicazione**: Le API sono configurate per essere interfacciate come se fossero su un server esterno, in modo che siano chiamate sia dal sito che da qualche applicativo di terze parti.
-  Per questa comunicazione, il front end si affida alle **librerie cURL**.
+## Compatibilità
+- **Versione Consigliata:** 8.1.4. È importante utilizzare questa versione per assicurare la piena compatibilità del template.
 
-### Struttura del Template
-Il template è suddiviso in due componenti principali:
+## Comunicazione API
+Il template si distingue per la sua configurazione nella comunicazione con le API, che sono impostate per funzionare come se fossero ospitate su un server esterno. Questo permette di effettuare chiamate alle stesse sia dal sito web che da applicazioni di terze parti, _(utilizzando le librerie cURL per il frontend)_.
+
+### Struttura
+Il template è organizzato in due componenti principali:
 
 1. **API Backend**
-   - Le API sono collocate all'interno della cartella principale pur funzionando come un punto di accesso esterno.
+   - Collocato nella cartella `API` sotto la rout principale, funziona come un accesso esterno.
    - **Middleware di Autenticazione e Gestione CORS (`BLL\auth_and_cors_middleware.php`):**
-     - Questo componente si occupa dell'autenticazione tramite API key e della configurazione del CORS.
-     - **Autenticazione API**: Utilizza un file di testo (`APIKeys.txt`) nella cartella `BLL/auth_settings/` per memorizzare e verificare le chiavi API per ogni riga. Blocca l'accesso con un codice di risposta HTTP 403 in caso di chiavi non valide o assenti.
-     - **Gestione CORS**: Configura le politiche CORS tramite un file JSON (`CORSconfig.json`) nella cartella `BLL/auth_settings/`.
-   - **Gestione dei Dati**:
-     - La classe `BLL\Repository` facilita la comunicazione con i dati, offrendo diverse funzioni per l'interfaccia con i file. È possibile modificare l'approccio per utilizzare un database.
-     - La classe `BLL\Response` è utilizzata per formattare risposte standard, inclusi messaggi di errore e conferma.
-   - **Inclusione di File Comuni**:
-     - Vengono inclusi file come `Repository.php`, `Response.php` e `funzioni_comuni.php` per supportare varie funzionalità comuni nel progetto.
-   - **Endpoint Esempio**:
-     - Gli endpoint `social.php` e `anagrafica.php` illustrano l'uso pratico delle funzioni di comunicazione dati.
+     - Gestisce l'autenticazione tramite API key e la configurazione CORS, utilizzando un file di testo (`APIKeys.txt`) per le chiavi API e un file JSON (`CORSconfig.json`) per le politiche CORS.
+   - **Gestione Dati:**
+     - La classe `BLL\Repository` facilita la gestione dei dati, con opzioni per adattarsi a diversi sistemi di archiviazione.
+     - `BLL\Response` standardizza le risposte, inclusi errori e conferme.
+   - **Inclusione File Comuni:**
+     - Supporta funzionalità comuni che si trovano in `funzioni_comuni.php`.
+   - **Esempi di Endpoint:**
+     - `social.php` e `anagrafica.php` dimostrano l'utilizzo delle API per la comunicazione dati.
 
 2. **Frontend**
-   - La classe `Service` aiuta a interagire con le API e a gestire funzionalità comuni, inclusa la manipolazione degli URL.
-   - Include una libreria per convertire Markdown in HTML.
-   - Il file `websettings.json` contiene impostazioni di base per il funzionamento del sito, valori per i <meta> compresi.
-   - Dentro `FE_utils/lang/` ci sono i file per le lingue, che hanno il codice lingua nel nome (se iniziano con `_` l'utente non le vedrà)
-    - In javascript c'è una funzione chiamata `traduci` a cui passi la chiave contenuta nel file e restituisce la stringa tradotta, analogamente dentro `$service` che funziona nel medesimo modo.
-
+   - La classe `Service` semplifica l'interazione con le API e la gestione delle funzionalità comuni, inclusa la manipolazione degli URL.
+   - Integra una libreria per convertire il Markdown in HTML.
+   - `websettings.json` contiene le impostazioni di base del sito, inclusi i valori per i tag <meta>.
+   - La gestione multilingua avviene tramite vari file JSON suddivisi per lingua all'interno di `FE_utils/lang/{codice lingua ISO 639-1}`,
+    - Se la cartella inizia con un carattere `_` la lingue verrà esclusa.
+   - Funzioni di traduzione (`traduci` in JavaScript e analogamente in `$service`) permettono di ottenere stringhe tradotte dai file JSON.
 
 ### Esempi Pratici
-
-Per visualizzare un esempio pratico di come il template [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/).
+Per vedere il template in azione, visita [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/).
