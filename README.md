@@ -75,3 +75,4 @@ Poi, giusto per sicurezza, prova a mergiare dal branch `template` al tuo `main` 
 ```bash
 git merge template
 ```
+E poi committa
