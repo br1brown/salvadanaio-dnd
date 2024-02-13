@@ -1,5 +1,6 @@
 <?php
 namespace BLL;
+
 class Personaggio
 {
     private $baseName;
@@ -11,40 +12,40 @@ class Personaggio
     private $CAMBIO_GOLD;
     private $CAMBIO_SILVER;
 
-    public static function Crea($nome)
+    public static function Crea($nome, $platinum = 0, $gold = 0, $silver = 0, $copper = 0)
     {
-        if(empty($nome))
+        if (empty($nome))
             throw new \Exception("Valore nome non valido");
 
         $baseName = self::GetBaseName($nome);
 
         if (file_exists(Repository::getFileName($baseName))) {
-            throw new \Exception($nome." esiste");
+            throw new \Exception($nome . " esiste");
         }
         $p = Repository::getObj("personaggi");
-        $p[] = ["basename" =>$baseName, "nome" => $nome];
-        $p = Repository::putObj("personaggi",$p);
-        
+        $p[] = ["basename" => $baseName, "nome" => $nome];
+        Repository::putObj("personaggi", $p);
+
         file_put_contents(
             Repository::getFileName($baseName),
             json_encode([
                 "name" => $nome,
                 "cash" => [
-                    "platinum" => 0,
-                    "gold" => 0,
-                    "silver" => 0,
-                    "copper" => 0,
+                    "platinum" => $platinum,
+                    "gold" => $gold,
+                    "silver" => $silver,
+                    "copper" => $copper,
                 ]
             ])
         );
-        
-        return Response::retOK($nome." creato");
+
+        return Response::retOK($nome . " creato");
     }
 
     public static function Elimina($baseName)
     {
         if (!file_exists(Repository::getFileName($baseName))) {
-            throw new \Exception($baseName." non esiste ");
+            throw new \Exception($baseName . " non esiste ");
         }
 
         $p = Repository::getObj("personaggi");
@@ -54,12 +55,12 @@ class Personaggio
             unset($p[$index]);
             $p = array_values($p);
         } else {
-            throw new \Exception($baseName." non trovato nell'elenco");
+            throw new \Exception($baseName . " non trovato nell'elenco");
         }
 
         Repository::putObj("personaggi", $p);
-        
-        return Response::retOK($baseName." cancellato");
+
+        return Response::retOK($baseName . " cancellato");
     }
 
 
@@ -136,7 +137,6 @@ class Personaggio
                 $gold,
                 $silver,
                 $copper,
-                $description,
                 $canReceiveChange
             );
         }
@@ -162,17 +162,14 @@ class Personaggio
                 $transactionKey =
                     $transactionType === "settle_debt" ? "debt" : "credit";
                 $found = false;
-                foreach (
-                    $this->data["suspended"][$transactionKey]
-                    as $key => $transaction
-                ) {
+                foreach ($this->data["suspended"][$transactionKey] as $key => $transaction) {
                     if (
                         $transaction["copper"] === $totalCopperManaging &&
                         $transaction["description"] === $itemdescription
                     ) {
                         unset(
                             $this->data["suspended"][$transactionKey][$key]
-                        );
+                            );
                         $found = true;
                         break;
                     }
@@ -303,26 +300,27 @@ class Personaggio
         $ret = $this->data;
         $ret["totalcopper"] = $this->get_totalcopper();
         $ret["basename"] = $this->baseName;
-        
+
         if (isset($ret["suspended"]))
-            foreach ($ret["suspended"] as $tipo =>$obj) {
+            foreach ($ret["suspended"] as $tipo => $obj) {
                 foreach ($obj as $key => $tran) {
                     $cop = $tran["copper"];
 
                     $ret["suspended"][$tipo][$key] = $this->ConvertValuta($tran["copper"]);
                     $ret["suspended"][$tipo][$key]['description'] = $tran['description'];
                     $ret["suspended"][$tipo][$key]['totalCopper'] = $cop;
-                } 
+                }
             }
-        
+
         if ($encode)
             return json_encode($ret);
         return $ret;
     }
 
 
-        
-    function deleteCronologia($data) {
+
+    function deleteCronologia($data)
+    {
         $trovato = false;
         foreach ($this->data["history"] as $key => $item) {
             if ($item['date'] == $data) {

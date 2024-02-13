@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/manifest+json');
-require_once __DIR__.'/FE_utils/Service.php';
+require_once __DIR__ . '/FE_utils/Service.php';
 $service = new Service();
 $settings = $service->getSettings();
 
@@ -14,5 +14,4 @@ $manifest = [
     'background_color' => $settings['colorBase'],
     'theme_color' => $settings['colorTema']
 ];
-echo json_encode($manifest,true);
-?>
+echo json_encode($manifest, true);

@@ -1,13 +1,14 @@
 <?php
-require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
+require_once __DIR__ . '/parsedown-1.7.4/Parsedown.php';
 
 $parser = null;
-function Markdown_HTML($mark){
+function Markdown_HTML($mark)
+{
 
-if (!isset($parser))
-    $parser = new Parsedown();
+    if (!isset($parser))
+        $parser = new Parsedown();
 
-return $parser->text($mark);
+    return $parser->text($mark);
 
 }
 
@@ -16,10 +17,11 @@ return $parser->text($mark);
 /**
  * Modifica l'array del menu direttamente per riferimento.
  *
- * @param array &$itemsMenu Riferimento all'array del menu ottenuto dal JSON statico.
  * @param Service Il servizio per le utilità front end
+ * @param array &$itemsMenu Riferimento all'array del menu ottenuto dal JSON statico.
  */
-function dynamicMenu($Service, &$itemsMenu) {
+function dynamicMenu($Service, &$itemsMenu)
+{
     // Qui puoi modificare direttamente l'array $itemsMenu.
 
     // Esempio: Aggiungere un nuovo elemento al menu
@@ -48,16 +50,20 @@ function dynamicMenu($Service, &$itemsMenu) {
 
 
 
-function renderSoldi($obj){
-	$ret = "";
-	$primamoneta = "<span style='white-space: nowrap;'>";
-	$dopomoneta= "</span>&nbsp";
-	
-	if(isset($obj['platinum']) && $obj['platinum'] != 0) $ret .= "{$primamoneta}<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$obj['platinum']}{$dopomoneta}";
-	if(isset($obj['gold']) && $obj['gold'] != 0) $ret .= "{$primamoneta}<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$obj['gold']}{$dopomoneta}";
-	if(isset($obj['silver']) && $obj['silver'] != 0) $ret .= "{$primamoneta}<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$obj['silver']}{$dopomoneta}";
-	if(isset($obj['copper']) && $obj['copper'] != 0) $ret .= "{$primamoneta}<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$obj['copper']}{$dopomoneta}";
+function renderSoldi($obj)
+{
+    $ret = "";
+    $primamoneta = "<span style='white-space: nowrap;'>";
+    $dopomoneta = "</span>&nbsp";
 
-	return $ret;
+    if (isset($obj['platinum']) && $obj['platinum'] != 0)
+        $ret .= "{$primamoneta}<i class='fas fa-award platinum-color bordo-ico' title=platino></i> {$obj['platinum']}{$dopomoneta}";
+    if (isset($obj['gold']) && $obj['gold'] != 0)
+        $ret .= "{$primamoneta}<i class='fas fa-medal gold-color bordo-ico' title=oro></i> {$obj['gold']}{$dopomoneta}";
+    if (isset($obj['silver']) && $obj['silver'] != 0)
+        $ret .= "{$primamoneta}<i class='fas fa-trophy silver-color bordo-ico' title=argent></i> {$obj['silver']}{$dopomoneta}";
+    if (isset($obj['copper']) && $obj['copper'] != 0)
+        $ret .= "{$primamoneta}<i class='fas fa-coins copper-color bordo-ico' title=rame></i> {$obj['copper']}{$dopomoneta}";
+
+    return $ret;
 }
-?>

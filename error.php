@@ -42,7 +42,7 @@ $codes = array(
         'title' => 'Conflitto',
         'description' => 'La richiesta non può essere completata a causa di un conflitto.'
     ),
-        // Continuazione degli errori HTTP
+    // Continuazione degli errori HTTP
     410 => array(
         'title' => 'Andato',
         'description' => 'La risorsa richiesta non è più disponibile e non ci sono indirizzi alternativi.'
@@ -153,31 +153,31 @@ $codes = array(
     )
 );
 $code = $_SERVER['REDIRECT_STATUS'];
-$title = "Errore " . $code. " - ". $codes[$code]['title'];
+$title = "Errore " . $code . " - " . $codes[$code]['title'];
 $forceMenu = false;
 ?>
 <?php include('FE_utils/TopPage.php'); ?>
-		<div class="row">
-			<div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
-				<?php
-					$source_url = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-					if (array_key_exists($code, $codes) && is_numeric($code)) {
-						echo "<h2>Errore $code</h2>";
-						echo "<small>{$codes[$code]['title']} <i>".$source_url."</i></small>";
-						echo "<p>{$codes[$code]['description']}</p>";
-					} else {
-						echo 'Errore generico';
-					}
-				?>
-			</div>
-	</div>
+<div class="row">
+    <div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
+        <?php
+        $source_url = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        if (array_key_exists($code, $codes) && is_numeric($code)) {
+            echo "<h2>Errore $code</h2>";
+            echo "<small>{$codes[$code]['title']} <i>" . $source_url . "</i></small>";
+            echo "<p>{$codes[$code]['description']}</p>";
+        } else {
+            echo 'Errore generico';
+        }
+        ?>
     </div>
+</div>
+</div>
 </body>
 <script>
-	inizializzazioneApp.then(() => {
+    inizializzazioneApp.then(() => {
 
 
-	});
+    });
 
 </script>
 
