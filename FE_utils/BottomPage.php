@@ -67,12 +67,14 @@
 							<?php endif; ?>
 							<?php if (isset($irl['pec'])): ?>
 								<li>
-									<?= $service->traduci("PEC"); ?>: <?= $service->creaLinkCodificato($irl['pec'], 'mailto:') ?>
+									<?= $service->traduci("PEC"); ?>:
+									<?= $service->creaLinkCodificato($irl['pec'], 'mailto:') ?>
 								</li>
 							<?php endif; ?>
 							<?php if (isset($irl['mail'])): ?>
 								<li>
-									<?= $service->traduci("mail"); ?>: <?= $service->creaLinkCodificato($irl['mail'], 'mailto:') ?>
+									<?= $service->traduci("mail"); ?>:
+									<?= $service->creaLinkCodificato($irl['mail'], 'mailto:') ?>
 								</li>
 							<?php endif; ?>
 						</ul>

@@ -49,5 +49,3 @@ class Traduzione
         return $sz;
     }
 }
-
-?>

@@ -1,7 +1,8 @@
 <?php
-require_once __DIR__.'/Traduzione.php';
+require_once __DIR__ . '/Traduzione.php';
 
-class Service {
+class Service
+{
 
     /**
      * @var array Impostazioni dell'applicativo
@@ -11,26 +12,27 @@ class Service {
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['API',"meta",'lang'];
-    
+    private $excludeKeys = ['API', "meta", 'lang'];
+
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
      *
      * @return array Impostazioni filtrate.
      */
-    public function getSettings() {
+    public function getSettings()
+    {
 
-        $data = array_filter($this->settings, function($key) {
+        $data = array_filter($this->settings, function ($key) {
             return !in_array($key, $this->excludeKeys);
         }, ARRAY_FILTER_USE_KEY);
 
         if (!isset($data['colorTema']) || empty($data['colorTema'])) {
-            $data['colorTema'] = "#606060"; 
-        }        
-        if (!isset($data['colorBase']) || empty($data['colorBase'])) {
-           $data['colorBase'] = $this->lightenColor($data['colorTema']);
+            $data['colorTema'] = "#606060";
         }
-        
+        if (!isset($data['colorBase']) || empty($data['colorBase'])) {
+            $data['colorBase'] = $this->lightenColor($data['colorTema']);
+        }
+
         $data["colori"]['colorBase'] = $data['colorBase'];
         $data["colori"]['colorTema'] = $data['colorTema'];
         $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], 0.4);
@@ -39,17 +41,17 @@ class Service {
 
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
 
-        
+
         $data["colori"]['colorBase'] = $data['colorBase'];
         $data["colori"]['colorTema'] = $data['colorTema'];
-        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred']==true ? 0.4 : 0);
+        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] == true ? 0.4 : 0);
         $data["colori"]['colorPrimaryScuro'] = $this->darkenColor($data["colori"]['colorPrimary'], 0.2);
 
-                
+
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;
 
-        return $data; 
+        return $data;
     }
 
     /**
@@ -57,23 +59,24 @@ class Service {
      *
      * @return array Impostazioni filtrate.
      */
-    public function getMeta() {
+    public function getMeta()
+    {
         $meta = $this->settings['meta'];
 
         $szkeywords = "";
         foreach ($this->settings['meta']["keywords"] as $keyword) {
-            $szkeywords  .= trim($keyword) . ",";
+            $szkeywords .= trim($keyword) . ",";
         }
 
         $meta['string_All_keywords'] = rtrim($szkeywords, ",");
 
         $havesmoke = isset($this->settings['smoke']) && $this->settings['smoke']["enable"];
- 
-        $meta['localcss'] = $this->prepareAssets("style", "css",["base.css"], ["addon.css"]);
+
+        $meta['localcss'] = $this->prepareAssets("style", "css", ["base.css"], ["addon.css"]);
 
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
-        $meta['localjs'] = $this->prepareAssets("script", "js", ["lingua.js","base.js"], ["addon.js"], $excludeJs);
-        
+        $meta['localjs'] = $this->prepareAssets("script", "js", ["lingua.js", "base.js"], ["addon.js"], $excludeJs);
+
         $meta['ext_link'] = [
             'ROBE PER IL MENU + SOCIAL' => [
                 ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'],
@@ -95,7 +98,7 @@ class Service {
             ],
         ];
 
-        return $meta; 
+        return $meta;
     }
 
     /**
@@ -140,7 +143,7 @@ class Service {
 
         // Costruzione dell'URL
         $this->baseUrl = $protocol . "://$_SERVER[HTTP_HOST]" . dirname($_SERVER['PHP_SELF']) . "/";
-                            
+
         $this->settings = json_decode(file_get_contents('websettings.json'), true);
 
         $this->caricaLingua();
@@ -151,19 +154,20 @@ class Service {
         if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
             $this->urlAPI = $APIEndPoint;
         } else {
-            $this->urlAPI = $this->baseUrl.$APIEndPoint;
+            $this->urlAPI = $this->baseUrl . $APIEndPoint;
         }
     }
 
     /**
      * Carica le traduzioni per la lingua impostata se il file esiste.
      */
-    private function caricaLingua() {
+    private function caricaLingua()
+    {
         $lang = strtolower($this->settings['lang']);
         if (isset($_GET["lang"]) && !empty($_GET["lang"]))
             $lang = strtolower($_GET["lang"]);
 
-        $this->pathLang= $this->baseURL("FE_utils/getLang?lang=".$lang);
+        $this->pathLang = $this->baseURL("FE_utils/getLang?lang=" . $lang);
         $this->_traduzione = new Traduzione($lang);
     }
 
@@ -171,7 +175,8 @@ class Service {
      * Restituisce l'elenco delle lingue disponibili basato sui file nella cartella lang.
      * @return array Un array con le lingue disponibili.
      */
-    public function getLingueDisponibili() {
+    public function getLingueDisponibili()
+    {
         $lingue = [];
         $lingue[] = $this->_traduzione->lang;
 
@@ -183,14 +188,16 @@ class Service {
      * @param string $sz L'identificatore della stringa da tradurre
      * @return string La stringa tradotta
      */
-    function traduci($sz) {
+    function traduci($sz)
+    {
         return $this->_traduzione->traduci($sz);
     }
 
     /**
      * @return string Lingua corrente
      */
-    function currentLang() {
+    function currentLang()
+    {
         return $this->_traduzione->lang;
     }
     /**
@@ -204,9 +211,10 @@ class Service {
      * @param array $excludeFiles Array di file da escludere dall'elenco addizionale.
      * @return array Array ordinato di percorsi di file da caricare.
      */
-    function prepareAssets($directory, $extension, $firstLoad, $lastLoad, $excludeFiles = []) {
+    function prepareAssets($directory, $extension, $firstLoad, $lastLoad, $excludeFiles = [])
+    {
         // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
-        $getFileList = function($directory, $extension, $excludeFiles) {
+        $getFileList = function ($directory, $extension, $excludeFiles) {
             $fileList = array();
             $absolutePath = realpath($directory) . '/';
             foreach (glob($absolutePath . "*." . $extension) as $file) {
@@ -231,7 +239,8 @@ class Service {
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function APIbaseURL($path) {
+    public function APIbaseURL($path)
+    {
         if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
             return $path;
         } else {
@@ -245,10 +254,11 @@ class Service {
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function baseURL($path) {
+    public function baseURL($path)
+    {
         if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
             return $path;
-        } else { 
+        } else {
             return rtrim($this->baseUrl, '/') . '/' . $path;
         }
     }
@@ -259,14 +269,15 @@ class Service {
      * @param string $route route
      * @return string route
      */
-    public function createRoute($route) {
+    public function createRoute($route)
+    {
         //la lingua è il default
         if ($this->settings['lang'] == $this->_traduzione->lang)
             return $route;
 
         // Parsa l'URL e decomponilo nei suoi componenti
         $parsedUrl = parse_url($route);
-        
+
         // Prepara l'array dei parametri della query
         $queryParams = [];
         if (isset($parsedUrl['query'])) {
@@ -307,118 +318,119 @@ class Service {
      * @throws InvalidArgumentException Se i parametri obbligatori non sono validi.
      * @throws Exception In caso di errore nella chiamata all'endpoint o nella risposta dell'API.
      */
-    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json', array $headerPersonalizzati = [], int $timeoutTotale = 30, int $timeoutConnessione = 10) {
-    // Validazione del parametro $pathOrEndpoint
-    if (empty($pathOrEndpoint)) {
-        throw new InvalidArgumentException("Il parametro 'pathOrEndpoint' non può essere vuoto.");
-    }
-
-    // Validazione del parametro $metodo
-    $metodiValidi = ['GET', 'POST'];
-    if (!in_array(strtoupper($metodo), $metodiValidi)) {
-        throw new InvalidArgumentException("Metodo HTTP non supportato: " . $metodo);
-    }
-
-    $url = $this->APIbaseURL($pathOrEndpoint);
-
-    $dati['lang'] = $this->_traduzione->lang;
-
-    if (strtoupper($metodo) === "GET" && !empty($dati)) {
-        $url .= '?' . http_build_query($dati);
-    }
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutTotale); // Timeout totale
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutConnessione); // Timeout di connessione
-
-
-    if (!$this->CheckSSL){
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    }
-    // Inizializza gli header con 'Content-Type' e 'X-Api-Key'
-    $header = [
-        "Content-Type: $contentType",
-        "X-Api-Key: " . $this->APIkey
-    ];
-
-    // Aggiungi gli header personalizzati agli header di default
-    $header = array_merge($header, $headerPersonalizzati);
-    // Imposta gli header HTTP
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    // Imposta il metodo HTTP e i dati
-    switch (strtoupper($metodo)) {
-        case "POST":
-            curl_setopt($ch, CURLOPT_POST, true);
-            if (!empty($dati)) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dati));
-            }
-            break;
-    }
-
-    // Imposta CURLOPT_RETURNTRANSFER per ottenere il risultato come stringa
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    // Esegui la chiamata cURL
-    $response = curl_exec($ch);
-    $ResponseContentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-
-    // Controlla se ci sono stati errori nella chiamata cURL
-    if ($response === false) {
-        $errorCode = curl_errno($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        // Controlla se si tratta di un timeout
-        if ($errorCode === CURLE_OPERATION_TIMEDOUT) {
-            throw new Exception("Timeout della richiesta raggiunto: ".$error);
+    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json', array $headerPersonalizzati = [], int $timeoutTotale = 30, int $timeoutConnessione = 10)
+    {
+        // Validazione del parametro $pathOrEndpoint
+        if (empty($pathOrEndpoint)) {
+            throw new InvalidArgumentException("Il parametro 'pathOrEndpoint' non può essere vuoto.");
         }
 
-        // Gestisci altri errori di connessione
-        throw new Exception("Errore EndPoint: " . $error);
-    }
+        // Validazione del parametro $metodo
+        $metodiValidi = ['GET', 'POST'];
+        if (!in_array(strtoupper($metodo), $metodiValidi)) {
+            throw new InvalidArgumentException("Metodo HTTP non supportato: " . $metodo);
+        }
 
-    // Ottieni il codice di risposta HTTP
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if (!($httpCode >= 200 && $httpCode < 300)) {
+        $url = $this->APIbaseURL($pathOrEndpoint);
+
+        $dati['lang'] = $this->_traduzione->lang;
+
+        if (strtoupper($metodo) === "GET" && !empty($dati)) {
+            $url .= '?' . http_build_query($dati);
+        }
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutTotale); // Timeout totale
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutConnessione); // Timeout di connessione
+
+
+        if (!$this->CheckSSL) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        // Inizializza gli header con 'Content-Type' e 'X-Api-Key'
+        $header = [
+            "Content-Type: $contentType",
+            "X-Api-Key: " . $this->APIkey
+        ];
+
+        // Aggiungi gli header personalizzati agli header di default
+        $header = array_merge($header, $headerPersonalizzati);
+        // Imposta gli header HTTP
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        // Imposta il metodo HTTP e i dati
+        switch (strtoupper($metodo)) {
+            case "POST":
+                curl_setopt($ch, CURLOPT_POST, true);
+                if (!empty($dati)) {
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dati));
+                }
+                break;
+        }
+
+        // Imposta CURLOPT_RETURNTRANSFER per ottenere il risultato come stringa
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Esegui la chiamata cURL
+        $response = curl_exec($ch);
+        $ResponseContentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+
+        // Controlla se ci sono stati errori nella chiamata cURL
+        if ($response === false) {
+            $errorCode = curl_errno($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            // Controlla se si tratta di un timeout
+            if ($errorCode === CURLE_OPERATION_TIMEDOUT) {
+                throw new Exception("Timeout della richiesta raggiunto: " . $error);
+            }
+
+            // Gestisci altri errori di connessione
+            throw new Exception("Errore EndPoint: " . $error);
+        }
+
+        // Ottieni il codice di risposta HTTP
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!($httpCode >= 200 && $httpCode < 300)) {
+            curl_close($ch);
+            throw new Exception("Errore HTTP: " . $httpCode);
+        }
+        // Chiudi la sessione cURL
         curl_close($ch);
-        throw new Exception("Errore HTTP: " . $httpCode);
-    }
-    // Chiudi la sessione cURL
-    curl_close($ch);
 
-    // Elaborazione della risposta in base al suo tipo di contenuto
-    $managedContentTypes = ['application/json', 'text/xml', 'application/xml'];
-    $processAs = in_array($ResponseContentType, $managedContentTypes) ? $ResponseContentType : $contentType;
+        // Elaborazione della risposta in base al suo tipo di contenuto
+        $managedContentTypes = ['application/json', 'text/xml', 'application/xml'];
+        $processAs = in_array($ResponseContentType, $managedContentTypes) ? $ResponseContentType : $contentType;
 
-    switch ($processAs) {
-        case 'application/json':
-            // Gestione della risposta JSON
-            $oggetto = json_decode($response, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Errore nella decodifica JSON: " . json_last_error_msg());
-            }
-            break;
+        switch ($processAs) {
+            case 'application/json':
+                // Gestione della risposta JSON
+                $oggetto = json_decode($response, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception("Errore nella decodifica JSON: " . json_last_error_msg());
+                }
+                break;
 
-        case 'text/xml':
-        case 'application/xml':
-            // Gestione della risposta XML
-            libxml_use_internal_errors(true);
-            $oggetto = simplexml_load_string($response);
-            if ($oggetto === false) {
-                $error = libxml_get_errors();
-                libxml_clear_errors();
-                throw new Exception("Errore nel parsing XML: " . implode(", ", $error));
-            }
-            break;
+            case 'text/xml':
+            case 'application/xml':
+                // Gestione della risposta XML
+                libxml_use_internal_errors(true);
+                $oggetto = simplexml_load_string($response);
+                if ($oggetto === false) {
+                    $error = libxml_get_errors();
+                    libxml_clear_errors();
+                    throw new Exception("Errore nel parsing XML: " . implode(", ", $error));
+                }
+                break;
 
-        default:
-            // Gestione di altri tipi di contenuto (come testo semplice o HTML)
-            $oggetto = $response;
-            break;
-    }
-    // Restituisci l'oggetto decodificato o la risposta grezza
-    return $oggetto;
+            default:
+                // Gestione di altri tipi di contenuto (come testo semplice o HTML)
+                $oggetto = $response;
+                break;
+        }
+        // Restituisci l'oggetto decodificato o la risposta grezza
+        return $oggetto;
 
     }
 
@@ -434,7 +446,8 @@ class Service {
      * @param string $stringa La stringa da convertire in entità HTML.
      * @return string La stringa convertita in entità HTML.
      */
-    public function convertiInEntitaHTML($stringa) {
+    public function convertiInEntitaHTML($stringa)
+    {
         $risultato = '';
         $lunghezza = strlen($stringa);
         for ($i = 0; $i < $lunghezza; $i++) {
@@ -456,7 +469,8 @@ class Service {
      * @param array $attributiExtra Un array associativo di attributi HTML aggiuntivi e i loro valori. Esempio: ['class' => 'my-class', 'id' => 'my-id'].
      * @return string Il codice HTML del link generato.
      */
-    function creaLinkCodificato($url, $prefisso = '', $attributiExtra = []) {
+    function creaLinkCodificato($url, $prefisso = '', $attributiExtra = [])
+    {
         $urlCodificato = $this->convertiInEntitaHTML($url);
         $attributi = '';
 
@@ -479,7 +493,8 @@ class Service {
      * @param string $hexColor Il colore di sfondo in formato HEX, come una stringa (es. '#ffcc00').
      * @return bool Restituisce 'true' se il testo scuro è preferibile, altrimenti 'false'.
      */
-    function isDarkTextPreferred($hexColor) {
+    function isDarkTextPreferred($hexColor)
+    {
         // Rimuove il carattere # se presente
         $hex = ltrim($hexColor, '#');
 
@@ -505,7 +520,8 @@ class Service {
      * @param float $darkenFactor Il fattore di scurimento, dove 1.0 lascia il colore invariato e 0.0 lo rende nero. Default a 0.2.
      * @return string Il colore HEX scurito.
      */
-    function darkenColor($hexColor, $darkenFactor = 0.2) {
+    function darkenColor($hexColor, $darkenFactor = 0.2)
+    {
         // Converti HEX in RGB
         $hex = ltrim($hexColor, '#');
         $r = hexdec(substr($hex, 0, 2));
@@ -531,7 +547,8 @@ class Service {
      * @param float $lightenFactor Il fattore di schiarimento, dove 1.0 lascia il colore invariato e 2.0 lo rende il più chiaro possibile. Default a 1.2.
      * @return string Il colore HEX schiarito.
      */
-    function lightenColor($hexColor, $lightenFactor = 1.2) {
+    function lightenColor($hexColor, $lightenFactor = 1.2)
+    {
         // Converti HEX in RGB
         $hex = ltrim($hexColor, '#');
         $r = hexdec(substr($hex, 0, 2));
