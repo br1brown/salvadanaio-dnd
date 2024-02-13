@@ -1,32 +1,32 @@
 <?php
-include __DIR__.'/BLL/auth_and_cors_middleware.php';
-function eseguiGET(){
+include __DIR__ . '/BLL/auth_and_cors_middleware.php';
+function eseguiGET()
+{
 
-echo Echo_getObj("social",function ($data) { // use ($variabile, $variabile2) 
-    $nomi = isset($_GET['nomi'])? $_GET['nomi'] : [];
-    
-    if (empty($nomi)) 
-        return $data;
+    echo Echo_getObj("social", function ($data) { // use ($variabile, $variabile2) 
+        $nomi = isset($_GET['nomi']) ? $_GET['nomi'] : [];
 
-    $nomiSocial = explode(';', $nomi);
+        if (empty($nomi))
+            return $data;
 
-    $risultati = [];
+        $nomiSocial = explode(';', $nomi);
 
-    // Converti tutte le chiavi di $data in minuscolo
-    $dataLowerCase = array_change_key_case($data, CASE_LOWER);
+        $risultati = [];
 
-    foreach ($nomiSocial as $nomeSocial) {
-        // Converti anche il nomeSocial in minuscolo
-        $nomeSocialLowerCase = strtolower($nomeSocial);
+        // Converti tutte le chiavi di $data in minuscolo
+        $dataLowerCase = array_change_key_case($data, CASE_LOWER);
 
-        if (isset($dataLowerCase[$nomeSocialLowerCase])) {
-            $risultati[$nomeSocial] = $dataLowerCase[$nomeSocialLowerCase];
+        foreach ($nomiSocial as $nomeSocial) {
+            // Converti anche il nomeSocial in minuscolo
+            $nomeSocialLowerCase = strtolower($nomeSocial);
+
+            if (isset($dataLowerCase[$nomeSocialLowerCase])) {
+                $risultati[$nomeSocial] = $dataLowerCase[$nomeSocialLowerCase];
+            }
         }
-    }
 
 
-    return $risultati;    
-});
+        return $risultati;
+    });
 }
-include __DIR__.'/BLL/gestione_metodi.php';
-?>
+include __DIR__ . '/BLL/gestione_metodi.php';

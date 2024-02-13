@@ -1,13 +1,14 @@
 <?php
-require_once __DIR__.'/parsedown-1.7.4/Parsedown.php';
+require_once __DIR__ . '/parsedown-1.7.4/Parsedown.php';
 
 $parser = null;
-function Markdown_HTML($mark){
+function Markdown_HTML($mark)
+{
 
-if (!isset($parser))
-    $parser = new Parsedown();
+    if (!isset($parser))
+        $parser = new Parsedown();
 
-return $parser->text($mark);
+    return $parser->text($mark);
 
 }
 
@@ -16,10 +17,11 @@ return $parser->text($mark);
 /**
  * Modifica l'array del menu direttamente per riferimento.
  *
- * @param array &$itemsMenu Riferimento all'array del menu ottenuto dal JSON statico.
  * @param Service Il servizio per le utilità front end
+ * @param array &$itemsMenu Riferimento all'array del menu ottenuto dal JSON statico.
  */
-function dynamicMenu($Service, &$itemsMenu) {
+function dynamicMenu($Service, &$itemsMenu)
+{
     // Qui puoi modificare direttamente l'array $itemsMenu.
 
     // Esempio: Aggiungere un nuovo elemento al menu

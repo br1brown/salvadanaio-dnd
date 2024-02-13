@@ -1,7 +1,9 @@
 <?php
 namespace BLL;
+
 require_once 'APIException.php';
-class Repository {
+class Repository
+{
 
     /**
      * Trova il percorso della directory 'API' partendo dalla directory corrente o da una specificata.
@@ -9,7 +11,8 @@ class Repository {
      * @param string $dir Percorso della directory da cui iniziare la ricerca.
      * @return string|null Percorso della directory 'API' se trovata, altrimenti null.
      */
-    public static function findAPIPath(string $dir = __DIR__): ?string {
+    public static function findAPIPath(string $dir = __DIR__): ?string
+    {
         $path = $dir . '/API/';
 
         // Controlla se il percorso esiste e in caso affermativo lo restituisce.
@@ -20,7 +23,7 @@ class Repository {
             return null;
         } else {
             // Cerca nella directory padre
-            return self::findAPIPath(dirname($dir)); 
+            return self::findAPIPath(dirname($dir));
         }
     }
 
@@ -31,8 +34,9 @@ class Repository {
      * @param string $ext estensione per il file, sempre .
      * @return string Percorso completo del file json.
      */
-    public static function getFileName(string $nome, string $ext = "json"): string{
-        return self::findAPIPath() . 'data/' . $nome . '.'.$ext;
+    public static function getFileName(string $nome, string $ext = "json"): string
+    {
+        return self::findAPIPath() . 'data/' . $nome . '.' . $ext;
     }
 
     /**
@@ -41,7 +45,8 @@ class Repository {
      * @param string $filePath Nome per il file.
      * @return string Contenuto completo del file
      */
-    public static function getFileContent(string $filePath): string{
+    public static function getFileContent(string $filePath): string
+    {
         if (file_exists($filePath) && is_readable($filePath)) {
             return file_get_contents($filePath);
         } else {
@@ -56,8 +61,9 @@ class Repository {
      * @return mixed Oggetto o contenuto del file.
      * @throws Exception Se il file non può essere letto o se la decodifica JSON fallisce.
      */
-    public static function getObj(string $nome, bool $decodeInData = true): mixed{
-        $fileContent = self::getFileContent (self::getFileName($nome));
+    public static function getObj(string $nome, bool $decodeInData = true): mixed
+    {
+        $fileContent = self::getFileContent(self::getFileName($nome));
         if ($decodeInData) {
             $jsonData = json_decode($fileContent, true);
 
@@ -78,9 +84,10 @@ class Repository {
      * @return mixed contenuto del file.
      * @throws Exception Se il file non può essere letto o se la decodifica JSON fallisce.
      */
-    public static function getTxt(string $nome): mixed{
-        $filePath = self::getFileName($nome,"txt");
-        return self::getFileContent ($filePath);
+    public static function getTxt(string $nome): mixed
+    {
+        $filePath = self::getFileName($nome, "txt");
+        return self::getFileContent($filePath);
     }
 
     /**
@@ -90,7 +97,8 @@ class Repository {
      * @param mixed $jsonData Dati da scrivere.
      * @param bool $isDecodedInData Indica se i dati sono già in formato JSON.
      */
-    public static function putObj($nome, $jsonData, $isDecodedInData = true): void{
+    public static function putObj($nome, $jsonData, $isDecodedInData = true): void
+    {
         $filename = self::getFileName($nome);
 
         if ($isDecodedInData) {
@@ -102,7 +110,8 @@ class Repository {
         file_put_contents($filename, $fileContent);
     }
 
-    public static function getDefaultLang(): string{
+    public static function getDefaultLang(): string
+    {
         return "it";
     }
 

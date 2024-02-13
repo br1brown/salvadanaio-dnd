@@ -6,7 +6,8 @@
  * @param callable|null $callback Funzione di callback da applicare ai dati.
  * @return string Risposta JSON con i dati ottenuti o un messaggio di errore.
  */
-function Echo_getObj($nome, $callback = null){
+function Echo_getObj($nome, $callback = null)
+{
     // Controlla se la callback fornita è eseguibile
     $ciLavoro = is_callable($callback);
 
@@ -20,7 +21,7 @@ function Echo_getObj($nome, $callback = null){
             $jsonData = json_encode($callback($jsonData, $l));
         }
 
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         // In caso di eccezione, restituisce un messaggio di errore
         return BLL\Response::retError($e->getMessage());
     }
@@ -28,5 +29,3 @@ function Echo_getObj($nome, $callback = null){
     // Restituisce i dati in formato JSON
     return $jsonData;
 }
-
-?>

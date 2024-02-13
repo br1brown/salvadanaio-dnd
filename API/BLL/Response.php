@@ -1,13 +1,16 @@
 <?php
 namespace BLL;
-class Response {
+
+class Response
+{
     /**
      * Restituisce un messaggio di successo in formato JSON.
      *
      * @param string $message Messaggio di successo.
      * @return string JSON response.
      */
-    public static function retOK(string $message = null): string {
+    public static function retOK(string $message = null): string
+    {
         if ($message != null)
             return json_encode(['status' => 'success', 'message' => $message]);
         return json_encode(['status' => 'success']);
@@ -19,36 +22,27 @@ class Response {
      * @param string $message Messaggio di errore.
      * @return string JSON response.
      */
-    public static function retError(string $message): string {
+    public static function retError(string $message): string
+    {
         return json_encode(['status' => 'error', 'message' => $message]);
     }
 
-
     /**
-     * Controlla se la richiesta HTTP corrente è una richiesta
-     * @param string $metodo Metodo indicato
-     * @return bool Se il metodo della richiesta HTTP è quello indicato
-     */
-    public static function SiamoIn($metodo): bool{
-        return ($_SERVER['REQUEST_METHOD'] === $metodo);
-    }
-
-     /**
      * Recupera i dati in "php://input"
      * @return mixed "php://input" Parsato se possibile
      */
-    public static function datiinput(){
+    public static function datiinput()
+    {
         $result = file_get_contents('php://input');
-        try{
+        try {
             return json_decode($result, true);
-        }
-        catch (Exception $e) {
-            parse_str($result,$rawData);
+        } catch (\Exception $e) {
+            parse_str($result, $rawData);
             return $rawData;
         }
     }
 
-     /**
+    /**
      * Traduce i valori specificati di una lista di array associativi nella lingua desiderata.
      * 
      * @param array $lista La lista da tradurre.
@@ -56,8 +50,9 @@ class Response {
      * @param string $lingua La lingua in cui tradurre i valori.
      * @return array Lista tradotta.
      */
-    public static function traduciLista($lista, $chiavi, $lingua) {
-        return array_map(function($elemento) use ($chiavi, $lingua) {
+    public static function traduciLista($lista, $chiavi, $lingua)
+    {
+        return array_map(function ($elemento) use ($chiavi, $lingua) {
             return self::traduciElemento($elemento, $chiavi, $lingua);
         }, $lista);
     }
@@ -70,7 +65,8 @@ class Response {
      * @param string $lingua La lingua in cui tradurre i valori, se una traduzione è disponibile.
      * @return array L'elemento con i valori specificati tradotti nella lingua desiderata.
      */
-    public static function traduciElemento($elemento, $chiavi, $lingua) {
+    public static function traduciElemento($elemento, $chiavi, $lingua)
+    {
         foreach ($chiavi as $chiave) {
             // Verifica se la chiave esiste nell'elemento e se il valore per quella chiave è un array
             if (isset($elemento[$chiave]) && is_array($elemento[$chiave])) {
