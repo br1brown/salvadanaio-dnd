@@ -118,9 +118,13 @@
 				endif; ?>
 			<div class="row">
 				<div class="col text-center">
-					<p>© 2023 <a href="<?= $service->createRoute("index") ?>">
+					<p class="text-muted">
+						<?= $description ?>
+					</p>
+
+					<p>© 2024 <a href="<?= $service->createRoute("index") ?>">
 							<?= $AppName ?>
-						</a>.
+						</a>|
 						<?= $service->traduci("dirittiriservati"); ?>.
 					</p>
 				</div>

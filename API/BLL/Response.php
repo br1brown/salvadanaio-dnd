@@ -28,21 +28,6 @@ class Response
     }
 
     /**
-     * Recupera i dati in "php://input"
-     * @return mixed "php://input" Parsato se possibile
-     */
-    public static function datiinput()
-    {
-        $result = file_get_contents('php://input');
-        try {
-            return json_decode($result, true);
-        } catch (\Exception $e) {
-            parse_str($result, $rawData);
-            return $rawData;
-        }
-    }
-
-    /**
      * Traduce i valori specificati di una lista di array associativi nella lingua desiderata.
      * 
      * @param array $lista La lista da tradurre.
@@ -82,4 +67,3 @@ class Response
         return $elemento;
     }
 }
-?>

@@ -46,4 +46,5 @@ function dynamicMenu($Service, &$itemsMenu)
 
     // Non è necessario restituire l'array, poiché è stato passato per riferimento
 }
-?>
+
+
