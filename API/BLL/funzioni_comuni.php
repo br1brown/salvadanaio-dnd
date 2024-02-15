@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/Personaggio.php';
 use BLL\Cash;
 
 /**
