@@ -23,23 +23,23 @@ $personaggi = $service->callApiEndpoint("characters");
 					<div class="row text-center">
 						<span class="col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i>
 							<?= $service->traduci("platino") ?>:
-							<?= $personaggio["cash"]["platinum"]; ?>
+							<?= $personaggio["platinum"]; ?>
 						</span>
 					</div>
 					<div class="row small text-center">
 						<span class="col-12 col-md-6"><i class="fas fa-medal gold-color bordo-ico"></i>
 							<?= $service->traduci("oro") ?>:
-							<?= $personaggio["cash"]["gold"]; ?>
+							<?= $personaggio["gold"]; ?>
 						</span>
 						<span class="col-12 col-md-6"><i class="fas fa-trophy silver-color bordo-ico"></i>
 							<?= $service->traduci("argento") ?>:
-							<?= $personaggio["cash"]["silver"]; ?>
+							<?= $personaggio["silver"]; ?>
 						</span>
 					</div>
 					<div class="row small text-center">
 						<span class="col-12 col-md-12"><i class="fas fa-coins copper-color bordo-ico"></i>
 							<?= $service->traduci("rame") ?>:
-							<?= $personaggio["cash"]["copper"]; ?>
+							<?= $personaggio["copper"]; ?>
 						</span>
 					</div>
 					</p>

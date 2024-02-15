@@ -3,57 +3,54 @@ namespace BLL;
 
 class Personaggio
 {
-    private $baseName;
-    private $data;
-    private $filePath;
+    private string $baseName;
+    private PersonaggioDTO $personaggio;
+    private string $filePath;
 
-    //quanti copper sono?
-    private $CAMBIO_PLATINUM;
-    private $CAMBIO_GOLD;
-    private $CAMBIO_SILVER;
+    private int $CAMBIO_PLATINUM;
+    private int $CAMBIO_GOLD;
+    private int $CAMBIO_SILVER;
 
-    public static function Crea($nome, $platinum = 0, $gold = 0, $silver = 0, $copper = 0)
+    public static function Crea(string $nome, int $platinum = 0, int $gold = 0, int $silver = 0, int $copper = 0)
     {
         if (empty($nome))
             throw new \Exception("Valore nome non valido");
-
+        $nome = trim($nome);
         $baseName = self::GetBaseName($nome);
-
-        if (file_exists(Repository::getFileName($baseName))) {
+        $fileName = Repository::getFileName($baseName);
+        if (file_exists($fileName)) {
             throw new \Exception($nome . " esiste");
         }
         $p = Repository::getObj("personaggi");
-        $p[] = ["basename" => $baseName, "nome" => $nome];
+        $p[] = ["basename" => $baseName, "name" => $nome];
         Repository::putObj("personaggi", $p);
 
-        file_put_contents(
-            Repository::getFileName($baseName),
-            json_encode([
-                "name" => $nome,
-                "cash" => [
-                    "platinum" => $platinum,
-                    "gold" => $gold,
-                    "silver" => $silver,
-                    "copper" => $copper,
-                ]
-            ])
-        );
+        $dto = new PersonaggioDTO($nome, new Cash($platinum, $gold, $silver, $copper));
+
+        self::_save($fileName, $dto);
 
         return Response::retOK($nome . " creato");
     }
 
-    public static function Elimina($baseName)
+    public static function Elimina(string $baseName)
     {
         if (!file_exists(Repository::getFileName($baseName))) {
             throw new \Exception($baseName . " non esiste ");
         }
 
         $p = Repository::getObj("personaggi");
+        $index = -1;
+        foreach ($p as $i => $pers) {
 
-        $index = array_search($baseName, $p);
-        if ($index !== false) {
+            if ($pers["basename"] == $baseName) {
+                $index = $i;
+            }
+        }
+        if ($index >= 0) {
             unset($p[$index]);
             $p = array_values($p);
+            Repository::putObj("personaggi", $p);
+            unlink(Repository::getFileName($baseName));
         } else {
             throw new \Exception($baseName . " non trovato nell'elenco");
         }
@@ -64,12 +61,12 @@ class Personaggio
     }
 
 
-    public static function GetBaseName($baseName)
+    public static function GetBaseName(string $baseName): string
     {
         return strtoupper(trim(preg_replace("/\s+/", "_", $baseName)));
     }
 
-    public function __construct($baseName)
+    public function __construct(string $baseName)
     {
         $config = Repository::getObj("configmoney");
         $this->CAMBIO_PLATINUM = $config["platinum"];
@@ -82,30 +79,52 @@ class Personaggio
         $this->loadData();
     }
 
-    private function loadData()
+    private function loadData(): void
     {
         if (file_exists($this->filePath)) {
             $json = file_get_contents($this->filePath);
-            $this->data = json_decode($json, true);
+            $decoded = json_decode($json, true);
+
+
+            $cash = new Cash($decoded["cash"]['platinum'], $decoded["cash"]['gold'], $decoded["cash"]['silver'], $decoded["cash"]['copper']);
+
+            $suspended = [];
+            $history = [];
+            if (isset($decoded['suspended'])) {
+                foreach ($decoded['suspended'] as $tipo => $transazioni) {
+                    foreach ($transazioni as $transazione) {
+                        $suspended[$tipo][] = new TransazioneSospesa($transazione['copper'], $transazione['description']);
+                    }
+                }
+            }
+            if (isset($decoded['history'])) {
+                foreach ($decoded['history'] as $evento) {
+                    $history[] = CronologiaPagamento::from_objectvars($evento);
+                }
+            }
+
+            $this->personaggio = new PersonaggioDTO($decoded['name'], $cash, $suspended, $history);
+
         } else {
             throw new \Exception("Personaggio non trovato");
         }
     }
 
-    public function save()
+    public static function _save(string $filePath, PersonaggioDTO $personaggio): void
     {
-        file_put_contents($this->filePath, json_encode($this->data));
+        file_put_contents($filePath, json_encode($personaggio));
     }
 
+    public function save(): void
+    {
+        self::_save($this->filePath, $this->personaggio);
+    }
     public function manageCharacterCoins(
-        $transactionType,
-        $platinum,
-        $gold,
-        $silver,
-        $copper,
-        $description,
-        $canReceiveChange = false,
-        $itemdescription = "",
+        string $transactionType,
+        Cash $soldi,
+        string $description,
+        bool $canReceiveChange = false,
+        string $itemdescription = ""
     ) {
 
         $isAdding = null;
@@ -133,26 +152,27 @@ class Personaggio
         if ($shouldAdjustCurrency) {
             $this->manageCurrency(
                 $isAdding,
-                $platinum,
-                $gold,
-                $silver,
-                $copper,
+                $soldi->platinum,
+                $soldi->gold,
+                $soldi->silver,
+                $soldi->copper,
                 $canReceiveChange
             );
         }
 
         $totalCopperManaging =
-            $platinum * $this->CAMBIO_PLATINUM +
-            $gold * $this->CAMBIO_GOLD +
-            $silver * $this->CAMBIO_SILVER +
-            $copper;
+            $soldi->platinum * $this->CAMBIO_PLATINUM +
+            $soldi->gold * $this->CAMBIO_GOLD +
+            $soldi->silver * $this->CAMBIO_SILVER +
+            $soldi->copper;
         switch ($transactionType) {
             case "debt":
             case "credit":
-                $this->data["suspended"][$transactionType][] = [
-                    "copper" => $totalCopperManaging,
-                    "description" => preg_replace("/\r\n|\n|\r/", " - ", $description),
-                ];
+                $this->personaggio->suspended[$transactionType][] =
+                    new TransazioneSospesa(
+                        $totalCopperManaging,
+                        preg_replace("/\r\n|\n|\r/", " - ", $description),
+                    );
 
                 break;
 
@@ -162,13 +182,13 @@ class Personaggio
                 $transactionKey =
                     $transactionType === "settle_debt" ? "debt" : "credit";
                 $found = false;
-                foreach ($this->data["suspended"][$transactionKey] as $key => $transaction) {
+                foreach ($this->personaggio->suspended[$transactionKey] as $key => $transaction) {
                     if (
-                        $transaction["copper"] === $totalCopperManaging &&
-                        $transaction["description"] === $itemdescription
+                        $transaction->copper === $totalCopperManaging &&
+                        $transaction->description === $itemdescription
                     ) {
                         unset(
-                            $this->data["suspended"][$transactionKey][$key]
+                            $this->personaggio->suspended[$transactionKey][$key]
                             );
                         $found = true;
                         break;
@@ -177,21 +197,21 @@ class Personaggio
                 if (!$found) {
                     throw new \Exception("Contratto non trovato.");
                 }
-                $this->data["suspended"][$transactionKey] = array_values(
-                    $this->data["suspended"][$transactionKey]
+                $this->personaggio->suspended[$transactionKey] = array_values(
+                    $this->personaggio->suspended[$transactionKey]
                 ); // Reindex array
                 break;
         }
 
-        $this->data["history"][] = [
-            "date" => date("Y-m-d H:i:s"),
-            "platinum" => $platinum,
-            "gold" => $gold,
-            "silver" => $silver,
-            "copper" => $copper,
-            "description" => $description,
-            "type" => strtoupper($transactionType),
-        ];
+        $this->personaggio->history[] = new CronologiaPagamento(
+            new \DateTime(),
+            $soldi->platinum,
+            $soldi->gold,
+            $soldi->silver,
+            $soldi->copper,
+            $description,
+            strtoupper($transactionType),
+        );
 
         $this->save();
 
@@ -202,18 +222,18 @@ class Personaggio
     }
 
     function manageCurrency(
-        $isAdding,
-        $platinum = 0,
-        $gold = 0,
-        $silver = 0,
-        $copper = 0,
-        $canReceiveChange = true
+        bool $isAdding,
+        int $platinum = 0,
+        int $gold = 0,
+        int $silver = 0,
+        int $copper = 0,
+        bool $canReceiveChange = true
     ) {
         if ($isAdding) {
-            $this->data["cash"]["platinum"] += $platinum;
-            $this->data["cash"]["gold"] += $gold;
-            $this->data["cash"]["silver"] += $silver;
-            $this->data["cash"]["copper"] += $copper;
+            $this->personaggio->cash->platinum += $platinum;
+            $this->personaggio->cash->gold += $gold;
+            $this->personaggio->cash->silver += $silver;
+            $this->personaggio->cash->copper += $copper;
         } else {
             if ($canReceiveChange) {
                 $totalCopperToPay =
@@ -228,110 +248,120 @@ class Personaggio
                     );
                 }
 
-                $this->data["cash"]["platinum"] = 0;
-                $this->data["cash"]["gold"] = 0;
-                $this->data["cash"]["silver"] = 0;
-                $this->data["cash"]["copper"] = $totalCopper - $totalCopperToPay;
+                $this->personaggio->cash->platinum = 0;
+                $this->personaggio->cash->gold = 0;
+                $this->personaggio->cash->silver = 0;
+                $this->personaggio->cash->copper = $totalCopper - $totalCopperToPay;
 
                 $this->refreshCambio();
             } else {
                 if (
-                    $this->data["cash"]["platinum"] < $platinum ||
-                    $this->data["cash"]["gold"] < $gold ||
-                    $this->data["cash"]["silver"] < $silver ||
-                    $this->data["cash"]["copper"] < $copper
+                    $this->personaggio->cash->platinum < $platinum ||
+                    $this->personaggio->cash->gold < $gold ||
+                    $this->personaggio->cash->silver < $silver ||
+                    $this->personaggio->cash->copper < $copper
                 ) {
                     throw new \Exception(
                         "Non hai le monete della denominazione corretta per effettuare il pagamento esatto"
                     );
                 }
-                $this->data["cash"]["platinum"] -= $platinum;
-                $this->data["cash"]["gold"] -= $gold;
-                $this->data["cash"]["silver"] -= $silver;
-                $this->data["cash"]["copper"] -= $copper;
+                $this->personaggio->cash->platinum -= $platinum;
+                $this->personaggio->cash->gold -= $gold;
+                $this->personaggio->cash->silver -= $silver;
+                $this->personaggio->cash->copper -= $copper;
             }
         }
     }
 
-    function refreshCambio()
+    public function refreshCambio()
     {
-        $this->data["cash"] = $this->ConvertValuta($this->get_totalcopper());
+        $totalCopper = $this->get_totalcopper();
+        $this->personaggio->cash = $this->ConvertValuta($totalCopper);
         $this->save();
-
     }
 
-    private function ConvertValuta($copper)
+    private function ConvertValuta(int $copper): Cash
     {
-        $ret_data["platinum"] = floor(
-            $copper / $this->CAMBIO_PLATINUM
-        );
-        $copper -= $ret_data["platinum"] * $this->CAMBIO_PLATINUM;
+        $platinum = floor($copper / $this->CAMBIO_PLATINUM);
+        $copper -= $platinum * $this->CAMBIO_PLATINUM;
 
-        $ret_data["gold"] = floor($copper / $this->CAMBIO_GOLD);
-        $copper -= $ret_data["gold"] * $this->CAMBIO_GOLD;
+        $gold = floor($copper / $this->CAMBIO_GOLD);
+        $copper -= $gold * $this->CAMBIO_GOLD;
 
-        $ret_data["silver"] = floor($copper / $this->CAMBIO_SILVER);
-        $ret_data["copper"] = $copper % $this->CAMBIO_SILVER;
+        $silver = floor($copper / $this->CAMBIO_SILVER);
+        $copper = $copper % $this->CAMBIO_SILVER;
 
-        return $ret_data;
+        return new Cash($platinum, $gold, $silver, $copper);
     }
 
-    function get_totalcopper()
+    function get_totalcopper(): int
     {
-        // Inizializza le variabili per il calcolo
-        $platinum = isset($this->data["cash"]["platinum"])
-            ? $this->data["cash"]["platinum"]
-            : 0;
-        $gold = isset($this->data["cash"]["gold"]) ? $this->data["cash"]["gold"] : 0;
-        $silver = isset($this->data["cash"]["silver"]) ? $this->data["cash"]["silver"] : 0;
-        $copper = isset($this->data["cash"]["copper"]) ? $this->data["cash"]["copper"] : 0;
+        $cash = $this->personaggio->cash;
+        if ($cash != null) {
+            $totalCopper = ($cash->platinum * $this->CAMBIO_PLATINUM) +
+                ($cash->gold * $this->CAMBIO_GOLD) +
+                ($cash->silver * $this->CAMBIO_SILVER) +
+                $cash->copper;
 
-        // Calcola il totale
-        $totali = $platinum * $this->CAMBIO_PLATINUM;
-        $totali += $gold * $this->CAMBIO_GOLD;
-        $totali += $silver * $this->CAMBIO_SILVER;
-        $totali += $copper;
-
-        return $totali;
+            return $totalCopper;
+        }
+        return 0;
     }
 
-    public function getData($encode = true)
+
+    public function getData(bool $encode = true)
     {
-        $ret = $this->data;
-        $ret["totalcopper"] = $this->get_totalcopper();
-        $ret["basename"] = $this->baseName;
+        $personaggioArray = [
+            "basename" => $this->baseName,
+            "name" => $this->personaggio->name,
+            "platinum" => $this->personaggio->cash->platinum,
+            "gold" => $this->personaggio->cash->gold,
+            "silver" => $this->personaggio->cash->silver,
+            "copper" => $this->personaggio->cash->copper,
+            "suspended" => [],
+            "history" => [],
+            "totalcopper" => $this->get_totalcopper(),
+        ];
 
-        if (isset($ret["suspended"]))
-            foreach ($ret["suspended"] as $tipo => $obj) {
-                foreach ($obj as $key => $tran) {
-                    $cop = $tran["copper"];
+        foreach ($this->personaggio->history as $cronologia) {
+            $personaggioArray["history"][] = $cronologia->jsonSerialize();
+        }
 
-                    $ret["suspended"][$tipo][$key] = $this->ConvertValuta($tran["copper"]);
-                    $ret["suspended"][$tipo][$key]['description'] = $tran['description'];
-                    $ret["suspended"][$tipo][$key]['totalCopper'] = $cop;
-                }
+        foreach ($this->personaggio->suspended as $tipo => $transazioni) {
+            foreach ($transazioni as $transazione) {
+                $converted = $this->ConvertValuta($transazione->copper);
+                $personaggioArray["suspended"][$tipo][] = [
+                    "platinum" => $converted->platinum,
+                    "gold" => $converted->gold,
+                    "silver" => $converted->silver,
+                    "copper" => $converted->copper,
+                    "description" => $transazione->description,
+                    "totalCopper" => $transazione->copper,
+                ];
             }
+        }
 
-        if ($encode)
-            return json_encode($ret);
-        return $ret;
+        if ($encode) {
+            return json_encode($personaggioArray);
+        } else {
+            return $personaggioArray;
+        }
     }
 
 
 
     function deleteCronologia($data)
     {
+
         $trovato = false;
-        foreach ($this->data["history"] as $key => $item) {
-            if ($item['date'] == $data) {
-                unset($this->data["history"][$key]);
+        foreach ($this->personaggio->history as $key => $cronologiaPagamento) {
+            if ($cronologiaPagamento->haQuestaData($data)) {
+                unset($this->personaggio->history[$key]);
+                $this->personaggio->history = array_values($this->personaggio->history); // Reindirizza l'array
                 $trovato = true;
-                break;
             }
         }
         if ($trovato) {
-            // Reindirizza l'array dopo aver rimosso l'elemento
-            $this->data["history"] = array_values($this->data["history"]);
             $this->save();
             return Response::retOK();
         } else {
@@ -340,4 +370,109 @@ class Personaggio
     }
 }
 
-?>
+class PersonaggioDTO implements \JsonSerializable
+{
+    public string $name;
+    public Cash $cash;
+    public int $gold;
+    public int $silver;
+    public int $copper;
+    public array $suspended; // Array "tipo" -> Array di oggetti TransazioneSospesa
+    public array $history; // Array di oggetti CronologiaPagamento
+
+    public function __construct(
+        string $name,
+        Cash $cash,
+        array $suspended = [],
+        array $history = []
+    ) {
+        $this->name = $name;
+        $this->cash = $cash;
+        $this->suspended = $suspended;
+        $this->history = $history;
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+}
+
+class Cash
+{
+    public int $platinum;
+    public int $gold;
+    public int $silver;
+    public int $copper;
+
+    public function __construct(int $platinum, int $gold, int $silver, int $copper)
+    {
+        $this->platinum = $platinum;
+        $this->gold = $gold;
+        $this->silver = $silver;
+        $this->copper = $copper;
+    }
+}
+class CronologiaPagamento implements \JsonSerializable
+{
+    public static function from_objectvars(array $evento): self
+    {
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $evento['date']);
+        return new self($date, $evento["platinum"], $evento["gold"], $evento["silver"], $evento["copper"], $evento["description"], $evento["type"]);
+    }
+
+    public \DateTime $date;
+    public int $platinum;
+    public int $gold;
+    public int $silver;
+    public int $copper;
+    public string $description;
+    public string $type;
+
+    public function __construct(
+        \DateTime $date,
+        int $platinum,
+        int $gold,
+        int $silver,
+        int $copper,
+        string $description,
+        string $type
+    ) {
+        $this->date = $date;
+        $this->platinum = $platinum;
+        $this->gold = $gold;
+        $this->silver = $silver;
+        $this->copper = $copper;
+        $this->description = $description;
+        $this->type = $type;
+    }
+    public function jsonSerialize()
+    {
+        $c = get_object_vars($this);
+        $c["date"] = $this->date->format('Y-m-d H:i:s');
+        return $c;
+    }
+
+
+    public function haQuestaData(string $data): bool
+    {
+        return $data === $this->date->format('Y-m-d H:i:s');
+    }
+}
+class TransazioneSospesa implements \JsonSerializable
+{
+    public int $copper; // Totale in rame
+    public string $description; // Descrizione della transazione
+
+    public function __construct(
+        int $copper,
+        string $description
+    ) {
+        $this->copper = $copper;
+        $this->description = $description;
+    }
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+}

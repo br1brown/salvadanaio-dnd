@@ -5,16 +5,18 @@ include('FE_utils/TopPage.php');
 
 $valido = false;
 if (isset($_GET['basename'])) {
-	$personaggio = $service->callApiEndpoint("character", "GET", ["basename" => $_GET['basename']]);
+
+
 	try {
+		$personaggio = $service->callApiEndpoint("character", "GET", ["basename" => $_GET['basename']]);
 
 		$name = $personaggio['name'] ?? 'Nome non disponibile';
 		$basename = $personaggio['basename'] ?? 'Nome non disponibile';
 
-		$platinum = $personaggio["cash"]['platinum'] ?? 0;
-		$gold = $personaggio["cash"]['gold'] ?? 0;
-		$silver = $personaggio["cash"]['silver'] ?? 0;
-		$copper = $personaggio["cash"]['copper'] ?? 0;
+		$platinum = $personaggio['platinum'] ?? 0;
+		$gold = $personaggio['gold'] ?? 0;
+		$silver = $personaggio['silver'] ?? 0;
+		$copper = $personaggio['copper'] ?? 0;
 
 		$suspended = $personaggio['suspended'] ?? [];
 
@@ -32,7 +34,7 @@ if (!$valido) {
 	?>
 	<div class="row">
 		<div class="col col-md-6 offset-md-3 bg-danger">
-			<?php $service->traduci("Personaggio non trovato") ?>
+			<?= $service->traduci("personaggioNonTrovato") ?>
 		</div>
 	</div>
 	<?php

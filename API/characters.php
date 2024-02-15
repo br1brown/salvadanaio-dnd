@@ -9,6 +9,7 @@ function eseguiGET()
         foreach ($nomi_personaggi as $infos_personaggio) {
             $personaggi[] = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false);
         }
+
         return $personaggi;
     });
 }

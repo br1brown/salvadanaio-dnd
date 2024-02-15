@@ -1,4 +1,6 @@
 <?php
+use BLL\Cash;
+
 /**
  * Ottiene un oggetto e lo restituisce, eventualmente dopo aver applicato una callback.
  * 
@@ -40,10 +42,12 @@ function ManeggiaSoldi($tipo, $dati)
 
     echo $pers->manageCharacterCoins(
         $tipo,
-        intval($dati['platinum']),
-        intval($dati['gold']),
-        intval($dati['silver']),
-        intval($dati['copper']),
+        new Cash(
+            intval($dati['platinum']),
+            intval($dati['gold']),
+            intval($dati['silver']),
+            intval($dati['copper'])
+        ),
         $description,
         $canReceiveChange,
         $itemdescription
