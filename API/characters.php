@@ -10,6 +10,44 @@ function eseguiGET()
             $personaggi[] = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false);
         }
 
+        // Valori di default per l'ordinamento
+        $defaultField = 'totalcopper';
+        $defaultOrder = 'ASC';
+
+        // Estrazione e validazione del campo di ordinamento e della direzione
+        $sort = isset($_GET["sort"]) ? $_GET["sort"] : "$defaultField;$defaultOrder";
+        list($sortField, $sortOrder) = explode(';', $sort) + [null, null]; // Aggiunge null per evitare warning se manca uno dei due
+
+        // Mappa il campo di ordinamento ricevuto a un campo effettivo dell'array e valida
+        switch ($sortField) {
+            case 'cash':
+                $field = 'totalcopper';
+                break;
+            case 'name':
+                $field = 'name';
+                break;
+            default:
+                $field = $defaultField;
+        }
+
+        $sortOrder = in_array($sortOrder, ['ASC', 'DESC']) ? $sortOrder : $defaultOrder;
+
+        // Implementazione dell'ordinamento
+        usort($personaggi, function ($a, $b) use ($field, $sortOrder) {
+            if ($field == 'name') {
+                $result = strcmp($a[$field], $b[$field]);
+            } else {
+                $result = $a[$field] - $b[$field];
+            }
+
+            if ($sortOrder == 'DESC') {
+                $result = -$result;
+            }
+
+            return $result;
+        });
+
+
         return $personaggi;
     });
 }

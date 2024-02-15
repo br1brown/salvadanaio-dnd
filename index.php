@@ -2,21 +2,43 @@
 $title = "Salvadanaio";
 // $singledescription = "Pagina principale";
 include('FE_utils/TopPage.php');
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'cash;DESC';
 
-$personaggi = $service->callApiEndpoint("characters");
+$personaggi = $service->callApiEndpoint("characters", "GET", ["sort" => $sort]);
 ?>
+<div class=row>
+	<div class="col offset-md-4 col-md-4 form-group">
+		<label for="sort"></label>
+		<select name="sort" id="sort" multiple class="form-control" onchange="riordina()">
+			<?php
+			foreach (["cash;ASC" => "Soldi (crescente)", "cash;DESC" => "Soldi (decrescente)", "name;ASC" => "Nome (A-Z)", "name;DESC" => "Nome (Z-A)",] as $k => $s) {
+				?>
+				<option value="<?= $k ?>" <?= $sort == $k ? 'selected' : ''; ?>>
+					<?= $s ?>
+				</option>
+				<?php
+			}
+			?>
+		</select>
+	</div>
+</div>
+
 
 <div class="row">
 	<?php
+	$l = count($personaggi);
+	if ($l < 3)
+		$clsCol = 12 / $l;
+	else
+		$clsCol = 4;
 	foreach ($personaggi as $personaggio) {
-
 		?>
-		<div class="col-12 col-md-6 text-center">
-			<div class="card m-2 portafoglio rounded text-dark">
+		<div class="col-12 col-md-<?= $clsCol ?> text-center">
+			<div class="card p-2 mb-3 portafoglio rounded text-dark">
 				<div class="card-body">
 					<p class="card-title">
 						<a href="<?= $service->createRoute("detail?basename=" . $personaggio["basename"]) ?>"
-							class="col btn btn-sm btn-primary">
+							class="col btn btn-primary">
 							<?= $personaggio["name"]; ?><a>
 					</p>
 					<p class="card-text">
@@ -45,12 +67,14 @@ $personaggi = $service->callApiEndpoint("characters");
 					</p>
 					<div class="text-center mt-3">
 						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', true)"
-							class="btn btn-outline-success btn-sm">
+							class="btn btn-success btn-sm">
 							<i class="fas fa-coins"></i>
+							<?= $service->traduci("Ricevi") ?>
 						</button>
 						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', false)"
-							class="btn btn-outline-danger btn-sm">
+							class="btn btn-danger btn-sm">
 							<i class="fas fa-shopping-cart"></i>
+							<?= $service->traduci("Spendi") ?>
 						</button>
 					</div>
 				</div>
@@ -58,10 +82,18 @@ $personaggi = $service->callApiEndpoint("characters");
 		</div>
 		<?php
 	}
-	include('FE_utils/BottomPage.php'); ?>
+	?>
 </div>
-
+<?php
+include('FE_utils/BottomPage.php');
+?>
 <script>
+	function riordina() {
+		var sort = $("#sort").val();
+		var parser = new URL(window.location);
+		parser.searchParams.set("sort", sort);
+		window.location = parser.href;
+	}
 	inizializzazioneApp.then(() => {
 
 	});

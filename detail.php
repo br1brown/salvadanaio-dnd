@@ -40,27 +40,45 @@ if (!$valido) {
 	<?php
 } else {
 	?>
-	<div class="row">
-		<div class="col">
-			<h1><strong>
+	<div class="row mx-3">
+		<div class="col-12 col-md-auto">
+			<h1>
+				<strong>
 					<?= $name; ?>
-				</strong></h1>
-
-			<div class="col text-center">
-				<button class="btn btn-sm m-1 btn-outline-success col-10 col-md-5"
+				</strong>
+			</h1>
+		</div>
+		<div class="col-12 col-md">
+			<div class="row">
+				<button class="btn btn-lg p-3 m-1 btn-success col"
 					onclick="manageMoney('<?= htmlspecialchars($basename); ?>', true)">
 					<i class="fas fa-coins"></i>
 					<?= $service->traduci("Ricevi") ?>
 				</button>
-				<button class="btn btn-sm m-1 btn-outline-danger col-10 col-md-5"
+				<button class="btn btn-lg p-3 m-1 btn-danger col"
 					onclick="manageMoney('<?= htmlspecialchars($basename); ?>', false)">
 					<i class="fas fa-shopping-cart"></i>
 					<?= $service->traduci("Spendi") ?>
 				</button>
 			</div>
+		</div>
+		<div class="col-12 col-md">
+			<button class="btn m-1 btn-lg btn-primary col"
+				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',false)">
+				<i class="fas fa-money-bill-wave"></i>
+				<?= $service->traduci("Fai Debito") ?>
+			</button>
+			<button class="btn m-1 btn-lg btn-primary col"
+				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',true)">
+				<i class="fas fa-hand-holding-usd"></i>
+				<?= $service->traduci("Fai Credito") ?>
+			</button>
+		</div>
+	</div>
+	<div class="row">
 
-
-			<div class="portafoglio rounded p-1 m-2 mb-0">
+		<div class="col-12">
+			<div class="portafoglio rounded p-1 m-2">
 				<div class="row text-center">
 					<span class="grandill-m col-12 col-md-12"><i class="fas fa-award platinum-color bordo-ico"></i>
 						<?= $service->traduci("Platino") ?>:
@@ -113,29 +131,13 @@ if (!$valido) {
 			</div>
 
 		</div>
+
 	</div>
 
-
-	<div class="row">
-		<div class="col text-center">
-			<button class="btn btn-sm m-1 btn-sm btn-primary col-10 col-md-5"
-				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',false)">
-				<i class="fas fa-money-bill-wave"></i>
-				<?= $service->traduci("Fai Debito") ?>
-			</button>
-			<button class="btn btn-sm m-1 btn-sm btn-primary col-10 col-md-5"
-				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',true)">
-				<i class="fas fa-hand-holding-usd"></i>
-				<?= $service->traduci("Fai Credito") ?>
-			</button>
-		</div>
-	</div>
-
-	<div class="row">
-
-		<?php
-		if (!empty($suspended))
-
+	<?php
+	if (!empty($suspended)) { ?>
+		<div class="row">
+			<?php
 			foreach ($suspended as $tipo => $obj) {
 				$cls = "table-";
 				$isCredit = "null";
@@ -173,8 +175,9 @@ if (!$valido) {
 						<?php } ?>
 				</div>
 			<?php } ?>
+		</div>
+	<?php } ?>
 
-	</div>
 
 	<?php
 	if (!empty($history)) { ?>
@@ -252,9 +255,9 @@ if (!$valido) {
 							</button>
 						</div>
 					<?php endif; ?>
-
 				</div>
 			</div>
+		</div>
 		</div>
 
 	<?php }
