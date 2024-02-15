@@ -33,9 +33,10 @@ function getApiUrl(action, params = null) {
  * @param {Object} data - I dati da inviare con la richiesta.
  * @param {Function} [callback=null] - La funzione di callback da eseguire al successo.
  * @param {string} [type='GET'] - Il metodo HTTP da utilizzare (es. GET, POST).
+ * @param {boolean} [modalOk=true] - Mostrare modale al successo?
  * @param {string} [dataType='json'] - Il tipo di dati attesi nella risposta.
  */
-function apiCall(endpoint, data, callback = null, type = 'GET', dataType = 'json') {
+function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, dataType = 'json') {
 
 	data.lang = lang;
 
@@ -47,7 +48,7 @@ function apiCall(endpoint, data, callback = null, type = 'GET', dataType = 'json
 		},
 		dataType: dataType,
 		success: function (response) {
-			genericSuccess(response, callback);
+			genericSuccess(response, callback, modalOk);
 		},
 		error: handleError
 	};
@@ -92,14 +93,18 @@ function handleError(xhr, status, error) {
  * 
  * @param {Object} response - L'oggetto risposta ricevuto dall'API.
  * @param {Function} [callback=null] - La funzione di callback da eseguire al successo.
+ * @param {boolean} [modalOk=true] - Mostrare modale al successo?
  */
-function genericSuccess(response, callback) {
+function genericSuccess(response, callback, modalOk = true) {
 	if (response.status === 'success') {
-		SweetAlert.fire(traduci('ottimo') + "!", (response.message), 'success').then(() => {
-			if (typeof callback === "function") {
-				callback();
-			}
-		});
+		if (modalOk === true)
+			SweetAlert.fire(traduci('ottimo') + "!", (response.message), 'success').then(() => {
+				if (typeof callback === "function") {
+					callback(response);
+				}
+			});
+		else
+			callback(response);
 	} else if (response.status === 'error') {
 		SweetAlert.fire(traduci('errore'), traduci(response.message), 'error');
 	} else {
