@@ -4,33 +4,40 @@ $title = "Salvadanaio";
 include('FE_utils/TopPage.php');
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'cash;DESC';
 
-$personaggi = $service->callApiEndpoint("characters", "GET", ["sort" => $sort]);
-?>
-<div class=row>
-	<div class="col offset-md-4 col-md-4 form-group">
-		<label for="sort"></label>
-		<select name="sort" id="sort" multiple class="form-control" onchange="riordina()">
-			<?php
-			foreach (["cash;ASC" => "Soldi (crescente)", "cash;DESC" => "Soldi (decrescente)", "name;ASC" => "Nome (A-Z)", "name;DESC" => "Nome (Z-A)",] as $k => $s) {
-				?>
-				<option value="<?= $k ?>" <?= $sort == $k ? 'selected' : ''; ?>>
-					<?= $s ?>
-				</option>
-				<?php
-			}
-			?>
-		</select>
+$info = $service->callApiEndpoint("characters", "GET", ["sort" => $sort]);
+$personaggi = $info["characters"];
+$l = count($personaggi);
+if ($l > 0) { ?>
+	<div class="row">
+		<strong class="col text-center">
+			<?= "<span class='badge badge-secondary'>" . renderSoldi($info["allcash"]) . "</span>"; ?>
+		</strong>
 	</div>
-</div>
+	<div class=row>
+		<div class="col offset-md-4 col-md-4 form-group">
+			<label for="sort"></label>
+			<select name="sort" id="sort" multiple class="form-control" onchange="riordina()">
+				<?php
+				foreach (["cash;ASC" => "Soldi (crescente)", "cash;DESC" => "Soldi (decrescente)", "name;ASC" => "Nome (A-Z)", "name;DESC" => "Nome (Z-A)",] as $k => $s) {
+					?>
+					<option value="<?= $k ?>" <?= $sort == $k ? 'selected' : ''; ?>>
+						<?= $s ?>
+					</option>
+					<?php
+				}
+				?>
+			</select>
+		</div>
+	</div>
 
-
+	<?php
+} ?>
 <div class="row">
 	<?php
-	$l = count($personaggi);
-	if ($l < 3)
+	if ($l < 2 && $l > 0)
 		$clsCol = 12 / $l;
 	else
-		$clsCol = 4;
+		$clsCol = 6;
 	foreach ($personaggi as $personaggio) {
 		?>
 		<div class="col-12 col-md-<?= $clsCol ?> text-center">
@@ -82,7 +89,12 @@ $personaggi = $service->callApiEndpoint("characters", "GET", ["sort" => $sort]);
 		</div>
 		<?php
 	}
-	?>
+
+	if ($l == 0) { ?>
+		<div class="col-12 text-center">Ancora nessun personaggio
+		</div>
+		<?php
+	} ?>
 </div>
 <?php
 include('FE_utils/BottomPage.php');

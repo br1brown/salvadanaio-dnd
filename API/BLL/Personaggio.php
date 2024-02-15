@@ -68,7 +68,7 @@ class Personaggio
 
     public function __construct(string $baseName)
     {
-        $config = Repository::getObj("configmoney");
+        $config = self::loadCambi();
         $this->CAMBIO_PLATINUM = $config["platinum"];
         $this->CAMBIO_GOLD = $config["gold"];
         $this->CAMBIO_SILVER = $config["silver"];
@@ -78,7 +78,10 @@ class Personaggio
 
         $this->loadData();
     }
-
+    private static function loadCambi()
+    {
+        return Repository::getObj("configmoney");
+    }
     private function loadData(): void
     {
         if (file_exists($this->filePath)) {
@@ -280,20 +283,32 @@ class Personaggio
         $this->save();
     }
 
-    private function ConvertValuta(int $copper): Cash
+    public function ConvertValuta(int $copper): Cash
     {
-        $platinum = floor($copper / $this->CAMBIO_PLATINUM);
-        $copper -= $platinum * $this->CAMBIO_PLATINUM;
+        return self::ConvertiValuta($copper, $this->CAMBIO_PLATINUM, $this->CAMBIO_GOLD, $this->CAMBIO_SILVER);
+    }
 
-        $gold = floor($copper / $this->CAMBIO_GOLD);
-        $copper -= $gold * $this->CAMBIO_GOLD;
+    public static function _ConvertValuta(int $copper): Cash
+    {
+        $config = self::loadCambi();
+        $C_PLATINUM = $config["platinum"];
+        $C_GOLD = $config["gold"];
+        $C_SILVER = $config["silver"];
+        return self::ConvertiValuta($copper, $C_PLATINUM, $C_GOLD, $C_SILVER);
+    }
+    private static function ConvertiValuta(int $copper, int $C_PLATINUM, int $C_GOLD, int $C_SILVER): Cash
+    {
+        $platinum = floor($copper / $C_PLATINUM);
+        $copper -= $platinum * $C_PLATINUM;
 
-        $silver = floor($copper / $this->CAMBIO_SILVER);
-        $copper = $copper % $this->CAMBIO_SILVER;
+        $gold = floor($copper / $C_GOLD);
+        $copper -= $gold * $C_GOLD;
+
+        $silver = floor($copper / $C_SILVER);
+        $copper = $copper % $C_SILVER;
 
         return new Cash($platinum, $gold, $silver, $copper);
     }
-
     function get_totalcopper(): int
     {
         $cash = $this->personaggio->cash;

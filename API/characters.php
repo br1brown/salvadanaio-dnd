@@ -5,9 +5,11 @@ function eseguiGET()
 {
     echo Echo_getObj("personaggi", function ($nomi_personaggi, $lingua) {
         $personaggi = [];
-
+        $total = 0;
         foreach ($nomi_personaggi as $infos_personaggio) {
-            $personaggi[] = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false);
+            $personaggio = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false);
+            $total += $personaggio["totalcopper"];
+            $personaggi[] = $personaggio;
         }
 
         // Valori di default per l'ordinamento
@@ -47,8 +49,7 @@ function eseguiGET()
             return $result;
         });
 
-
-        return $personaggi;
+        return ["characters" => $personaggi, "allcash" => BLL\Personaggio::_ConvertValuta($total)];
     });
 }
 include __DIR__ . '/BLL/gestione_metodi.php';
