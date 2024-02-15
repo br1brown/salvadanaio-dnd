@@ -66,3 +66,20 @@ function datiinput()
 }
 
 
+
+/**
+ * Recupera i dati in "php://input"
+ * @return mixed "php://input" Parsato se possibile
+ */
+function datiinput()
+{
+    $result = file_get_contents('php://input');
+    try {
+        return json_decode($result, true);
+    } catch (\Exception $e) {
+        parse_str($result, $rawData);
+        return $rawData;
+    }
+}
+
+
