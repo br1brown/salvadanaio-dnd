@@ -188,9 +188,9 @@ class Service
      * @param string $sz L'identificatore della stringa da tradurre
      * @return string La stringa tradotta
      */
-    function traduci($sz)
+    function traduci($sz, ...$parametri)
     {
-        return $this->_traduzione->traduci($sz);
+        return $this->_traduzione->traduci($sz, ...$parametri);
     }
 
     /**

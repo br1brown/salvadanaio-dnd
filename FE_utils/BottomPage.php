@@ -67,12 +67,14 @@
 							<?php endif; ?>
 							<?php if (isset($irl['pec'])): ?>
 								<li>
-									<?= $service->traduci("PEC"); ?>: <?= $service->creaLinkCodificato($irl['pec'], 'mailto:') ?>
+									<?= $service->traduci("PEC"); ?>:
+									<?= $service->creaLinkCodificato($irl['pec'], 'mailto:') ?>
 								</li>
 							<?php endif; ?>
 							<?php if (isset($irl['mail'])): ?>
 								<li>
-									<?= $service->traduci("mail"); ?>: <?= $service->creaLinkCodificato($irl['mail'], 'mailto:') ?>
+									<?= $service->traduci("mail"); ?>:
+									<?= $service->creaLinkCodificato($irl['mail'], 'mailto:') ?>
 								</li>
 							<?php endif; ?>
 						</ul>
@@ -116,9 +118,13 @@
 				endif; ?>
 			<div class="row">
 				<div class="col text-center">
-					<p>© 2023 <a href="<?= $service->createRoute("index") ?>">
+					<p class="text-muted">
+						<?= $description ?>
+					</p>
+
+					<p>© 2024 <a href="<?= $service->createRoute("index") ?>">
 							<?= $AppName ?>
-						</a>.
+						</a>|
 						<?= $service->traduci("dirittiriservati"); ?>.
 					</p>
 				</div>

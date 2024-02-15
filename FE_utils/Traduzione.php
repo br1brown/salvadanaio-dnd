@@ -5,7 +5,7 @@ class Traduzione
 
     private static string $path = __DIR__ . "/lang";
 
-    /** @var array La lingua corrente */
+    /** @var array La traduzione corrente */
     public $corrente = [];
 
     /** @var string lingua della pagina */
@@ -42,12 +42,18 @@ class Traduzione
      * @param string $sz L'identificatore della stringa da tradurre
      * @return string La stringa tradotta se disponibile; altrimenti, restituisce l'identificatore originale
      */
-    function traduci($sz)
+    function traduci($sz, string ...$valori)
     {
-        if (isset($this->corrente[$sz]) && !empty($this->corrente[$sz]))
-            return $this->corrente[$sz];
-        return $sz;
+        if (isset($this->corrente[$sz]) && !empty($this->corrente[$sz])) {
+            $formatString = $this->corrente[$sz];
+        } else {
+            $formatString = $sz;
+        }
+
+        foreach ($valori as $index => $value) {
+            $formatString = str_replace("{" . $index . "}", $value, $formatString);
+        }
+
+        return $formatString;
     }
 }
-
-?>
