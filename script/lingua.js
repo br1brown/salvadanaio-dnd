@@ -18,9 +18,14 @@ var traduzioneCaricata = new Promise((resolve, reject) => {
 });
 
 // Funzione per tradurre una chiave
-function traduci(chiave) {
-    // Restituisce la traduzione se disponibile, altrimenti la chiave stessa
-    if (traduzione)
-        return traduzione[chiave] || chiave;
-    return chiave;
+function traduci(chiave, ...args) {
+
+    let stringaTradotta = traduzione[chiave] || chiave;
+
+    // Sostituisce ogni segnaposto {n} con il corrispondente valore fornito
+    args.forEach((valore, indice) => {
+        stringaTradotta = stringaTradotta.replace(`{${indice}}`, valore);
+    });
+
+    return stringaTradotta;
 }
