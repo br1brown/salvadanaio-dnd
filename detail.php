@@ -128,7 +128,7 @@ if (!$valido) {
 							<button class="btn m-1 btn-lg btn-primary col"
 								onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',false)">
 								<i class="fas fa-hand-holding-usd"></i>
-								<?= $service->traduci("faiCredito") ?>
+								<?= $service->traduci("faiDebito") ?>
 							</button>
 
 							<ul class="list-unstyled">
@@ -353,24 +353,31 @@ include('FE_utils/BottomPage.php');
 				basename: "<?= $basename ?>",
 			},
 			function (res) {
-
 				inventory = res;
+
+				var md = 4;
+				var sm = 6;
+				if (res.length < 3)
+					md = 12 / res.length;
+				if (res.length < 2)
+					sm = 12 / res.length;
+
 				$('#inventoryItems').empty();
 				inventory.forEach((item, index) => {
 					$('#inventoryItems').append(
-						`<div class="tutto col-12 col-sm-6 col-md-4">
-					<div class="row">
-						<div class="col">
-						<h4><strong>${item.itemName}</strong></h4>
-						${item.description}
-						</div>
-						<div class="col-auto d-flex align-items-center"">
-							<button onclick="decrementQuantity(${index})" class="btn btn-secondary">-</button>
-							 <span class="badge badge-primary p-3 grandill-s">${item.quantity}</span>
-							<button onclick="incrementQuantity(${index})" class="btn btn-secondary">+</button>
-						</div>
-					</div>
-				</div>`
+						`<div class="tutto col-12 col-sm-${sm} col-md-${md}">
+							<div class="row">
+								<div class="col">
+								<h4><strong>${item.itemName}</strong></h4>
+								${item.description}
+								</div>
+								<div class="col-auto d-flex align-items-center"">
+									<button onclick="decrementQuantity(${index})" class="btn btn-secondary">-</button>
+									<span class="badge badge-primary p-3 grandill-s">${item.quantity}</span>
+									<button onclick="incrementQuantity(${index})" class="btn btn-secondary">+</button>
+								</div>
+							</div>
+						</div>`
 					);
 				})
 			});
