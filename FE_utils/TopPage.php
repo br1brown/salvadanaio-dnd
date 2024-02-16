@@ -49,6 +49,9 @@ try {
 	<!-- Indica la frequenza con cui la pagina dovrebbe essere aggiornata -->
 	<meta http-equiv="refresh" content="<?= $meta['refreshIntervalInSeconds'] ?>">
 
+	<!-- La data di scadenza dei contenuti nel meta tag -->
+	<meta http-equiv="expires" content="<?= $meta["dataScadenzaGMT"]; ?>">
+
 	<!-- Colore tematico per il browser sui dispositivi Android -->
 	<meta name="theme-color" content="<?= $colorTema ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
