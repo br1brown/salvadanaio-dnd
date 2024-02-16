@@ -97,12 +97,10 @@ class Service
                 ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/promise-polyfill'],
             ],
         ];
-        if (!isset($meta['dataScadenza']))
-            $meta["dataScadenza"] = date('d/m/Y');
-
-        $datescad = DateTime::createFromFormat('d/m/Y', $meta["dataScadenza"], new DateTimeZone('Europe/Rome'));
-        $meta["dataScadenzaGMT"] = $datescad->format('D, d M Y H:i:s') . ' GMT';
-
+        if (isset($meta['dataScadenza'])) {
+            $datescad = DateTime::createFromFormat('d/m/Y', $meta["dataScadenza"], new DateTimeZone('Europe/Rome'));
+            $meta["dataScadenzaGMT"] = $datescad->format('D, d M Y H:i:s') . ' GMT';
+        }
         return $meta;
     }
 
