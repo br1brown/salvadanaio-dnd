@@ -14,17 +14,23 @@
 					?>
 				<div class="row text-center">
 					<?php if (isset($irl['numeroWA'])): ?>
-						<a class="col" href
-							onClick="openEncodedLink('https://wa.me/', '<?= $service->convertiInEntitaHTML(str_replace(' ', '', $irl['numeroWA'])) ?>')"
-							target=_blank title=Whatsapp><i class="social-icon fab fa-whatsapp"> Whatsapp</i></a>
+						<div class="col">
+							<a href
+								onClick="openEncodedLink('https://wa.me/', '<?= $service->convertiInEntitaHTML(str_replace(' ', '', $irl['numeroWA'])) ?>')"
+								target=_blank title=Whatsapp><i class="social-icon fab fa-whatsapp"> Whatsapp</i></a>
+						</div>
 					<?php endif; ?>
 					<?php if (isset($irl['ig'])): ?>
-						<a class="col" href="<?= $irl['ig'] ?>" target=_blank title=Instagram><i
-								class="social-icon fab fa-instagram"> Instagram</i></a>
+						<div class="col">
+							<a href href="<?= $irl['ig'] ?>" target=_blank title=Instagram><i class="social-icon fab fa-instagram">
+									Instagram</i></a>
+						</div>
 					<?php endif; ?>
 					<?php if (isset($irl['yt'])): ?>
-						<a class="col" href="<?= $irl['yt'] ?>" target=_blank title=Youtube><i class="social-icon fab fa-youtube">
-								Youtube</i></a>
+						<div class="col">
+							<a href href="<?= $irl['yt'] ?>" target=_blank title=Youtube><i class="social-icon fab fa-youtube">
+									Youtube</i></a>
+						</div>
 					<?php endif; ?>
 				</div>
 				<br>
