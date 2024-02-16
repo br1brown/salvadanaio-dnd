@@ -91,8 +91,9 @@ if ($l > 0) { ?>
 	}
 
 	if ($l == 0) { ?>
-		<div class="col-12 text-center">Ancora nessun personaggio
-		</div>
+		<h1 class="col-12 text-center">
+			<?= $service->traduci("nessunPersonaggio") ?>
+		</h1>
 		<?php
 	} ?>
 </div>

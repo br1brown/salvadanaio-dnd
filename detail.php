@@ -6,10 +6,10 @@ include('FE_utils/TopPage.php');
 $valido = false;
 if (isset($_GET['basename'])) {
 
-
 	try {
 		$personaggio = $service->callApiEndpoint("character", "GET", ["basename" => $_GET['basename']]);
-
+		if (isset($personaggio['status']))
+			throw new Exception($personaggio['message']);
 		$name = $personaggio['name'] ?? 'Nome non disponibile';
 		$basename = $personaggio['basename'] ?? 'Nome non disponibile';
 
@@ -26,16 +26,17 @@ if (isset($_GET['basename'])) {
 		$valido = true;
 
 	} catch (Exception $e) {
-
+		$valido = false;
 	}
 
 }
+
 if (!$valido) {
 	?>
 	<div class="row">
-		<div class="col col-md-6 offset-md-3 bg-danger">
+		<h1 class="col col-md-6 offset-md-3 bg-danger">
 			<?= $service->traduci("personaggioNonTrovato") ?>
-		</div>
+		</h1>
 	</div>
 	<?php
 } else {
@@ -61,18 +62,6 @@ if (!$valido) {
 					<?= $service->traduci("Spendi") ?>
 				</button>
 			</div>
-		</div>
-		<div class="col-12 col-md">
-			<button class="btn m-1 btn-lg btn-primary col"
-				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',false)">
-				<i class="fas fa-money-bill-wave"></i>
-				<?= $service->traduci("Fai Debito") ?>
-			</button>
-			<button class="btn m-1 btn-lg btn-primary col"
-				onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',true)">
-				<i class="fas fa-hand-holding-usd"></i>
-				<?= $service->traduci("Fai Credito") ?>
-			</button>
 		</div>
 	</div>
 	<div class="row">
@@ -129,55 +118,80 @@ if (!$valido) {
 					</div>
 				</div>
 			</div>
-
-		</div>
-
-	</div>
-
-	<?php
-	if (!empty($suspended)) { ?>
-		<div class="row">
-			<?php
-			foreach ($suspended as $tipo => $obj) {
-				$cls = "table-";
-				$isCredit = "null";
-				?>
+			<div class="row">
 				<div class="col-12 col-md-6">
-					<?php if ($tipo === "debt" && !empty($obj)):
-						$isCredit = "false";
-						$cls .= "warning"; ?>
+					<div>
 						<i>
 							<?= $service->traduci("debiti") ?>
 						</i>
-					<?php endif; ?>
-					<?php if ($tipo === "credit" && !empty($obj)):
-						$isCredit = "true";
-						$cls .= "info"; ?>
+						<button class="btn m-1 btn-lg btn-primary col"
+							onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',false)">
+							<i class="fas fa-hand-holding-usd"></i>
+							<?= $service->traduci("faiCredito") ?>
+						</button>
+
+						<ul class="list-unstyled">
+							<?php if (isset($suspended["debt"]))
+								foreach ($suspended["debt"] as $key => $tran) {
+									?>
+									<li class="text-small m-1 table-warning">
+										<button
+											onclick="sanaContratto('<?= $basename; ?>',false,<?= $tran['platinum'] ?>, <?= $tran['gold'] ?>,<?= $tran['silver'] ?>,<?= $tran['copper'] ?>,'<?= htmlspecialchars($tran['description']) ?>')"
+											class="btn btn-primary btn-sm m-1">
+											<i class="fas fa-ban"></i>
+										</button>
+										<strong>
+											<?= "<span class='badge badge-secondary'>" . renderSoldi($tran) . "</span>"; ?>
+										</strong>
+										<?= $tran['description']; ?>
+									</li>
+								<?php } ?>
+						</ul>
+					</div>
+				</div>
+				<div class="col-12 col-md-6">
+					<div>
 						<i>
 							<?= $service->traduci("crediti") ?>
 						</i>
-					<?php endif; ?>
-					<ul class="list-unstyled">
-						<?php foreach ($obj as $key => $tran) {
-							?>
-
-							<li class="text-small m-1 <?= $cls; ?>">
-								<button
-									onclick="sanaContratto('<?= $basename; ?>', <?= $isCredit; ?>,<?= $tran['platinum'] ?>, <?= $tran['gold'] ?>,<?= $tran['silver'] ?>,<?= $tran['copper'] ?>,'<?= htmlspecialchars($tran['description']) ?>')"
-									class="btn btn-primary btn-sm m-1">
-									<i class="fas fa-ban"></i>
-								</button>
-								<strong>
-									<?= "<span class='badge badge-secondary'>" . renderSoldi($tran) . "</span>"; ?>
-								</strong>
-								<?= $tran['description']; ?>
-							</li>
-						<?php } ?>
+						<button class="btn m-1 btn-lg btn-primary col"
+							onclick="creditTransaction('<?= htmlspecialchars($basename); ?>',true)">
+							<i class="fas fa-money-bill-wave"></i>
+							<?= $service->traduci("faiCredito") ?>
+						</button>
+						<ul class="list-unstyled">
+							<?php if (isset($suspended["credit"]))
+								foreach ($suspended["credit"] as $key => $tran) {
+									?>
+									<li class="text-small m-1 table-info">
+										<button
+											onclick="sanaContratto('<?= $basename; ?>',true,<?= $tran['platinum'] ?>, <?= $tran['gold'] ?>,<?= $tran['silver'] ?>,<?= $tran['copper'] ?>,'<?= htmlspecialchars($tran['description']) ?>')"
+											class="btn btn-primary btn-sm m-1">
+											<i class="fas fa-ban"></i>
+										</button>
+										<strong>
+											<?= "<span class='badge badge-secondary'>" . renderSoldi($tran) . "</span>"; ?>
+										</strong>
+										<?= $tran['description']; ?>
+									</li>
+								<?php } ?>
+						</ul>
+					</div>
 				</div>
-			<?php } ?>
-		</div>
-	<?php } ?>
+			</div>
 
+			<div>
+				<h2 class="col">
+					<?= $service->traduci("inventario") ?> <button id="addBtn" class="btn btn-primary">
+						<?= $service->traduci("aggiungi") ?>
+					</button>
+				</h2>
+				<div id="inventoryItems" class="row p-3">
+				</div>
+			</div>
+		</div>
+
+	</div>
 
 	<?php
 	if (!empty($history)) { ?>
@@ -266,7 +280,11 @@ include('FE_utils/BottomPage.php');
 ?>
 
 <script>
+	let inventory = [];
 	inizializzazioneApp.then(() => {
+
+		updateUI();
+
 		const rowsToShow = <?= $rowsToShow; ?>;
 		let startIndex = rowsToShow; // Inizia dal sesto elemento poiché i primi 5 sono già visibili
 
@@ -287,7 +305,104 @@ include('FE_utils/BottomPage.php');
 		$(".btnmanage").click(function () {
 			$(this).children('.fas').toggleClass('fa-chevron-down', 150);
 		});
+
+		$('#addBtn').click(function () {
+			Swal.fire({
+				title: traduci("aggiungi"),
+				html: `<input type="text" id="oggetto" class="swal2-input" placeholder="Nome">
+				   <input type="text" id="description" class="swal2-input" placeholder="Descrizione">`,
+				confirmButtonText: traduci("aggiungi") + "!",
+				focusConfirm: false,
+				preConfirm: () => {
+					const name = Swal.getPopup().querySelector('#oggetto').value;
+					const description = Swal.getPopup().querySelector('#description').value;
+					if (!name || !description) {
+						Swal.showValidationMessage(traduci(`datiMancanti`));
+					}
+					return { itemName: name, quantity: 1, description: description }
+				}
+			}).then((result) => {
+
+				let i = inventory.push(result.value);
+				updateInventory(inventory.length - 1);
+
+			});
+		});
 	});
+
+
+
+	function updateUI() {
+
+		apiCall("inventory",
+			{
+				basename: "<?= $basename ?>",
+			},
+			function (res) {
+
+				inventory = res;
+				$('#inventoryItems').empty();
+				inventory.forEach((item, index) => {
+					$('#inventoryItems').append(
+						`<div class="tutto col-12 col-sm-6 col-md-4">
+					<div class="row">
+						<div class="col">
+						<h4><strong>${item.itemName}</strong></h4>
+						${item.description}
+						</div>
+						<div class="col-auto d-flex align-items-center"">
+							<button onclick="decrementQuantity(${index})" class="btn btn-secondary">-</button>
+							 <span class="badge badge-primary p-3 grandill-s">${item.quantity}</span>
+							<button onclick="incrementQuantity(${index})" class="btn btn-secondary">+</button>
+						</div>
+					</div>
+				</div>`
+					);
+				})
+			});
+	}
+
+	function incrementQuantity(index) {
+		inventory[index].quantity += 1;
+		updateInventory(index);
+	}
+
+	function decrementQuantity(index) {
+		if (inventory[index].quantity > 1) {
+			inventory[index].quantity -= 1;
+			updateInventory(index);
+		} else {
+			Swal.fire({
+				title: traduci('seiSicuro'),
+				text: traduci("vuoiEliminareQuesto"),
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: traduci("elimina"),
+			}).then((result) => {
+				if (result.isConfirmed) {
+					inventory[index].quantity = 0
+					updateInventory(index);
+				}
+			});
+		}
+	}
+	function updateInventory(index) {
+
+		apiCall("inventory",
+			{
+				basename: "<?= $basename ?>",
+				itemname: inventory[index].itemName,
+				quantity: inventory[index].quantity,
+				description: inventory[index].description
+			},
+			function () {
+
+				updateUI();
+			},
+			"POST", false
+		)
+	}
+
 </script>
 
 </html>

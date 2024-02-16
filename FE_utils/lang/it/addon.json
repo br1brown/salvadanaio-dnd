@@ -17,5 +17,7 @@
     "tipo": "Tipo",
     "nonInficiaSulleSommeSomme": "Non inficerà sulle somme possedute",
     "modificheSuSoldi": "Le modifiche saranno effettive sui soldi posseduti",
-    "personaggioNonTrovato": "Personaggio non trovato"
+    "personaggioNonTrovato": "Personaggio non trovato",
+    "nessunPersonaggio": "Nessun personaggio",
+    "inventario": "Inventario"
 }

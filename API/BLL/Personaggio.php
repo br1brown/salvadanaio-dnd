@@ -93,6 +93,7 @@ class Personaggio
 
             $suspended = [];
             $history = [];
+            $inventory = [];
             if (isset($decoded['suspended'])) {
                 foreach ($decoded['suspended'] as $tipo => $transazioni) {
                     foreach ($transazioni as $transazione) {
@@ -100,13 +101,19 @@ class Personaggio
                     }
                 }
             }
+            if (isset($decoded['inventory'])) {
+                foreach ($decoded['inventory'] as $roba) {
+                    $inventory[] = new Inventario($roba["itemName"], $roba["quantity"], $roba["description"], );
+                }
+            }
+
             if (isset($decoded['history'])) {
                 foreach ($decoded['history'] as $evento) {
                     $history[] = CronologiaPagamento::from_objectvars($evento);
                 }
             }
 
-            $this->personaggio = new PersonaggioDTO($decoded['name'], $cash, $suspended, $history);
+            $this->personaggio = new PersonaggioDTO($decoded['name'], $cash, $suspended, $history, $inventory);
 
         } else {
             throw new \Exception("Personaggio non trovato");
@@ -362,12 +369,40 @@ class Personaggio
             return $personaggioArray;
         }
     }
+    function setInventario($itemName, $quantity, $description)
+    {
+        $trovato = false;
+        foreach ($this->personaggio->inventory as &$item) {
+            if ($item->itemName === $itemName) {
+                $trovato = true;
+                if ($quantity > 0) {
+                    $item->quantity = $quantity;
+                    if (!empty($description))
+                        $item->description = $description;
+                } else {
+                    unset($this->personaggio->inventory[array_search($item, $this->personaggio->inventory)]);
+                    $this->personaggio->inventory = array_values($this->personaggio->inventory);
+                }
+                break;
+            }
+        }
+        if (!$trovato && $quantity > 0) {
+            // Se l'elemento non è stato trovato e la quantità è maggiore di zero, aggiungi un nuovo elemento
+            $nuovoItem = new Inventario($itemName, $quantity, $description);
+            $this->personaggio->inventory[] = $nuovoItem;
+            $this->save();
+        }
+        $this->save();
+        return Response::retOK();
+    }
 
-
+    public function getInventario()
+    {
+        return $this->personaggio->inventory;
+    }
 
     function deleteCronologia($data)
     {
-
         $trovato = false;
         foreach ($this->personaggio->history as $key => $cronologiaPagamento) {
             if ($cronologiaPagamento->haQuestaData($data)) {
@@ -394,17 +429,20 @@ class PersonaggioDTO implements \JsonSerializable
     public int $copper;
     public array $suspended; // Array "tipo" -> Array di oggetti TransazioneSospesa
     public array $history; // Array di oggetti CronologiaPagamento
+    public array $inventory; // Array di oggetti Inventario
 
     public function __construct(
         string $name,
         Cash $cash,
         array $suspended = [],
-        array $history = []
+        array $history = [],
+        array $inventory = []
     ) {
         $this->name = $name;
         $this->cash = $cash;
         $this->suspended = $suspended;
         $this->history = $history;
+        $this->inventory = $inventory;
     }
 
     public function jsonSerialize()
@@ -484,6 +522,28 @@ class TransazioneSospesa implements \JsonSerializable
         string $description
     ) {
         $this->copper = $copper;
+        $this->description = $description;
+    }
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+}
+
+
+class Inventario implements \JsonSerializable
+{
+    public string $itemName;
+    public int $quantity;
+    public string $description;
+
+    public function __construct(
+        string $itemName,
+        int $quantity,
+        string $description
+    ) {
+        $this->itemName = $itemName;
+        $this->quantity = $quantity;
         $this->description = $description;
     }
     public function jsonSerialize()
