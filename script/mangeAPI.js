@@ -70,14 +70,18 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 function handleError(xhr, status, error) {
 	// Log dell'errore per il debugging
 	console.error(`Errore API: ${status} - ${error}`, xhr.responseText);
+	var keyInfoTraduci = "errore" + xhr.status + "Info";
+	var keyDescTraduci = "errore" + xhr.status + "Desc";
+	let errorInfo = traduci(keyInfoTraduci);
+	let errorMessage = traduci(keyDescTraduci);
 
-	let errorMessage = traduci("erroreImprevisto");
+	if (errorMessage == keyDescTraduci)
+		errorMessage = traduci("erroreImprevisto");
 
-	if (xhr.status === 404) {
-		errorMessage = traduci("risorsaNonTrovata");
-	} else if (xhr.status === 500) {
-		errorMessage = traduci("erroreInternoDelServer");
-	} else if (xhr.responseText) {
+	if (errorInfo == keyInfoTraduci)
+		errorInfo = traduci("errore") + ' ' + xhr.status;
+
+	if (xhr.responseText) {
 		try {
 			const response = JSON.parse(xhr.responseText);
 			errorMessage = response.message || errorMessage;
@@ -85,7 +89,7 @@ function handleError(xhr, status, error) {
 			// xhr.responseText non è JSON, usa il messaggio di errore generico
 		}
 	}
-	SweetAlert.fire(traduci("errore") + ' ' + xhr.status, errorMessage, 'error');
+	SweetAlert.fire(errorInfo, errorMessage, 'error');
 }
 
 /**
