@@ -24,7 +24,9 @@ include('FE_utils/TopPage.php');
 			<div class="p-3 col-xs-4 col-sm-4 col-md-4">
 				<div class="polaroid ruotadestra">
 					<img id=img_generica src="https://via.placeholder.com/550x360/D3D3D3" alt="Foto Generica">
-					<p class="caption">...</p>
+					<p class="caption btn-link" id="DESCimg_generica" data-context-args="'img_generica'">
+						<?= $service->traduci("opzioni") ?>
+					</p>
 				</div>
 			</div>
 			<div class="col-xs-8 col-sm-8 col-md-8">
@@ -65,6 +67,15 @@ include('FE_utils/TopPage.php');
 			.costruisci();
 
 		$('#img_generica').attr('src', imageCreata.urlImmagine());
+
+		ApplicaMenu('#DESCimg_generica', true, [
+			{
+				text: traduci("condividi"),
+				function: function (args) {
+					imageCreata.condividiImmagine("");
+				}
+			},
+		]);
 
 		apiCall("social", { nomi: "Facebook;twitter;Telegram" },
 			function (response) {
