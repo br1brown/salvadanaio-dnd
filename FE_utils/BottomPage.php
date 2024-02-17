@@ -1,6 +1,4 @@
-</div>
 <?php if (isset($footer) && $footer == true):
-
 	?>
 	<footer style="margin-bottom:0; font-size: 0.8rem;" class="container-fluid mt-3 fillColoreSfondo <?= $clsTxt ?>">
 		<div class="container py-2">
