@@ -19,9 +19,6 @@ function MakeGetQueryString(parametri) {
 }
 
 
-function getApiMethod(action, metod, params = null) {
-	return infoContesto.APIEndPoint + "/" + action + "/" + metod + MakeGetQueryString(params);
-}
 function getApiUrl(action, params = null) {
 	return infoContesto.APIEndPoint + "/" + action + MakeGetQueryString(params);
 }
@@ -37,27 +34,40 @@ function getApiUrl(action, params = null) {
  * @param {string} [dataType='json'] - Il tipo di dati attesi nella risposta.
  */
 function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, dataType = 'json') {
-
 	data.lang = infoContesto.lang;
 
 	let settings = {
-		url: type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint),
-		type: type,
-		headers: {
-			'X-Api-Key': infoContesto.APIKey
-		},
-		dataType: dataType,
 		success: function (response) {
 			genericSuccess(response, callback, modalOk);
 		},
 		error: handleError
 	};
 
-	if (type !== 'GET' && !(!data)) {
-		settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
-	}
+	if (!!infoContesto.EsternaAPI) {
+		var valori = {
+			endpoint, data, type, dataType, XApiKey: infoContesto.APIKey, APIEndPoint: infoContesto.APIEndPoint
+		}
 
+		settings.url = 'FE_utils/gateway';
+		settings.type = "POST";
+		settings.data = { payload: JSON.stringify(valori) };
+
+	} else {
+
+		settings.url = type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint);
+		settings.type = type;
+		settings.dataType = dataType;
+
+		settings.headers = {
+			'X-Api-Key': infoContesto.APIKey
+		};
+		if (type !== 'GET' && !(!data)) {
+			settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
+		}
+
+	}
 	$.ajax(settings);
+
 }
 
 /**
@@ -74,7 +84,7 @@ function handleError(xhr, status, error) {
 	var keyDescTraduci = "errore" + xhr.status + "Desc";
 	let errorInfo = traduci(keyInfoTraduci);
 	let errorMessage = traduci(keyDescTraduci);
-
+	debugger
 	if (errorMessage == keyDescTraduci)
 		errorMessage = traduci("erroreImprevisto");
 

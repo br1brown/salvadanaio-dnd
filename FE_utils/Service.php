@@ -121,6 +121,12 @@ class Service
     public string $urlAPI;
 
     /**
+     * @var bool URL dell'API è esterna?
+     */
+    public string $EsternaAPI;
+
+
+    /**
      * @var string Chiave dell'API di servizio
      */
     public string $APIkey;
@@ -154,7 +160,8 @@ class Service
         $this->APIkey = $this->settings['API']['key'];
 
         $APIEndPoint = $this->settings['API']['EndPoint'];
-        if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
+        $this->EsternaAPI = strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0;
+        if ($this->EsternaAPI) {
             $this->urlAPI = $APIEndPoint;
         } else {
             $this->urlAPI = $this->baseUrl . $APIEndPoint;

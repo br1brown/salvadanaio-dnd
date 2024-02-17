@@ -72,6 +72,7 @@ try {
 		infoContesto = {
 			clsTxt: '<?= $clsTxt ?>',
 			APIEndPoint: '<?= $service->urlAPI ?>',
+			EsternaAPI: '<?= $service->EsternaAPI ?>',
 			APIKey: '<?= $service->APIkey ?>',
 			lang: '<?= $service->currentLang() ?>',
 			_pathtraduzione: '<?= $service->pathLang ?>',
