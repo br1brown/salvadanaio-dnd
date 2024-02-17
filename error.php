@@ -25,20 +25,21 @@ else {
 $source_url = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 ?>
-<div class="row">
-    <div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
-        <h2>
-            <?= $errorInfo ?>
-        </h2>
-        <small><i>
-                <?= $source_url ?>
-            </i></small>
-        <p>
-            <?= $errorMessage ?>
-        </p>
+<div class="container-fluid">
+    <div class="row">
+        <div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
+            <h2>
+                <?= $errorInfo ?>
+            </h2>
+            <small><i>
+                    <?= $source_url ?>
+                </i></small>
+            <p>
+                <?= $errorMessage ?>
+            </p>
 
+        </div>
     </div>
-</div>
 </div>
 </body>
 <script>
