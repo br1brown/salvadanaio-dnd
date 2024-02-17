@@ -104,9 +104,7 @@ try {
 	<style>
 		:root {
 			<?php foreach ($colori as $chiave => $colore): ?>
-				--<?= $chiave; ?>:
-					<?= $colore; ?>
-				;
+				<?= "--{$chiave}: {$colore};\n"; ?>
 			<?php endforeach; ?>
 		}
 	</style>
@@ -114,7 +112,8 @@ try {
 </head>
 
 <body>
-	<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
+	<a id="back-to-top" href="#" class="btn btn-<?= $isDarkTextPreferred ? "light" : "dark"; ?> btn-lg back-to-top"
+		role="button">
 		<i class="fas fa-chevron-up"></i>
 	</a>
 	<?php
@@ -170,6 +169,5 @@ try {
 						</div>
 					</div>
 				<?php endif; ?>
-
 		</nav>
 	<?php endif; ?>

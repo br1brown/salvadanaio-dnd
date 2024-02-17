@@ -5,11 +5,11 @@
 inizializzazioneApp.then(() => {
     $(".bottone").click(function () {
         $(this).blur();
-        var val = $(this).val();
+        var val = traduci($(this).val());
         var tipo = $(this).data("type");
 
         if (tipo && tipo != "") {
-            swal.fire(tipo, val, tipo);
+            swal.fire(val, "", tipo);
         } else {
             swal.fire(val);
         }

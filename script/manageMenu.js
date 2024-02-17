@@ -14,7 +14,7 @@ function ApplicaMenu(OpenMenuSelector, LeftClick, opzioniMenu) {
         opzioniMenu.forEach(opzione => {
             var uniqueFunctionName = 'func_' + selectorSanitized + uniqueIdCounter++;
             window[uniqueFunctionName] = opzione.function;
-            menuHtml += `<li class=` + infoContesto.clsTxt + ` onclick="${uniqueFunctionName}(${$(OpenMenuSelector).data('context-args')})">${opzione.text}</li>`;
+            menuHtml += `<li class=text-light onclick="${uniqueFunctionName}(${$(OpenMenuSelector).data('context-args')})">${opzione.text}</li>`;
         });
         menuHtml += '</ul></div>';
 
