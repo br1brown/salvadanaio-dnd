@@ -280,12 +280,12 @@ if (isset($_GET['basename'])) {
 			</div>
 
 		<?php }
-			?>
-	</div>
-	<?php
 	}
-	include('FE_utils/BottomPage.php');
 	?>
+</div>
+<?php
+include('FE_utils/BottomPage.php');
+?>
 
 <script>
 	let inventory = [];

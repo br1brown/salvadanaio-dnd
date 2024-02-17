@@ -104,19 +104,20 @@ $l = count($personaggi);
 			<?php
 		} ?>
 	</div>
-	<?php
-	include('FE_utils/BottomPage.php');
-	?>
-	<script>
-		function riordina() {
-			var sort = $("#sort").val();
-			var parser = new URL(window.location);
-			parser.searchParams.set("sort", sort);
-			window.location = parser.href;
-		}
-		inizializzazioneApp.then(() => {
+</div>
+<?php
+include('FE_utils/BottomPage.php');
+?>
+<script>
+	function riordina() {
+		var sort = $("#sort").val();
+		var parser = new URL(window.location);
+		parser.searchParams.set("sort", sort);
+		window.location = parser.href;
+	}
+	inizializzazioneApp.then(() => {
 
-		});
-	</script>
+	});
+</script>
 
-	</html>
+</html>
