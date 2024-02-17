@@ -122,15 +122,15 @@
 				endif; ?>
 			<div class="row">
 				<div class="col text-center">
-					<p class="text-muted">
-						<?= $description ?>
-					</p>
-
 					<p>© 2024 <a href="<?= $service->createRoute("index") ?>">
 							<?= $AppName ?>
 						</a>|
 						<?= $service->traduci("dirittiriservati"); ?>.
 					</p>
+					<p class="text-muted">
+						<?= $description ?>
+					</p>
+
 				</div>
 			</div>
 		</div>
