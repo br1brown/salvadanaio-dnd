@@ -20,10 +20,10 @@ function MakeGetQueryString(parametri) {
 
 
 function getApiMethod(action, metod, params = null) {
-	return APIEndPoint + "/" + action + "/" + metod + MakeGetQueryString(params);
+	return infoContesto.APIEndPoint + "/" + action + "/" + metod + MakeGetQueryString(params);
 }
 function getApiUrl(action, params = null) {
-	return APIEndPoint + "/" + action + MakeGetQueryString(params);
+	return infoContesto.APIEndPoint + "/" + action + MakeGetQueryString(params);
 }
 
 /**
@@ -38,13 +38,13 @@ function getApiUrl(action, params = null) {
  */
 function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, dataType = 'json') {
 
-	data.lang = lang;
+	data.lang = infoContesto.lang;
 
 	let settings = {
 		url: type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint),
 		type: type,
 		headers: {
-			'X-Api-Key': APIKey
+			'X-Api-Key': infoContesto.APIKey
 		},
 		dataType: dataType,
 		success: function (response) {

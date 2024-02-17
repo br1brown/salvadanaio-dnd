@@ -69,11 +69,13 @@ try {
 
 
 	<script>
-		const clsTxt = '<?= $clsTxt ?>';
-		const APIEndPoint = '<?= $service->urlAPI ?>';
-		const APIKey = '<?= $service->APIkey ?>';
-		const lang = '<?= $service->currentLang() ?>';
-		let _pathtraduzione = '<?= $service->pathLang ?>';
+		infoContesto = {
+			clsTxt: '<?= $clsTxt ?>',
+			APIEndPoint: '<?= $service->urlAPI ?>',
+			APIKey: '<?= $service->APIkey ?>',
+			lang: '<?= $service->currentLang() ?>',
+			_pathtraduzione: '<?= $service->pathLang ?>',
+		}
 	</script>
 
 	<?php

@@ -1,9 +1,7 @@
-<!doctype html>
-<html lang="it">
 <?php
 $code = $_SERVER['REDIRECT_STATUS'];
 $forceMenu = false;
-
+$title = "Error " . $code;
 include('FE_utils/TopPage.php');
 
 
