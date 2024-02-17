@@ -19,5 +19,10 @@
     "modificheSuSoldi": "Le modifiche saranno effettive sui soldi posseduti",
     "personaggioNonTrovato": "Personaggio non trovato",
     "nessunPersonaggio": "Nessun personaggio",
-    "inventario": "Inventario"
+    "inventario": "Inventario",
+    "cashASC": "Soldi (crescente)",
+    "cashDESC": "Soldi (decrescente)",
+    "nameASC": "Nome (A-Z)",
+    "nameDESC": "Nome (Z-A)",
+    "procedi": "Procedi"
 }

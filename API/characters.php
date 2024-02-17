@@ -7,7 +7,7 @@ function eseguiGET()
         $personaggi = [];
         $total = 0;
         foreach ($nomi_personaggi as $infos_personaggio) {
-            $personaggio = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false);
+            $personaggio = (new BLL\Personaggio($infos_personaggio["basename"]))->getData(false, ["history", "suspended"]);
             $total += $personaggio["totalcopper"];
             $personaggi[] = $personaggio;
         }

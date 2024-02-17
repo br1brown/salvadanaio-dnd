@@ -331,7 +331,7 @@ class Personaggio
     }
 
 
-    public function getData(bool $encode = true)
+    public function getData(bool $encode = true, array $exclude = [])
     {
         $personaggioArray = [
             "basename" => $this->baseName,
@@ -345,23 +345,25 @@ class Personaggio
             "totalcopper" => $this->get_totalcopper(),
         ];
 
-        foreach ($this->personaggio->history as $cronologia) {
-            $personaggioArray["history"][] = $cronologia->jsonSerialize();
-        }
-
-        foreach ($this->personaggio->suspended as $tipo => $transazioni) {
-            foreach ($transazioni as $transazione) {
-                $converted = $this->ConvertValuta($transazione->copper);
-                $personaggioArray["suspended"][$tipo][] = [
-                    "platinum" => $converted->platinum,
-                    "gold" => $converted->gold,
-                    "silver" => $converted->silver,
-                    "copper" => $converted->copper,
-                    "description" => $transazione->description,
-                    "totalCopper" => $transazione->copper,
-                ];
+        if (!in_array("history", $exclude))
+            foreach ($this->personaggio->history as $cronologia) {
+                $personaggioArray["history"][] = $cronologia->jsonSerialize();
             }
-        }
+
+        if (!in_array("suspended", $exclude))
+            foreach ($this->personaggio->suspended as $tipo => $transazioni) {
+                foreach ($transazioni as $transazione) {
+                    $converted = $this->ConvertValuta($transazione->copper);
+                    $personaggioArray["suspended"][$tipo][] = [
+                        "platinum" => $converted->platinum,
+                        "gold" => $converted->gold,
+                        "silver" => $converted->silver,
+                        "copper" => $converted->copper,
+                        "description" => $transazione->description,
+                        "totalCopper" => $transazione->copper,
+                    ];
+                }
+            }
 
         if ($encode) {
             return json_encode($personaggioArray);

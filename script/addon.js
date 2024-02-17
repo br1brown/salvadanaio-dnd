@@ -65,7 +65,7 @@ function manageTransaction(basename, actionType, isReceiving = null) {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                apiCall("manage/" + actionWord, {
+                apiCall("manage/" + actionType, {
                     basename,
                     platinum: result.value.platinum,
                     gold: result.value.gold,

@@ -55,12 +55,12 @@ if (!$valido) {
 					<button class="btn btn-lg p-3 m-1 btn-success col"
 						onclick="manageMoney('<?= htmlspecialchars($basename); ?>', true)">
 						<i class="fas fa-coins"></i>
-						<?= $service->traduci("Ricevi") ?>
+						<?= $service->traduci("ricevi") ?>
 					</button>
 					<button class="btn btn-lg p-3 m-1 btn-danger col"
 						onclick="manageMoney('<?= htmlspecialchars($basename); ?>', false)">
 						<i class="fas fa-shopping-cart"></i>
-						<?= $service->traduci("Spendi") ?>
+						<?= $service->traduci("spendi") ?>
 					</button>
 				</div>
 			</div>

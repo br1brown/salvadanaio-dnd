@@ -15,13 +15,15 @@ if ($l > 0) { ?>
 	</div>
 	<div class=row>
 		<div class="col offset-md-4 col-md-4 form-group">
-			<label for="sort"></label>
-			<select name="sort" id="sort" multiple class="form-control" onchange="riordina()">
+			<label for="sort">
+				<?= $service->traduci("ordinaPer") ?>
+			</label>
+			<select name="sort" id="sort" class="form-control" onchange="riordina()">
 				<?php
-				foreach (["cash;ASC" => "Soldi (crescente)", "cash;DESC" => "Soldi (decrescente)", "name;ASC" => "Nome (A-Z)", "name;DESC" => "Nome (Z-A)",] as $k => $s) {
+				foreach (["cash;ASC" => "cashASC", "cash;DESC" => "cashDESC", "name;ASC" => "nameASC", "name;DESC" => "nameDESC",] as $k => $s) {
 					?>
 					<option value="<?= $k ?>" <?= $sort == $k ? 'selected' : ''; ?>>
-						<?= $s ?>
+						<?= $service->traduci($s) ?>
 					</option>
 					<?php
 				}
@@ -76,12 +78,12 @@ if ($l > 0) { ?>
 						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', true)"
 							class="btn btn-success btn-sm">
 							<i class="fas fa-coins"></i>
-							<?= $service->traduci("Ricevi") ?>
+							<?= $service->traduci("ricevi") ?>
 						</button>
 						<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', false)"
 							class="btn btn-danger btn-sm">
 							<i class="fas fa-shopping-cart"></i>
-							<?= $service->traduci("Spendi") ?>
+							<?= $service->traduci("spendi") ?>
 						</button>
 					</div>
 				</div>
