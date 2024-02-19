@@ -3,7 +3,7 @@
 
 
 function getTemplateUrl(type, params = null) {
-    return "FE_utils/template/" + type + MakeGetQueryString(params);
+    return "template/" + type + MakeGetQueryString(params);
 }
 
 function manageMoney(basename, isReceiving) {
