@@ -1,6 +1,6 @@
 <?php
 $k = 'text';
-require_once __DIR__ . '/funzioni.php';
+require_once dirname(__DIR__) . '/FE_utils/funzioni.php';
 
 // Assicurati che l'input sia presente e pulito
 $input = isset($_GET[$k]) ? $_GET[$k] : '';

@@ -1,12 +1,2 @@
 Order Deny,Allow
 Deny from all
-
-<Files "markparsing*">
-    Allow from all
-</Files>
-<Files "getLang*">
-    Allow from all
-</Files>
-<Files "gateway*">
-    Allow from all
-</Files>

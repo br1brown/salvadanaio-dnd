@@ -71,11 +71,14 @@ try {
 	<script>
 		infoContesto = {
 			clsTxt: '<?= $clsTxt ?>',
-			APIEndPoint: '<?= $service->urlAPI ?>',
-			EsternaAPI: '<?= $service->EsternaAPI ?>',
+			EsternaAPI: <?= $service->EsternaAPI ? "true" : "false" ?>,
 			APIKey: '<?= $service->APIkey ?>',
 			lang: '<?= $service->currentLang() ?>',
-			_pathtraduzione: '<?= $service->pathLang ?>',
+			route: {
+				traduzione: '<?= $service->pathLang ?>',
+				APIEndPoint: '<?= $service->urlAPI ?>',
+				gateway: '<?= $service->baseURL('func/gateway') ?>'
+			}
 		}
 	</script>
 

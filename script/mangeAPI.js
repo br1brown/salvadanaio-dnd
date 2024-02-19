@@ -20,7 +20,7 @@ function MakeGetQueryString(parametri) {
 
 
 function getApiUrl(action, params = null) {
-	return infoContesto.APIEndPoint + "/" + action + MakeGetQueryString(params);
+	return infoContesto.route.APIEndPoint + "/" + action + MakeGetQueryString(params);
 }
 
 /**
@@ -37,6 +37,7 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 	data.lang = infoContesto.lang;
 
 	let settings = {
+		dataType: dataType,
 		success: function (response) {
 			genericSuccess(response, callback, modalOk);
 		},
@@ -45,10 +46,10 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 
 	if (!!infoContesto.EsternaAPI) {
 		var valori = {
-			endpoint, data, type, dataType, XApiKey: infoContesto.APIKey, APIEndPoint: infoContesto.APIEndPoint
+			url: getApiUrl(endpoint), data, type, dataType, XApiKey: infoContesto.APIKey
 		}
 
-		settings.url = 'FE_utils/gateway';
+		settings.url = infoContesto.route.gateway;
 		settings.type = "POST";
 		settings.data = { payload: JSON.stringify(valori) };
 
@@ -56,7 +57,6 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 
 		settings.url = type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint);
 		settings.type = type;
-		settings.dataType = dataType;
 
 		settings.headers = {
 			'X-Api-Key': infoContesto.APIKey
@@ -84,7 +84,6 @@ function handleError(xhr, status, error) {
 	var keyDescTraduci = "errore" + xhr.status + "Desc";
 	let errorInfo = traduci(keyInfoTraduci);
 	let errorMessage = traduci(keyDescTraduci);
-	debugger
 	if (errorMessage == keyDescTraduci)
 		errorMessage = traduci("erroreImprevisto");
 
