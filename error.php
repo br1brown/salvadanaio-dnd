@@ -1,9 +1,7 @@
-<!doctype html>
-<html lang="it">
 <?php
 $code = $_SERVER['REDIRECT_STATUS'];
 $forceMenu = false;
-
+$title = "Error " . $code;
 include('FE_utils/TopPage.php');
 
 
@@ -38,7 +36,9 @@ $source_url = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
             <p>
                 <?= $errorMessage ?>
             </p>
-
+            <a href="<?= $service->createRoute("index") ?>" class="bottone btn btn-primary btn-lg">
+                <?= $service->traduci("home"); ?>
+            </a>
         </div>
     </div>
 </div>

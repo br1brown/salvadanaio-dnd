@@ -3,7 +3,6 @@
 class Traduzione
 {
 
-    private static string $path = __DIR__ . "/lang";
 
     /** @var array La traduzione corrente */
     public $corrente = [];
@@ -11,23 +10,23 @@ class Traduzione
     /** @var string lingua della pagina */
     public string $lang;
 
-    public function __construct($l)
+    public function __construct(string $l, string $path = __DIR__ . "/lang")
     {
         if (empty($l))
             return;
 
         $this->lang = $l;
 
-        $files = glob(self::$path . "/{$l}/*.json");
+        $files = glob($path . "/{$l}/*.json");
         foreach ($files as $file) {
             $this->corrente = array_merge($this->corrente, json_decode(file_get_contents($file), true));
         }
     }
 
-    public static function listaLingue()
+    public static function listaLingue(string $path = __DIR__ . "/lang")
     {
         $result = [];
-        $dirs = array_filter(glob(self::$path . '/*'), 'is_dir');
+        $dirs = array_filter(glob($path . '/*'), 'is_dir');
         foreach ($dirs as $dir) {
             $lingua = strtolower(basename($dir));
             if (!str_starts_with($lingua, '_'))

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/Traduzione.php';
+require_once __DIR__ . '/ServerToServer.php';
 
 class Service
 {
@@ -121,6 +122,12 @@ class Service
     public string $urlAPI;
 
     /**
+     * @var bool URL dell'API è esterna?
+     */
+    public string $EsternaAPI;
+
+
+    /**
      * @var string Chiave dell'API di servizio
      */
     public string $APIkey;
@@ -154,7 +161,8 @@ class Service
         $this->APIkey = $this->settings['API']['key'];
 
         $APIEndPoint = $this->settings['API']['EndPoint'];
-        if (strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0) {
+        $this->EsternaAPI = strpos($APIEndPoint, "http://") === 0 || strpos($APIEndPoint, "https://") === 0;
+        if ($this->EsternaAPI) {
             $this->urlAPI = $APIEndPoint;
         } else {
             $this->urlAPI = $this->baseUrl . $APIEndPoint;
@@ -170,7 +178,7 @@ class Service
         if (isset($_GET["lang"]) && !empty($_GET["lang"]))
             $lang = strtolower($_GET["lang"]);
 
-        $this->pathLang = $this->baseURL("FE_utils/getLang?lang=" . $lang);
+        $this->pathLang = $this->baseURL("func/getLang?lang=" . $lang);
         $this->_traduzione = new Traduzione($lang);
     }
 
@@ -183,7 +191,7 @@ class Service
         $lingue = [];
         $lingue[] = $this->_traduzione->lang;
 
-        return array_unique(array_merge($lingue, Traduzione::listaLingue()));
+        return array_unique(array_merge($lingue, Traduzione::listaLingue(__DIR__ . "/lang")));
     }
 
 
@@ -303,11 +311,6 @@ class Service
     }
 
     /**
-     * @var bool controllo gli SSL dell' endpoint?
-     */
-    public bool $CheckSSL = true;
-
-    /**
      * Esegue una chiamata all'endpoint dell'API utilizzando il metodo HTTP specificato e restituisce la risposta.
      * 
      * @param string $pathOrEndpoint Il percorso dell'endpoint o interno dell'API.
@@ -321,86 +324,21 @@ class Service
      * @throws InvalidArgumentException Se i parametri obbligatori non sono validi.
      * @throws Exception In caso di errore nella chiamata all'endpoint o nella risposta dell'API.
      */
-    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json', array $headerPersonalizzati = [], int $timeoutTotale = 30, int $timeoutConnessione = 10)
+    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json')
     {
         // Validazione del parametro $pathOrEndpoint
         if (empty($pathOrEndpoint)) {
             throw new InvalidArgumentException("Il parametro 'pathOrEndpoint' non può essere vuoto.");
         }
 
-        // Validazione del parametro $metodo
-        $metodiValidi = ['GET', 'POST'];
-        if (!in_array(strtoupper($metodo), $metodiValidi)) {
-            throw new InvalidArgumentException("Metodo HTTP non supportato: " . $metodo);
-        }
-
         $url = $this->APIbaseURL($pathOrEndpoint);
 
         $dati['lang'] = $this->_traduzione->lang;
 
-        if (strtoupper($metodo) === "GET" && !empty($dati)) {
-            $url .= '?' . http_build_query($dati);
-        }
+        $risultati = ServerToServer::callURL($url, $metodo, $dati, $contentType, ["X-Api-Key: " . $this->APIkey]);
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutTotale); // Timeout totale
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutConnessione); // Timeout di connessione
-
-
-        if (!$this->CheckSSL) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
-        // Inizializza gli header con 'Content-Type' e 'X-Api-Key'
-        $header = [
-            "Content-Type: $contentType",
-            "X-Api-Key: " . $this->APIkey
-        ];
-
-        // Aggiungi gli header personalizzati agli header di default
-        $header = array_merge($header, $headerPersonalizzati);
-        // Imposta gli header HTTP
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        // Imposta il metodo HTTP e i dati
-        switch (strtoupper($metodo)) {
-            case "POST":
-                curl_setopt($ch, CURLOPT_POST, true);
-                if (!empty($dati)) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dati));
-                }
-                break;
-        }
-
-        // Imposta CURLOPT_RETURNTRANSFER per ottenere il risultato come stringa
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // Esegui la chiamata cURL
-        $response = curl_exec($ch);
-        $ResponseContentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-
-        // Controlla se ci sono stati errori nella chiamata cURL
-        if ($response === false) {
-            $errorCode = curl_errno($ch);
-            $error = curl_error($ch);
-            curl_close($ch);
-
-            // Controlla se si tratta di un timeout
-            if ($errorCode === CURLE_OPERATION_TIMEDOUT) {
-                throw new Exception("Timeout della richiesta raggiunto: " . $error);
-            }
-
-            // Gestisci altri errori di connessione
-            throw new Exception("Errore EndPoint: " . $error);
-        }
-
-        // Ottieni il codice di risposta HTTP
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!($httpCode >= 200 && $httpCode < 300)) {
-            curl_close($ch);
-            throw new Exception("Errore HTTP: " . $httpCode);
-        }
-        // Chiudi la sessione cURL
-        curl_close($ch);
+        $response = $risultati->Response;
+        $ResponseContentType = $risultati->ResponseContentType;
 
         // Elaborazione della risposta in base al suo tipo di contenuto
         $managedContentTypes = ['application/json', 'text/xml', 'application/xml'];

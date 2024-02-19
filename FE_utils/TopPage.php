@@ -69,11 +69,17 @@ try {
 
 
 	<script>
-		const clsTxt = '<?= $clsTxt ?>';
-		const APIEndPoint = '<?= $service->urlAPI ?>';
-		const APIKey = '<?= $service->APIkey ?>';
-		const lang = '<?= $service->currentLang() ?>';
-		let _pathtraduzione = '<?= $service->pathLang ?>';
+		infoContesto = {
+			clsTxt: '<?= $clsTxt ?>',
+			EsternaAPI: <?= $service->EsternaAPI ? "true" : "false" ?>,
+			APIKey: '<?= $service->APIkey ?>',
+			lang: '<?= $service->currentLang() ?>',
+			route: {
+				traduzione: '<?= $service->pathLang ?>',
+				APIEndPoint: '<?= $service->urlAPI ?>',
+				gateway: '<?= $service->baseURL('func/gateway') ?>'
+			}
+		}
 	</script>
 
 	<?php
@@ -102,9 +108,7 @@ try {
 	<style>
 		:root {
 			<?php foreach ($colori as $chiave => $colore): ?>
-				--<?= $chiave; ?>:
-					<?= $colore; ?>
-				;
+				<?= "--{$chiave}: {$colore};\n"; ?>
 			<?php endforeach; ?>
 		}
 	</style>
@@ -112,7 +116,8 @@ try {
 </head>
 
 <body>
-	<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
+	<a id="back-to-top" href="#" class="btn btn-<?= $isDarkTextPreferred ? "light" : "dark"; ?> btn-lg back-to-top"
+		role="button">
 		<i class="fas fa-chevron-up"></i>
 	</a>
 	<?php
@@ -168,6 +173,5 @@ try {
 						</div>
 					</div>
 				<?php endif; ?>
-
 		</nav>
 	<?php endif; ?>

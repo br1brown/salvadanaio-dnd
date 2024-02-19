@@ -19,11 +19,8 @@ function MakeGetQueryString(parametri) {
 }
 
 
-function getApiMethod(action, metod, params = null) {
-	return APIEndPoint + "/" + action + "/" + metod + MakeGetQueryString(params);
-}
 function getApiUrl(action, params = null) {
-	return APIEndPoint + "/" + action + MakeGetQueryString(params);
+	return infoContesto.route.APIEndPoint + "/" + action + MakeGetQueryString(params);
 }
 
 /**
@@ -37,15 +34,9 @@ function getApiUrl(action, params = null) {
  * @param {string} [dataType='json'] - Il tipo di dati attesi nella risposta.
  */
 function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, dataType = 'json') {
-
-	data.lang = lang;
+	data.lang = infoContesto.lang;
 
 	let settings = {
-		url: type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint),
-		type: type,
-		headers: {
-			'X-Api-Key': APIKey
-		},
 		dataType: dataType,
 		success: function (response) {
 			genericSuccess(response, callback, modalOk);
@@ -53,11 +44,30 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 		error: handleError
 	};
 
-	if (type !== 'GET' && !(!data)) {
-		settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
-	}
+	if (!!infoContesto.EsternaAPI) {
+		var valori = {
+			url: getApiUrl(endpoint), data, type, dataType, XApiKey: infoContesto.APIKey
+		}
 
+		settings.url = infoContesto.route.gateway;
+		settings.type = "POST";
+		settings.data = { payload: JSON.stringify(valori) };
+
+	} else {
+
+		settings.url = type === 'GET' ? getApiUrl(endpoint, data) : getApiUrl(endpoint);
+		settings.type = type;
+
+		settings.headers = {
+			'X-Api-Key': infoContesto.APIKey
+		};
+		if (type !== 'GET' && !(!data)) {
+			settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
+		}
+
+	}
 	$.ajax(settings);
+
 }
 
 /**
@@ -74,7 +84,6 @@ function handleError(xhr, status, error) {
 	var keyDescTraduci = "errore" + xhr.status + "Desc";
 	let errorInfo = traduci(keyInfoTraduci);
 	let errorMessage = traduci(keyDescTraduci);
-
 	if (errorMessage == keyDescTraduci)
 		errorMessage = traduci("erroreImprevisto");
 

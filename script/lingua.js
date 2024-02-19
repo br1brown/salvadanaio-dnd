@@ -1,13 +1,13 @@
 let traduzione = []
 var traduzioneCaricata = new Promise((resolve, reject) => {
-    fetch(_pathtraduzione)
+    fetch(infoContesto.route.traduzione)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
         .then(data => {
             traduzione = data;
-            console.log('Traduzione caricata:', traduzione);
+            console.log('Traduzione caricata');
             resolve(); // Risolve la promessa
         })
         .catch(error => {
