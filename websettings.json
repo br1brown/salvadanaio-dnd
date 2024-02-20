@@ -3,10 +3,6 @@
     "lang": "it",
     "description": "Permette di gestire il portafoglio dei personaggi della propria campagna senza dover fare i conti e le equivalenze",
     "meta": {
-        "MobileFriendly": true,
-        "iOSFullScreenWebApp": true,
-        "mobileOptimizationWidth": 320,
-        "refreshIntervalInSeconds": 900,
         "keywords": []
     },
     "API": {
