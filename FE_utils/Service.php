@@ -302,9 +302,9 @@ class Service
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function RenderIMG($imgID)
+    public function UrlAsset($ID)
     {
-        return self::baseURL("func/getImg?imgID=" . $imgID);
+        return self::baseURL("func/getAsset?ID=" . $ID);
     }
 
     /**
