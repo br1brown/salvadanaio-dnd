@@ -1,2 +1,5 @@
-Order Deny,Allow
-Deny from all
+Order allow,deny
+Allow from all
+<Files "mapping.json">
+    Deny from all
+</Files>
