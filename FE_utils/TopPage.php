@@ -24,46 +24,46 @@ try {
 	$clsTxt = $isDarkTextPreferred ? "text-dark" : "text-light";
 	?>
 	<title>
-		<?= $meta['title']; ?>
+		<?= $meta->title; ?>
 	</title>
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 
-	<meta name="description" content="<?= $meta['description'] ?>">
+	<meta name="description" content="<?= $meta->description ?>">
 
-	<?php if (isset($meta['string_All_keywords'])): ?>
-		<meta name="keywords" content="<?= $meta['string_All_keywords'] ?>">
+	<?php if (!empty($meta->keywords)): ?>
+		<meta name="keywords" content="<?= implode(",", $meta->keywords) ?>">
 	<?php endif; ?>
 
-	<?php if (isset($meta['author'])): ?>
-		<meta name="author" content="<?= $meta['author'] ?>">
+	<?php if (isset($meta->author)): ?>
+		<meta name="author" content="<?= $meta->author ?>">
 	<?php endif; ?>
 
 	<meta name="robots" content="index, follow">
 	<link rel="manifest" href="webmanifest.php">
 
-	<meta name="HandheldFriendly" content="<?= $meta['MobileFriendly'] ? "true" : "false" ?>">
-	<meta name="MobileOptimized" content="<?= $meta['mobileOptimizationWidth'] ?>">
+	<meta name="HandheldFriendly" content="<?= $meta->MobileFriendly ? "true" : "false" ?>">
+	<meta name="MobileOptimized" content="<?= $meta->mobileOptimizationWidth ?>">
 
 	<!-- Indica la frequenza con cui la pagina dovrebbe essere aggiornata -->
-	<meta http-equiv="refresh" content="<?= $meta['refreshIntervalInSeconds'] ?>">
-	<?php if (isset($meta['dataScadenza'])): ?>
+	<meta http-equiv="refresh" content="<?= $meta->refreshIntervalInSeconds ?>">
+	<?php if (isset($meta->dataScadenzaGMT)): ?>
 		<!-- La data di scadenza dei contenuti nel meta tag -->
-		<meta http-equiv="expires" content="<?= $meta["dataScadenzaGMT"]; ?>">
+		<meta http-equiv="expires" content="<?= $meta->dataScadenzaGMT ?>">
 	<?php endif; ?>
 
 	<!-- Colore tematico per il browser sui dispositivi Android -->
-	<meta name="theme-color" content="<?= $colorTema ?>" />
+	<meta name="theme-color" content="<?= $colori["colorTema"] ?>" />
 	<!-- Cambia lo stile della barra di stato su iOS -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colorTema ?>">
+	<meta name="apple-mobile-web-app-status-bar-style" content="<?= $colori["colorTema"] ?>">
 
 	<!-- Definizione del nome del sito web quando salvato come app web sui dispositivi mobili -->
 	<meta name="application-name" content="<?= $AppName ?>" />
 	<!-- Definisce il titolo dell'app web per iOS -->
 	<meta name="apple-mobile-web-app-title" content="<?= $AppName ?>">
 	<!-- Permette al sito web di funzionare a schermo intero su Safari iOS, simile a un'applicazione nativa -->
-	<meta name="apple-mobile-web-app-capable" content="<?= $meta['iOSFullScreenWebApp'] ? "yes" : "no" ?>">
+	<meta name="apple-mobile-web-app-capable" content="<?= $meta->iOSFullScreenWebApp ? "yes" : "no" ?>">
 
 	<link rel="icon" type="image/png" href="<?= $service->baseURL($favIcon) ?>">
 
@@ -83,24 +83,21 @@ try {
 	</script>
 
 	<?php
-	foreach ($meta['ext_link'] as $comment => $links):
-		echo "\n	<!-- $comment -->\n";
-		foreach ($links as $link) {
-			if ($link['type'] == 'css') {
-				echo '	<link rel="stylesheet" href="' . $link['url'] . '">' . "\n";
-			} else if ($link['type'] == 'js') {
-				echo '	<script src="' . $link['url'] . '"></script>' . "\n";
-			}
+	foreach ($meta->ext_link as $extlink):
+		if ($extlink->type == 'css') {
+			echo '	<link rel="stylesheet" href="' . $extlink->url . '">' . "\n";
+		} else if ($extlink->type == 'js') {
+			echo '	<script src="' . $extlink->url . '"></script>' . "\n";
 		}
 	endforeach;
 
 
-	foreach ($meta['localjs'] as $value):
+	foreach ($meta->localjs as $value):
 		echo "\n	<script src=" . $service->baseURL("script/" . $value) . "></script>";
 	endforeach;
 
 
-	foreach ($meta['localcss'] as $value):
+	foreach ($meta->localcss as $value):
 		echo "\n	<link rel=\"stylesheet\" href=" . $service->baseURL("style/" . $value) . ">";
 	endforeach;
 
