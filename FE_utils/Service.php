@@ -49,6 +49,8 @@ class Service
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;
 
+        $data['routes'] = $this->prepareAssets("func", "php", excludeFiles: ["getLang.php"]);
+
         return $data;
     }
 
@@ -206,7 +208,7 @@ class Service
      * @param array $excludeFiles Array di file da escludere dall'elenco addizionale.
      * @return array Array ordinato di percorsi di file da caricare.
      */
-    function prepareAssets($directory, $extension, $firstLoad, $lastLoad, $excludeFiles = [])
+    function prepareAssets($directory, $extension, $firstLoad = [], $lastLoad = [], $excludeFiles = [])
     {
         // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
         $getFileList = function ($directory, $extension, $excludeFiles) {
@@ -292,6 +294,17 @@ class Service
         }
 
         return $newUrl;
+    }
+
+    /**
+     * Restituisce il percorso completo dell'URL per una risorsa.
+     * 
+     * @param string $path Percorso della risorsa.
+     * @return string URL completo della risorsa.
+     */
+    public function RenderIMG($imgID)
+    {
+        return self::baseURL("func/getImg?imgID=" . $imgID);
     }
 
     /**
