@@ -20,13 +20,13 @@
 					<?php endif; ?>
 					<?php if (isset($irl['ig'])): ?>
 						<div class="col">
-							<a href href="<?= $irl['ig'] ?>" target=_blank title=Instagram><i class="social-icon fab fa-instagram">
+							<a href="<?= $irl['ig'] ?>" target=_blank title=Instagram><i class="social-icon fab fa-instagram">
 									Instagram</i></a>
 						</div>
 					<?php endif; ?>
 					<?php if (isset($irl['yt'])): ?>
 						<div class="col">
-							<a href href="<?= $irl['yt'] ?>" target=_blank title=Youtube><i class="social-icon fab fa-youtube">
+							<a href="<?= $irl['yt'] ?>" target=_blank title=Youtube><i class="social-icon fab fa-youtube">
 									Youtube</i></a>
 						</div>
 					<?php endif; ?>
