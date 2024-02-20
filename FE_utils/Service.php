@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/DTOWebsite.php';
 require_once __DIR__ . '/Traduzione.php';
 require_once __DIR__ . '/ServerToServer.php';
 
@@ -34,20 +35,16 @@ class Service
             $data['colorBase'] = $this->lightenColor($data['colorTema']);
         }
 
-        $data["colori"]['colorBase'] = $data['colorBase'];
-        $data["colori"]['colorTema'] = $data['colorTema'];
-        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], 0.4);
-        $data["colori"]['colorPrimaryScuro'] = $this->darkenColor($data["colori"]['colorPrimary'], 0.2);
-
-
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
+        $colorPrimary = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] ? 0.4 : 0);
 
-
-        $data["colori"]['colorBase'] = $data['colorBase'];
-        $data["colori"]['colorTema'] = $data['colorTema'];
-        $data["colori"]['colorPrimary'] = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] == true ? 0.4 : 0);
-        $data["colori"]['colorPrimaryScuro'] = $this->darkenColor($data["colori"]['colorPrimary'], 0.2);
-
+        $data["colori"] = [
+            'colorBase' => $data['colorBase'],
+            'colorTema' => $data['colorTema'],
+            'colorPrimary' => $colorPrimary,
+            'colorPrimaryScuro' => $this->darkenColor($colorPrimary, 0.2),
+        ];
+        unset($data['colorBase'], $data['colorTema']);
 
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;
@@ -58,51 +55,38 @@ class Service
     /**
      * Restituisce le impostazioni dei metatag e header
      *
-     * @return array Impostazioni filtrate.
+     * @return MetaDTO Impostazioni filtrate.
      */
-    public function getMeta()
+    public function getMeta(): MetaDTO
     {
         $meta = $this->settings['meta'];
-
-        $szkeywords = "";
-        foreach ($this->settings['meta']["keywords"] as $keyword) {
-            $szkeywords .= trim($keyword) . ",";
-        }
-
-        $meta['string_All_keywords'] = rtrim($szkeywords, ",");
+        $metaDTO = new MetaDTO($meta);
 
         $havesmoke = isset($this->settings['smoke']) && $this->settings['smoke']["enable"];
 
-        $meta['localcss'] = $this->prepareAssets("style", "css", ["base.css"], ["addon.css"]);
-
+        // Preparazione e impostazione dei CSS e JS locali
+        $metaDTO->localcss = $this->prepareAssets("style", "css", ["base.css"], ["addon.css"]);
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
-        $meta['localjs'] = $this->prepareAssets("script", "js", ["lingua.js", "base.js"], ["addon.js"], $excludeJs);
+        $metaDTO->localjs = $this->prepareAssets("script", "js", ["lingua.js", "base.js"], ["addon.js"], $excludeJs);
 
-        $meta['ext_link'] = [
-            'ROBE PER IL MENU + SOCIAL' => [
-                ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'],
-                ['type' => 'css', 'url' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'],
-            ],
-            'jquery vari' => [
-                ['type' => 'js', 'url' => 'https://code.jquery.com/jquery-3.5.1.js'],
-                ['type' => 'js', 'url' => 'https://code.jquery.com/ui/1.12.1/jquery-ui.js'],
-            ],
-            'bootstrap' => [
-                ['type' => 'js', 'url' => 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'],
-                ['type' => 'css', 'url' => 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'],
-            ],
-            'GLI ALERT' => [
-                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/sweetalert2@10'],
-            ],
-            'Optional: include a polyfill for ES6 Promises for IE11' => [
-                ['type' => 'js', 'url' => 'https://cdn.jsdelivr.net/npm/promise-polyfill'],
-            ],
+        // Impostazione dei link esterni
+        $metaDTO->ext_link = [
+            //ROBE PER IL MENU + SOCIAL
+            new ExternalLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'),
+            new ExternalLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'),
+            //jquery vari
+            new ExternalLink('js', 'https://code.jquery.com/jquery-3.5.1.js'),
+            new ExternalLink('js', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js'),
+            //bootstrap
+            new ExternalLink('js', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'),
+            new ExternalLink('css', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'),
+            //GLI ALERT
+            new ExternalLink('js', 'https://cdn.jsdelivr.net/npm/sweetalert2@10'),
+            //include a polyfill for ES6 Promises for IE11
+            new ExternalLink('js', 'https://cdn.jsdelivr.net/npm/promise-polyfill'),
         ];
-        if (isset($meta['dataScadenza'])) {
-            $datescad = DateTime::createFromFormat('d/m/Y', $meta["dataScadenza"], new DateTimeZone('Europe/Rome'));
-            $meta["dataScadenzaGMT"] = $datescad->format('D, d M Y H:i:s') . ' GMT';
-        }
-        return $meta;
+
+        return $metaDTO;
     }
 
     /**

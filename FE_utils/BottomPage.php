@@ -137,6 +137,4 @@
 	</footer>
 <?php endif; ?>
 
-
-
 </body>

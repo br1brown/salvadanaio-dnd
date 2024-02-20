@@ -10,9 +10,9 @@ include('FE_utils/TopPage.php');
 			<h1><b>
 					<?= $title ?>
 				</b></h1>
-			<?php if (isset($meta['author'])): ?>
+			<?php if (isset($meta->author)): ?>
 				<i>By
-					<?= $meta['author'] ?>
+					<?= $meta->author ?>
 				</i>
 			<?php endif; ?>
 		</div>
@@ -66,7 +66,7 @@ include('FE_utils/TopPage.php');
 	inizializzazioneApp.then(() => {
 		var testo = traduci('imgDinamica');
 		var imageCreata = new CreaImmagine(testo,
-			'<?= $colorTema ?>',
+			'<?= $colori["colorTema"] ?>',
 			'<?= $isDarkTextPreferred ? "black" : "white" ?>'
 		)
 			.costruisci();
