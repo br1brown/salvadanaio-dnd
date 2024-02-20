@@ -2,7 +2,7 @@
 require_once(dirname(__DIR__) . "/FE_utils/Asset.php");
 
 // Prendi l'imgID dal parametro GET
-$imgID = isset($_GET['imgID']) ? $_GET['imgID'] : '';
+$imgID = isset($_GET['ID']) ? $_GET['ID'] : '';
 
 // Usa la classe Asset per ottenere il percorso dell'immagine
 $path = Asset::getPath($imgID);
