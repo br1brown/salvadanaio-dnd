@@ -65,7 +65,7 @@ try {
 	<!-- Permette al sito web di funzionare a schermo intero su Safari iOS, simile a un'applicazione nativa -->
 	<meta name="apple-mobile-web-app-capable" content="<?= $meta->iOSFullScreenWebApp ? "yes" : "no" ?>">
 
-	<link rel="icon" type="image/png" href="<?= $service->baseURL($favIcon) ?>">
+	<link rel="icon" type="image/png" href="<?= $service->RenderIMG("favIcon") ?>">
 
 
 	<script>
@@ -77,7 +77,10 @@ try {
 			route: {
 				traduzione: '<?= $service->pathLang ?>',
 				APIEndPoint: '<?= $service->urlAPI ?>',
-				gateway: '<?= $service->baseURL('func/gateway') ?>'
+				<?php foreach ($routes as $url):
+					$v = basename($url, ".php");
+					echo "\n\t\t\t\t{$v}: '" . $service->baseURL('func/' . $v) . "',\n";
+				endforeach; ?>
 			}
 		}
 	</script>
