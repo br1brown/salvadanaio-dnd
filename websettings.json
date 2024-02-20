@@ -3,10 +3,6 @@
     "lang": "it",
     "description": "Descrizione",
     "meta": {
-        "MobileFriendly": true,
-        "iOSFullScreenWebApp": true,
-        "mobileOptimizationWidth": 320,
-        "refreshIntervalInSeconds": 900,
         "keywords": [
             "xxx",
             "xxxx"
