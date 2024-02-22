@@ -3,6 +3,13 @@ require_once(dirname(__DIR__) . "/FE_utils/Asset.php");
 
 function LoadSmallImage($file_path, $content_type)
 {
+    // Controlla se l'estensione GD Library è caricata
+    if (!extension_loaded('gd')) {
+        // Se GD non è caricata, mostra l'immagine originale
+        header("Content-Type: $content_type");
+        readfile($file_path);
+        exit;
+    }
     list($width, $height) = getimagesize($file_path);
     if (!$width || !$height) {
         // Gestire l'errore, ad esempio loggando l'errore e restituendo un'immagine di fallback o un messaggio di errore
