@@ -1,24 +1,7 @@
 <?php if (isset($footer) && $footer == true):
 	?>
-	<footer style="font-size: 0.8rem;bottom: 0;" class="container-fluid p-1 mt-3 fillColoreSfondo <?= $clsTxt ?>">
-		<div class="container py-2">
-			<div class="row">
-				<div class="col text-center">
-					<p>© 2024
-						<?php if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == "index") {
-							echo "<strong>" . $AppName . "</strong> ";
-						} else {
-							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
-						}
-						?>
-						<?= $service->traduci("dirittiriservati"); ?>.
-					</p>
-					<p class="text-muted">
-						<?= $description ?>
-					</p>
-
-				</div>
-			</div>
+	<footer style="font-size: 0.8rem;bottom: 0;" class="container-fluid mt-3 fillColoreSfondo <?= $clsTxt ?>">
+		<div class="container py-1">
 			<?php // Controllo se almeno una delle chiavi è impostata e non vuota
 				if (
 					(isset($irl['numeroWA']) && !empty($irl['numeroWA'])) ||
@@ -63,8 +46,6 @@
 					|| isset($irl['registroImprese'])
 					|| isset($irl['numeroIscrizione'])
 					|| isset($irl['numeroREA'])
-					|| (isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy']))
-					|| (isset($url['CookiePolicy']) && !empty($url['CookiePolicy']))
 				):
 					?>
 				<div class="row">
@@ -122,8 +103,20 @@
 									<?= $service->traduci("numerorea"); ?>: <code><?= $irl['numeroREA'] ?></code>
 								</li>
 							<?php endif; ?>
+						</ul>
+					</div>
+				</div>
+			<?php endif;
+				if (
+					(isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy']))
+					|| (isset($url['CookiePolicy']) && !empty($url['CookiePolicy']))
+				):
+					?>
+				<div class="row pt-3">
+					<div class="col-12 offset-sm-6 col-sm-6">
+						<ul class="list-unstyled">
 							<?php if (isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy'])): ?>
-								<li class="pt-3"><a href="<?= $service->createRoute($url['PrivacyPolicy']) ?>">
+								<li class=""><a href="<?= $service->createRoute($url['PrivacyPolicy']) ?>">
 										<?= $service->traduci("privacypolicy"); ?>
 									</a></li>
 							<?php endif; ?>
@@ -135,8 +128,25 @@
 						</ul>
 					</div>
 				</div>
-				<?php
-				endif; ?>
+			<?php endif; ?>
+
+			<div class="row">
+				<div class="col text-center">
+					<p>© 2024
+						<?php if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == "index") {
+							echo "<strong>" . $AppName . "</strong> ";
+						} else {
+							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
+						}
+						?>
+						<?= $service->traduci("dirittiriservati"); ?>.
+					</p>
+					<p class="text-muted">
+						<?= $description ?>
+					</p>
+
+				</div>
+			</div>
 		</div>
 	</footer>
 <?php endif; ?>
