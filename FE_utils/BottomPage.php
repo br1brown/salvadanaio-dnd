@@ -54,7 +54,7 @@
 				endif;
 				// Controllo se almeno una delle informazioni è disponibile
 				if (
-					isset($irl['nomeCognome'])
+					isset($irl['ragioneSociale'])
 					|| isset($irl['indirizzoSedeLegale'])
 					|| isset($irl['numeroTelefono'])
 					|| isset($irl['pec'])
@@ -70,9 +70,9 @@
 				<div class="row">
 					<div class="col-12 col-sm-6">
 						<ul class="list-unstyled">
-							<?php if (isset($irl['nomeCognome'])): ?>
+							<?php if (isset($irl['ragioneSociale'])): ?>
 								<li>
-									<?= $irl['nomeCognome'] ?>
+									<?= $irl['ragioneSociale'] ?>
 								</li>
 							<?php endif; ?>
 							<?php if (isset($irl['indirizzoSedeLegale'])): ?>
