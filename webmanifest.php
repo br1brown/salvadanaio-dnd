@@ -11,8 +11,8 @@ $manifest = [
     'lang' => $service->currentLang() ?? '',
     'start_url' => $service->baseUrl,
     'display' => 'browser',
-    'background_color' => $settings['colorBase'],
-    'theme_color' => $settings['colorTema']
+    'background_color' => $settings["colori"]['colorBase'],
+    'theme_color' => $settings["colori"]['colorTema']
 ];
 echo json_encode($manifest, true);
 ?>

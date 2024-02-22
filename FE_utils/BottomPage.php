@@ -1,7 +1,24 @@
 <?php if (isset($footer) && $footer == true):
 	?>
-	<footer style="margin-bottom:0; font-size: 0.8rem;" class="container-fluid mt-3 fillColoreSfondo <?= $clsTxt ?>">
+	<footer style="font-size: 0.8rem;bottom: 0;" class="container-fluid p-1 mt-3 fillColoreSfondo <?= $clsTxt ?>">
 		<div class="container py-2">
+			<div class="row">
+				<div class="col text-center">
+					<p>© 2024
+						<?php if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == "index") {
+							echo "<strong>" . $AppName . "</strong> ";
+						} else {
+							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
+						}
+						?>
+						<?= $service->traduci("dirittiriservati"); ?>.
+					</p>
+					<p class="text-muted">
+						<?= $description ?>
+					</p>
+
+				</div>
+			</div>
 			<?php // Controllo se almeno una delle chiavi è impostata e non vuota
 				if (
 					(isset($irl['numeroWA']) && !empty($irl['numeroWA'])) ||
@@ -106,12 +123,12 @@
 								</li>
 							<?php endif; ?>
 							<?php if (isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy'])): ?>
-								<li class="pt-3"><a href="<?= $url['PrivacyPolicy'] ?>">
+								<li class="pt-3"><a href="<?= $service->createRoute($url['PrivacyPolicy']) ?>">
 										<?= $service->traduci("privacypolicy"); ?>
 									</a></li>
 							<?php endif; ?>
 							<?php if (isset($url['CookiePolicy']) && !empty($url['CookiePolicy'])): ?>
-								<li><a href="<?= $url['CookiePolicy'] ?>">
+								<li><a href="<?= $service->createRoute($url['CookiePolicy']) ?>">
 										<?= $service->traduci("cookiepolicy"); ?>
 									</a></li>
 							<?php endif; ?>
@@ -120,19 +137,6 @@
 				</div>
 				<?php
 				endif; ?>
-			<div class="row">
-				<div class="col text-center">
-					<p>© 2024 <a href="<?= $service->createRoute("index") ?>">
-							<?= $AppName ?>
-						</a>|
-						<?= $service->traduci("dirittiriservati"); ?>.
-					</p>
-					<p class="text-muted">
-						<?= $description ?>
-					</p>
-
-				</div>
-			</div>
 		</div>
 	</footer>
 <?php endif; ?>
