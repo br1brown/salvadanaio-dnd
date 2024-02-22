@@ -25,7 +25,7 @@ $source_url = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
 ?>
 <div class="container-fluid">
     <div class="row">
-        <div id=contenuto class="col-12 offset-md-2 col-md-8 text-center tutto">
+        <div id=contenuto class="col-12 offset-md-2 col-md-8 text-center<?= $isDarkTextPreferred ? "" : " tutto" ?>">
             <h2>
                 <?= $errorInfo ?>
             </h2>

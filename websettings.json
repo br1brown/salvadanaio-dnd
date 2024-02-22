@@ -26,7 +26,7 @@
     },
     "smoke": {
         "enable": true,
-        "color": "#8fc7ff",
+        "color": "#7099ff",
         "opacity": 0.4,
         "maximumVelocity": 100,
         "particleRadius": 250,

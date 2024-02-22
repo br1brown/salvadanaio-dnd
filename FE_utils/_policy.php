@@ -16,7 +16,7 @@ $sezioniComplessive = array_merge($pagina, $sezioniComuni);
 ?>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-12 offset-md-1 col-md-10 tutto">
+        <div class="col-12 offset-md-1 col-md-10<?= $isDarkTextPreferred ? "" : " tutto" ?>">
             <div class="col-12 offset-md-1 col-md-10 p-3">
                 <?php
                 echo "<h1 class='text-right'>" . $service->traduci($title) . "</h1>\n";
