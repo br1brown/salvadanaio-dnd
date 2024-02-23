@@ -37,53 +37,57 @@
 				?>
 			<div class="row my-1">
 				<?php
-				echo VoceInformazione::staticrenderInfos([
-					new VoceInformazione('ragioneSociale', null, null),
-					new VoceInformazione('indirizzoSedeLegale', null, null),
-					new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
-						return $service->creaLinkCodificato(str_replace(' ', '', $val), 'tel:');
-					}),
-					new VoceInformazione('pec', 'PEC', function ($val) use ($service) {
-						return $service->creaLinkCodificato($val, 'mailto:');
-					}),
-					new VoceInformazione('mail', 'mail', function ($val) use ($service) {
-						return $service->creaLinkCodificato($val, 'mailto:');
-					}),
-				], $irl, $service);
-
-				echo VoceInformazione::staticrenderInfos([
-					new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
-						return "<code>$val</code>";
-					}),
-					new VoceInformazione('registroImprese', 'registroimprese', function ($val) {
-						return "<code>$val</code>";
-					}),
-					new VoceInformazione('numeroIscrizione', 'iscrizionealbo', function ($val) {
-						return "<code>$val</code>";
-					}),
-					new VoceInformazione('numeroREA', 'numerorea', function ($val) {
-						return "<code>$val</code>";
-					}),
-				], $irl, $service);
-
-				echo VoceInformazione::staticrenderInfos([
-					new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
-						if (!empty($val)) {
-							return $routeAttuale == $val
-								? "<strong>" . $service->traduci('privacypolicy') . "</strong>"
-								: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('privacypolicy') . "</a>";
-						}
-						return null;
-					}),
-					new VoceInformazione('CookiePolicy', null, function ($val) use ($service, $routeAttuale) {
-						if (!empty($val)) {
-							return $routeAttuale == $val
-								? "<strong>" . $service->traduci('cookiepolicy') . "</strong>"
-								: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('cookiepolicy') . "</a>";
-						}
-						return null;
-					}),
-				], $url, $service);
+				if (isset($irl)) {
+					echo VoceInformazione::staticrenderInfos([
+						new VoceInformazione('ragioneSociale', null, null),
+						new VoceInformazione('indirizzoSedeLegale', null, null),
+						new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
+							return $service->creaLinkCodificato(str_replace(' ', '', $val), 'tel:');
+						}),
+						new VoceInformazione('pec', 'PEC', function ($val) use ($service) {
+							return $service->creaLinkCodificato($val, 'mailto:');
+						}),
+						new VoceInformazione('mail', 'mail', function ($val) use ($service) {
+							return $service->creaLinkCodificato($val, 'mailto:');
+						}),
+					], $irl, $service);
+				}
+				if (isset($irl)) {
+					echo VoceInformazione::staticrenderInfos([
+						new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
+							return "<code>$val</code>";
+						}),
+						new VoceInformazione('registroImprese', 'registroimprese', function ($val) {
+							return "<code>$val</code>";
+						}),
+						new VoceInformazione('numeroIscrizione', 'iscrizionealbo', function ($val) {
+							return "<code>$val</code>";
+						}),
+						new VoceInformazione('numeroREA', 'numerorea', function ($val) {
+							return "<code>$val</code>";
+						}),
+					], $irl, $service);
+				}
+				if (isset($url)) {
+					echo VoceInformazione::staticrenderInfos([
+						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
+							if (!empty($val)) {
+								return $routeAttuale == $val
+									? "<strong>" . $service->traduci('privacypolicy') . "</strong>"
+									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('privacypolicy') . "</a>";
+							}
+							return null;
+						}),
+						new VoceInformazione('CookiePolicy', null, function ($val) use ($service, $routeAttuale) {
+							if (!empty($val)) {
+								return $routeAttuale == $val
+									? "<strong>" . $service->traduci('cookiepolicy') . "</strong>"
+									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('cookiepolicy') . "</a>";
+							}
+							return null;
+						}),
+					], $url, $service);
+				}
 				?>
 			</div>
 
