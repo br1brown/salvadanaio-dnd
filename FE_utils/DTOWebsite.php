@@ -46,4 +46,76 @@ class MetaDTO
     }
 }
 
+class VoceInformazione
+{
+    public $chiave;
+    public $traduzioneKey;
+    public $callback;
+
+    public function __construct($chiave, $traduzioneKey, $callback)
+    {
+        $this->chiave = $chiave;
+        $this->traduzioneKey = $traduzioneKey;
+        $this->callback = $callback;
+    }
+
+    public function visualizza($dati, $service)
+    {
+        if (isset($dati[$this->chiave])) {
+            $valore = $dati[$this->chiave];
+            $testo = $this->traduzioneKey ? $service->traduci($this->traduzioneKey) . ": " : "";
+            $testo .= is_callable($this->callback) ? call_user_func($this->callback, $valore) : $valore;
+            return $testo;
+        }
+        return null;
+    }
+
+    public static function verificaPresenzaDati($arrayVoceInformazione, $dati): bool
+    {
+        if (isset($dati))
+            foreach ($arrayVoceInformazione as $voce) {
+                if (isset($dati[$voce->chiave])) {
+                    return true;
+                }
+            }
+        return false;
+    }
+
+    /**
+     * Funzione per rendere un array di oggetti VoceInformazione.
+     *
+     * @param array $informazioni Array di oggetti VoceInformazione.
+     * @param mixed $dati Informazioni della risorsa/logica specifica da passare a visualizza.
+     * @param mixed $service Servizio/utilità per operazioni come la creazione di link.
+     */
+    public static function staticrenderInfos($informazioni, $dati, $service)
+    {
+        if (!self::verificaPresenzaDati($informazioni, $dati))
+            return "";
+        // Inizia a catturare l'output in un buffer
+        ob_start();
+        ?>
+        <div class="col-12 col-sm-6 pt-1">
+            <ul class="list-unstyled">
+                <?php foreach ($informazioni as $voce): ?>
+                    <?php $output = $voce->visualizza($dati, $service); ?>
+                    <?php if ($output !== null): ?>
+                        <li>
+                            <?= $output ?>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php
+        // Ottieni l'output dal buffer e poi puliscilo
+        $html = ob_get_clean();
+        // Restituisci l'HTML generato
+        return $html;
+    }
+
+
+}
+
+
 
