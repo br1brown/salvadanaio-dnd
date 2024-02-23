@@ -74,7 +74,7 @@ class VoceInformazione
     {
         if (isset($dati))
             foreach ($arrayVoceInformazione as $voce) {
-                if (isset($dati[$voce->chiave])) {
+                if (isset($dati[$voce->chiave]) && !empty($dati[$voce->chiave])) {
                     return true;
                 }
             }
