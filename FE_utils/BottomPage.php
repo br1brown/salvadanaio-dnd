@@ -23,15 +23,51 @@
 			return null;
 		}
 
-		public static function verificaPresenzaDati($arrayVoceInformazione, $irl)
+		public static function verificaPresenzaDati($arrayVoceInformazione, $dati): bool
 		{
-			foreach ($arrayVoceInformazione as $voce) {
-				if (isset($irl[$voce->chiave])) {
-					return true;
+			if (isset($dati))
+				foreach ($arrayVoceInformazione as $voce) {
+					if (isset($dati[$voce->chiave])) {
+						return true;
+					}
 				}
-			}
 			return false;
 		}
+
+		/**
+		 * Funzione per rendere un array di oggetti VoceInformazione.
+		 *
+		 * @param array $informazioni Array di oggetti VoceInformazione.
+		 * @param mixed $dati Informazioni della risorsa/logica specifica da passare a visualizza.
+		 * @param mixed $service Servizio/utilità per operazioni come la creazione di link.
+		 */
+		public static function staticrenderInfos($informazioni, $dati, $service)
+		{
+			if (!self::verificaPresenzaDati($informazioni, $dati))
+				return "";
+			// Inizia a catturare l'output in un buffer
+			ob_start();
+			?>
+			<div class="col-12 col-sm-6">
+				<ul class="list-unstyled">
+					<?php foreach ($informazioni as $voce): ?>
+						<?php $output = $voce->visualizza($dati, $service); ?>
+						<?php if ($output !== null): ?>
+							<li>
+								<?= $output ?>
+							</li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+			<?php
+			// Ottieni l'output dal buffer e poi puliscilo
+			$html = ob_get_clean();
+			// Restituisci l'HTML generato
+			return $html;
+		}
+
+
 	}
 
 
@@ -69,13 +105,13 @@
 						</div>
 					<?php endif; ?>
 				</div>
-				<br>
 
 				<?php
 				endif;
-
-
-				$informazioni = [
+				?>
+			<div class="row my-1">
+				<?php
+				echo VoceInformazione::staticrenderInfos([
 					new VoceInformazione('ragioneSociale', null, null),
 					new VoceInformazione('indirizzoSedeLegale', null, null),
 					new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
@@ -87,9 +123,9 @@
 					new VoceInformazione('mail', 'mail', function ($val) use ($service) {
 						return $service->creaLinkCodificato($val, 'mailto:');
 					}),
-				];
+				], $irl, $service);
 
-				$informazioniColonnaDue = [
+				echo VoceInformazione::staticrenderInfos([
 					new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
 						return "<code>$val</code>";
 					}),
@@ -102,70 +138,28 @@
 					new VoceInformazione('numeroREA', 'numerorea', function ($val) {
 						return "<code>$val</code>";
 					}),
-				];
+				], $irl, $service);
 
-				// Controllo se almeno una delle informazioni è disponibile
-				if (VoceInformazione::verificaPresenzaDati(array_merge($informazioni, $informazioniColonnaDue), $irl)):
-					?>
-				<div class="row">
-					<div class="col-12 col-sm-6">
-						<ul class="list-unstyled">
-							<?php foreach ($informazioni as $voce): ?>
-								<?php $output = $voce->visualizza($irl, $service); ?>
-								<?php if ($output !== null): ?>
-									<li>
-										<?= $output ?>
-									</li>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</ul>
-					</div>
-					<div class="col-12 col-sm-6">
-						<ul class="list-unstyled">
-							<?php foreach ($informazioniColonnaDue as $voce): ?>
-								<?php $output = $voce->visualizza($irl, $service); ?>
-								<?php if ($output !== null): ?>
-									<li>
-										<?= $output ?>
-									</li>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</ul>
-					</div>
-				</div>
-			<?php endif;
-
-				if (
-					(isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy']))
-					|| (isset($url['CookiePolicy']) && !empty($url['CookiePolicy']))
-				):
-					?>
-				<div class="row pt-3">
-					<div class="col-12 offset-sm-6 col-sm-6">
-						<ul class="list-unstyled">
-							<?php
-							$policies = [
-								'PrivacyPolicy' => 'privacypolicy',
-								'CookiePolicy' => 'cookiepolicy',
-							];
-
-							foreach ($policies as $policyKey => $translationKey) {
-								if (isset($url[$policyKey]) && !empty($url[$policyKey])) {
-									echo "<li>";
-									if ($routeAttuale == $url[$policyKey]) {
-										echo "<strong>" . $service->traduci($translationKey) . "</strong> ";
-									} else {
-										echo "<a href=\"" . $service->createRoute($url[$policyKey]) . "\">" . $service->traduci($translationKey) . "</a>";
-									}
-									echo "</li>";
-								}
-							}
-							?>
-						</ul>
-
-					</div>
-				</div>
-			<?php endif; ?>
+				echo VoceInformazione::staticrenderInfos([
+					new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
+						if (!empty($val)) {
+							return $routeAttuale == $val
+								? "<strong>" . $service->traduci('privacypolicy') . "</strong>"
+								: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('privacypolicy') . "</a>";
+						}
+						return null;
+					}),
+					new VoceInformazione('CookiePolicy', null, function ($val) use ($service, $routeAttuale) {
+						if (!empty($val)) {
+							return $routeAttuale == $val
+								? "<strong>" . $service->traduci('cookiepolicy') . "</strong>"
+								: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('cookiepolicy') . "</a>";
+						}
+						return null;
+					}),
+				], $url, $service);
+				?>
+			</div>
 
 			<div class="row">
 				<div class="col text-center">
