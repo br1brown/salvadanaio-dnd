@@ -1,4 +1,42 @@
 <?php if (isset($footer) && $footer == true):
+	class VoceInformazione
+	{
+		public $chiave;
+		public $traduzioneKey;
+		public $callback;
+
+		public function __construct($chiave, $traduzioneKey, $callback)
+		{
+			$this->chiave = $chiave;
+			$this->traduzioneKey = $traduzioneKey;
+			$this->callback = $callback;
+		}
+
+		public function visualizza($dati, $service)
+		{
+			if (isset($dati[$this->chiave])) {
+				$valore = $dati[$this->chiave];
+				$testo = $this->traduzioneKey ? $service->traduci($this->traduzioneKey) . ": " : "";
+				$testo .= is_callable($this->callback) ? call_user_func($this->callback, $valore) : $valore;
+				return $testo;
+			}
+			return null;
+		}
+
+		public static function verificaPresenzaDati($arrayVoceInformazione, $irl)
+		{
+			foreach ($arrayVoceInformazione as $voce) {
+				if (isset($irl[$voce->chiave])) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+
+
+
 	?>
 	<footer style="font-size: 0.8rem;bottom: 0;" class="container-fluid mt-3 fillColoreSfondo <?= $clsTxt ?>">
 		<div class="container py-1">
@@ -35,78 +73,68 @@
 
 				<?php
 				endif;
+
+
+				$informazioni = [
+					new VoceInformazione('ragioneSociale', null, null),
+					new VoceInformazione('indirizzoSedeLegale', null, null),
+					new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
+						return $service->creaLinkCodificato(str_replace(' ', '', $val), 'tel:');
+					}),
+					new VoceInformazione('pec', 'PEC', function ($val) use ($service) {
+						return $service->creaLinkCodificato($val, 'mailto:');
+					}),
+					new VoceInformazione('mail', 'mail', function ($val) use ($service) {
+						return $service->creaLinkCodificato($val, 'mailto:');
+					}),
+				];
+
+				$informazioniColonnaDue = [
+					new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
+						return "<code>$val</code>";
+					}),
+					new VoceInformazione('registroImprese', 'registroimprese', function ($val) {
+						return "<code>$val</code>";
+					}),
+					new VoceInformazione('numeroIscrizione', 'iscrizionealbo', function ($val) {
+						return "<code>$val</code>";
+					}),
+					new VoceInformazione('numeroREA', 'numerorea', function ($val) {
+						return "<code>$val</code>";
+					}),
+				];
+
 				// Controllo se almeno una delle informazioni è disponibile
-				if (
-					isset($irl['ragioneSociale'])
-					|| isset($irl['indirizzoSedeLegale'])
-					|| isset($irl['numeroTelefono'])
-					|| isset($irl['pec'])
-					|| isset($irl['mail'])
-					|| isset($irl['partitaIVA'])
-					|| isset($irl['registroImprese'])
-					|| isset($irl['numeroIscrizione'])
-					|| isset($irl['numeroREA'])
-				):
+				if (VoceInformazione::verificaPresenzaDati(array_merge($informazioni, $informazioniColonnaDue), $irl)):
 					?>
 				<div class="row">
 					<div class="col-12 col-sm-6">
 						<ul class="list-unstyled">
-							<?php if (isset($irl['ragioneSociale'])): ?>
-								<li>
-									<?= $irl['ragioneSociale'] ?>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['indirizzoSedeLegale'])): ?>
-								<li>
-									<?= $irl['indirizzoSedeLegale'] ?>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['numeroTelefono'])): ?>
-								<li>
-									<?= $service->traduci("telefono"); ?>:
-									<?= $service->creaLinkCodificato(str_replace(' ', '', $irl['numeroTelefono']), 'tel:') ?>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['pec'])): ?>
-								<li>
-									<?= $service->traduci("PEC"); ?>:
-									<?= $service->creaLinkCodificato($irl['pec'], 'mailto:') ?>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['mail'])): ?>
-								<li>
-									<?= $service->traduci("mail"); ?>:
-									<?= $service->creaLinkCodificato($irl['mail'], 'mailto:') ?>
-								</li>
-							<?php endif; ?>
+							<?php foreach ($informazioni as $voce): ?>
+								<?php $output = $voce->visualizza($irl, $service); ?>
+								<?php if ($output !== null): ?>
+									<li>
+										<?= $output ?>
+									</li>
+								<?php endif; ?>
+							<?php endforeach; ?>
 						</ul>
 					</div>
 					<div class="col-12 col-sm-6">
 						<ul class="list-unstyled">
-							<?php if (isset($irl['partitaIVA'])): ?>
-								<li>
-									<?= $service->traduci("partitaiva"); ?>: <code><?= $irl['partitaIVA'] ?></code>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['registroImprese'])): ?>
-								<li>
-									<?= $service->traduci("registroimprese"); ?>: <code><?= $irl['registroImprese'] ?></code>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['numeroIscrizione'])): ?>
-								<li>
-									<?= $service->traduci("iscrizionealbo"); ?>: <code><?= $irl['numeroIscrizione'] ?></code>
-								</li>
-							<?php endif; ?>
-							<?php if (isset($irl['numeroREA'])): ?>
-								<li>
-									<?= $service->traduci("numerorea"); ?>: <code><?= $irl['numeroREA'] ?></code>
-								</li>
-							<?php endif; ?>
+							<?php foreach ($informazioniColonnaDue as $voce): ?>
+								<?php $output = $voce->visualizza($irl, $service); ?>
+								<?php if ($output !== null): ?>
+									<li>
+										<?= $output ?>
+									</li>
+								<?php endif; ?>
+							<?php endforeach; ?>
 						</ul>
 					</div>
 				</div>
 			<?php endif;
+
 				if (
 					(isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy']))
 					|| (isset($url['CookiePolicy']) && !empty($url['CookiePolicy']))
@@ -115,17 +143,26 @@
 				<div class="row pt-3">
 					<div class="col-12 offset-sm-6 col-sm-6">
 						<ul class="list-unstyled">
-							<?php if (isset($url['PrivacyPolicy']) && !empty($url['PrivacyPolicy'])): ?>
-								<li class=""><a href="<?= $service->createRoute($url['PrivacyPolicy']) ?>">
-										<?= $service->traduci("privacypolicy"); ?>
-									</a></li>
-							<?php endif; ?>
-							<?php if (isset($url['CookiePolicy']) && !empty($url['CookiePolicy'])): ?>
-								<li><a href="<?= $service->createRoute($url['CookiePolicy']) ?>">
-										<?= $service->traduci("cookiepolicy"); ?>
-									</a></li>
-							<?php endif; ?>
+							<?php
+							$policies = [
+								'PrivacyPolicy' => 'privacypolicy',
+								'CookiePolicy' => 'cookiepolicy',
+							];
+
+							foreach ($policies as $policyKey => $translationKey) {
+								if (isset($url[$policyKey]) && !empty($url[$policyKey])) {
+									echo "<li>";
+									if ($routeAttuale == $url[$policyKey]) {
+										echo "<strong>" . $service->traduci($translationKey) . "</strong> ";
+									} else {
+										echo "<a href=\"" . $service->createRoute($url[$policyKey]) . "\">" . $service->traduci($translationKey) . "</a>";
+									}
+									echo "</li>";
+								}
+							}
+							?>
 						</ul>
+
 					</div>
 				</div>
 			<?php endif; ?>
@@ -133,7 +170,7 @@
 			<div class="row">
 				<div class="col text-center">
 					<p>© 2024
-						<?php if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == "index") {
+						<?php if ($routeAttuale == "index") {
 							echo "<strong>" . $AppName . "</strong> ";
 						} else {
 							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
