@@ -176,10 +176,10 @@
 							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
 						}
 						?>
-						<?= $service->traduci("dirittiriservati"); ?>.
-					</p>
-					<p class="text-muted">
-						<?= $description ?>
+						<?= $service->traduci("dirittiriservati"); ?>.<br>
+						<span class="text-muted">
+							<?= $description ?>
+						</span>
 					</p>
 
 				</div>
