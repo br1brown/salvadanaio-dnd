@@ -34,11 +34,9 @@
 
 				<?php
 				endif;
-				?>
-			<div class="row my-1">
-				<?php
+				$robaFooter = "";
 				if (isset($irl)) {
-					echo VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::staticrenderInfos([
 						new VoceInformazione('ragioneSociale', null, null),
 						new VoceInformazione('indirizzoSedeLegale', null, null),
 						new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
@@ -53,7 +51,7 @@
 					], $irl, $service);
 				}
 				if (isset($irl)) {
-					echo VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::staticrenderInfos([
 						new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
 							return "<code>$val</code>";
 						}),
@@ -69,7 +67,7 @@
 					], $irl, $service);
 				}
 				if (isset($url)) {
-					echo VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::staticrenderInfos([
 						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
 							if (!empty($val)) {
 								return $routeAttuale == $val
@@ -88,8 +86,13 @@
 						}),
 					], $url, $service);
 				}
-				?>
-			</div>
+
+				if (!empty($robaFooter)) {
+					?>
+				<div class="row my-1">
+					<?= $robaFooter ?>
+				</div>
+			<?php } ?>
 
 			<div class="row">
 				<div class="col text-center">
