@@ -13,8 +13,8 @@
     "itemsMenu": [],
     "footer": true,
     "url": {
-        "PrivacyPolicy": "privacypolicy",
-        "CookiePolicy": "cookiepolicy"
+        "PrivacyPolicy": "",
+        "CookiePolicy": ""
     },
     "smoke": {
         "enable": false,
