@@ -21,7 +21,7 @@ class Service
      *
      * @return array Impostazioni filtrate.
      */
-    public function getSettings()
+    public function getSettings(): array
     {
 
         $data = array_filter($this->settings, function ($key) {
@@ -172,7 +172,7 @@ class Service
      * Restituisce l'elenco delle lingue disponibili basato sui file nella cartella lang.
      * @return array Un array con le lingue disponibili.
      */
-    public function getLingueDisponibili()
+    public function getLingueDisponibili(): array
     {
         $lingue = [];
         $lingue[] = $this->_traduzione->lang;
@@ -185,7 +185,7 @@ class Service
      * @param string $sz L'identificatore della stringa da tradurre
      * @return string La stringa tradotta
      */
-    function traduci($sz, ...$parametri)
+    public function traduci(string $sz, ...$parametri): string
     {
         return $this->_traduzione->traduci($sz, ...$parametri);
     }
@@ -193,7 +193,7 @@ class Service
     /**
      * @return string Lingua corrente
      */
-    function currentLang()
+    public function currentLang(): string
     {
         return $this->_traduzione->lang;
     }
@@ -208,7 +208,7 @@ class Service
      * @param array $excludeFiles Array di file da escludere dall'elenco addizionale.
      * @return array Array ordinato di percorsi di file da caricare.
      */
-    function prepareAssets($directory, $extension, $firstLoad = [], $lastLoad = [], $excludeFiles = [])
+    private function prepareAssets(string $directory, string $extension, array $firstLoad = [], array $lastLoad = [], array $excludeFiles = []): array
     {
         // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
         $getFileList = function ($directory, $extension, $excludeFiles) {
@@ -236,7 +236,7 @@ class Service
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function APIbaseURL($path)
+    public function APIbaseURL(string $path): string
     {
         if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
             return $path;
@@ -251,7 +251,7 @@ class Service
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function baseURL($path)
+    public function baseURL(string $path): string
     {
         if (strpos($path, "http://") === 0 || strpos($path, "https://") === 0) {
             return $path;
@@ -266,14 +266,15 @@ class Service
      * @param string $route route
      * @return string route
      */
-    public function createRoute($route)
+    public function createRoute(string $route): string
     {
+        $completo = $this->baseUrl($route);
         //la lingua è il default
         if ($this->settings['lang'] == $this->_traduzione->lang)
-            return $route;
+            return $completo;
 
         // Parsa l'URL e decomponilo nei suoi componenti
-        $parsedUrl = parse_url($route);
+        $parsedUrl = parse_url($completo);
 
         // Prepara l'array dei parametri della query
         $queryParams = [];
@@ -302,7 +303,7 @@ class Service
      * @param string $path Percorso della risorsa.
      * @return string URL completo della risorsa.
      */
-    public function UrlAsset($ID)
+    public function UrlAsset(string $ID): string
     {
         return self::baseURL("func/getAsset?ID=" . $ID);
     }
@@ -384,7 +385,7 @@ class Service
      * @param string $stringa La stringa da convertire in entità HTML.
      * @return string La stringa convertita in entità HTML.
      */
-    public function convertiInEntitaHTML($stringa)
+    public function convertiInEntitaHTML(string $stringa): string
     {
         $risultato = '';
         $lunghezza = strlen($stringa);
@@ -393,6 +394,20 @@ class Service
         }
         return $risultato;
     }
+
+    public function CreateRouteLinkHTML(string $keyTranslate, string $route, string $cls = "", bool $labelStrong = true): string
+    {
+        $tagLabel = $labelStrong === true ? "strong" : "a";
+
+        $label = $this->traduci($keyTranslate);
+        $class = empty($cls) ? "" : " class='" . $cls . "'";
+        if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route) {
+            return "<" . $tagLabel . $class . ">" . $label . "</" . $tagLabel . "> ";
+        } else {
+            return "<a" . $class . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
+        }
+    }
+
 
     /**
      * Crea un link HTML con l'URL codificato e attributi personalizzabili.
@@ -407,7 +422,7 @@ class Service
      * @param array $attributiExtra Un array associativo di attributi HTML aggiuntivi e i loro valori. Esempio: ['class' => 'my-class', 'id' => 'my-id'].
      * @return string Il codice HTML del link generato.
      */
-    function creaLinkCodificato($url, $prefisso = '', $attributiExtra = [])
+    function creaLinkCodificato(string $url, string $prefisso = '', array $attributiExtra = []): string
     {
         $urlCodificato = $this->convertiInEntitaHTML($url);
         $attributi = '';
@@ -431,7 +446,7 @@ class Service
      * @param string $hexColor Il colore di sfondo in formato HEX, come una stringa (es. '#ffcc00').
      * @return bool Restituisce 'true' se il testo scuro è preferibile, altrimenti 'false'.
      */
-    function isDarkTextPreferred($hexColor)
+    function isDarkTextPreferred(string $hexColor): bool
     {
         // Rimuove il carattere # se presente
         $hex = ltrim($hexColor, '#');
@@ -458,7 +473,7 @@ class Service
      * @param float $darkenFactor Il fattore di scurimento, dove 1.0 lascia il colore invariato e 0.0 lo rende nero. Default a 0.2.
      * @return string Il colore HEX scurito.
      */
-    function darkenColor($hexColor, $darkenFactor = 0.2)
+    function darkenColor(string $hexColor, float $darkenFactor = 0.2): string
     {
         // Converti HEX in RGB
         $hex = ltrim($hexColor, '#');
@@ -485,7 +500,7 @@ class Service
      * @param float $lightenFactor Il fattore di schiarimento, dove 1.0 lascia il colore invariato e 2.0 lo rende il più chiaro possibile. Default a 1.2.
      * @return string Il colore HEX schiarito.
      */
-    function lightenColor($hexColor, $lightenFactor = 1.2)
+    function lightenColor(string $hexColor, float $lightenFactor = 1.2): string
     {
         // Converti HEX in RGB
         $hex = ltrim($hexColor, '#');

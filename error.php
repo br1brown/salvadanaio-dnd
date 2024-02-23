@@ -35,7 +35,7 @@ $source_url = 'http' . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
             <p>
                 <?= $errorMessage ?>
             </p>
-            <a href="<?= $service->createRoute("index") ?>" class="bottone btn btn-primary btn-lg">
+            <a href="<?= $service->createRoute("index") ?>" class="btn btn-primary btn-lg">
                 <?= $service->traduci("home"); ?>
             </a>
         </div>

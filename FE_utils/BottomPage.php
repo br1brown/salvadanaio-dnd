@@ -36,7 +36,7 @@
 				endif;
 				$robaFooter = "";
 				if (isset($irl)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::renderInfos([
 						new VoceInformazione('ragioneSociale', null, null),
 						new VoceInformazione('indirizzoSedeLegale', null, null),
 						new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
@@ -51,7 +51,7 @@
 					], $irl, $service);
 				}
 				if (isset($irl)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::renderInfos([
 						new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
 							return "<code>$val</code>";
 						}),
@@ -67,20 +67,16 @@
 					], $irl, $service);
 				}
 				if (isset($url)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
-						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
+					$robaFooter .= VoceInformazione::renderInfos([
+						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service) {
 							if (!empty($val)) {
-								return $routeAttuale == $val
-									? "<strong>" . $service->traduci('privacypolicy') . "</strong>"
-									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('privacypolicy') . "</a>";
+								return $service->CreateRouteLinkHTML("privacypolicy", $val);
 							}
 							return null;
 						}),
-						new VoceInformazione('CookiePolicy', null, function ($val) use ($service, $routeAttuale) {
+						new VoceInformazione('CookiePolicy', null, function ($val) use ($service) {
 							if (!empty($val)) {
-								return $routeAttuale == $val
-									? "<strong>" . $service->traduci('cookiepolicy') . "</strong>"
-									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('cookiepolicy') . "</a>";
+								return $service->CreateRouteLinkHTML("cookiepolicy", $val);
 							}
 							return null;
 						}),
@@ -89,7 +85,7 @@
 
 				if (!empty($robaFooter)) {
 					?>
-				<div class="row my-1">
+				<div class="row mb-1">
 					<?= $robaFooter ?>
 				</div>
 			<?php } ?>
@@ -97,12 +93,7 @@
 			<div class="row">
 				<div class="col text-center">
 					<p>© 2024
-						<?php if ($routeAttuale == "index") {
-							echo "<strong>" . $AppName . "</strong> ";
-						} else {
-							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
-						}
-						?>
+						<?= $service->CreateRouteLinkHTML($AppName, "index") ?> |
 						<?= $service->traduci("dirittiriservati"); ?>.<br>
 						<span class="text-muted">
 							<?= $description ?>

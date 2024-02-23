@@ -88,14 +88,14 @@ class VoceInformazione
      * @param mixed $dati Informazioni della risorsa/logica specifica da passare a visualizza.
      * @param mixed $service Servizio/utilità per operazioni come la creazione di link.
      */
-    public static function staticrenderInfos($informazioni, $dati, $service)
+    public static function renderInfos($informazioni, $dati, $service, $forceFluid = false)
     {
         if (!self::verificaPresenzaDati($informazioni, $dati))
             return "";
         // Inizia a catturare l'output in un buffer
         ob_start();
         ?>
-        <div class="col-12 col-sm-6 pt-1">
+        <div class="col-12 col-sm<?= $forceFluid === true ? "" : "-6" ?> pt-1">
             <ul class="list-unstyled">
                 <?php foreach ($informazioni as $voce): ?>
                     <?php $output = $voce->visualizza($dati, $service); ?>
@@ -113,7 +113,6 @@ class VoceInformazione
         // Restituisci l'HTML generato
         return $html;
     }
-
 
 }
 
