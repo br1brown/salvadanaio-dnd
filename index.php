@@ -84,7 +84,6 @@ include('FE_utils/TopPage.php');
 
 		apiCall("social", { nomi: "Facebook;twitter;Telegram" },
 			function (response) {
-				debugger;
 			});
 	});
 </script>

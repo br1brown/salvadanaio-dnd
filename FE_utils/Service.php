@@ -268,6 +268,12 @@ class Service
      */
     public function createRoute(string $route): string
     {
+        //se è un fragment non faccio nulla e lo rimando così che è la stessa pagina
+        if (str_starts_with($route, '#')) {
+            return $route;
+            //return $this->baseUrl(pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) . $route);
+        }
+
         $completo = $this->baseUrl($route);
         //la lingua è il default
         if ($this->settings['lang'] == $this->_traduzione->lang)
@@ -290,6 +296,12 @@ class Service
 
         // Ricostruisci l'URL
         $newUrl = $parsedUrl['path'] . '?' . $queryString;
+
+        // Aggiungi il frammento, se presente
+        if (isset($parsedUrl['fragment'])) {
+            $newUrl .= '#' . $parsedUrl['fragment'];
+        }
+
         if (isset($parsedUrl['scheme'])) {
             $newUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $newUrl;
         }
@@ -401,7 +413,7 @@ class Service
 
         $label = $this->traduci($keyTranslate);
         $class = empty($cls) ? "" : " class='" . $cls . "'";
-        if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route) {
+        if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route && !str_starts_with($route, '#')) {
             return "<" . $tagLabel . $class . ">" . $label . "</" . $tagLabel . "> ";
         } else {
             return "<a" . $class . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
