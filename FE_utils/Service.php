@@ -14,7 +14,7 @@ class Service
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['API', "meta", 'lang'];
+    private $excludeKeys = ['API', "meta", 'lang', "description"];
 
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
@@ -23,11 +23,20 @@ class Service
      */
     public function getSettings(): array
     {
-
         $data = array_filter($this->settings, function ($key) {
             return !in_array($key, $this->excludeKeys);
         }, ARRAY_FILTER_USE_KEY);
+        $data["description"] = "";
 
+        if (isset($this->settings["description"])) {
+            if (is_array($this->settings["description"]) && isset($this->settings["description"][$this->currentLang()])) {
+                // Sostituisce il valore con la traduzione trovata
+                $data["description"] = $this->settings["description"][$this->currentLang()];
+            } else {
+                $data["description"] = $this->settings["description"];
+            }
+
+        }
         if (!isset($data['colorTema']) || empty($data['colorTema'])) {
             $data['colorTema'] = "#606060";
         }
