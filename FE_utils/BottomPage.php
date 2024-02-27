@@ -55,6 +55,9 @@
 						new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
 							return "<code>$val</code>";
 						}),
+						new VoceInformazione('codiceFiscale', 'codiceFiscale', function ($val) {
+							return "<code>$val</code>";
+						}),
 						new VoceInformazione('registroImprese', 'registroimprese', function ($val) {
 							return "<code>$val</code>";
 						}),
