@@ -13,6 +13,17 @@ body {
 	/* Imposta il tipo di carattere */
 }
 
+a,
+a:visited,
+a:active,
+a:focus {
+	color: var(--colorLink);
+}
+
+a:hover {
+	color: var(--colorLink);
+}
+
 .btn-primary {
 	background-color: var(--colorPrimary);
 	border-color: var(--colorPrimary);
@@ -83,14 +94,66 @@ body {
 	/* Allineamento verticale */
 }
 
-/* Stile per i bordi dei contenitori */
-.bordo {
-	border: 1px solid;
+.tutto {
+	background-color: rgba(255, 255, 255, 0.7);
+	/* Sfondo bianco semitrasparente */
+	border: 1px solid white;
 	/* Bordo solido */
 	padding: 10px;
 	/* Padding interno */
-	box-shadow: 5px 5px 4px #888888;
+	vertical-align: middle;
+	/* Allineamento verticale */
+}
+
+.tutto>a {
+	color: var(--colorLinkScuro);
+}
+
+/* Stile generale per contenitori */
+.tutto-nero {
+	background-color: rgba(0, 0, 0, 0.7);
+	/* Sfondo bianco semitrasparente */
+	border: 1px solid black;
+	/* Bordo solido */
+	padding: 10px;
+	/* Padding interno */
+	vertical-align: middle;
+	/* Allineamento verticale */
+}
+
+.tutto-nero>a {
+	color: var(--colorLinkChiaro);
+}
+
+/* Stile per i bordi dei contenitori */
+.bordo {
+	border: 1px solid var(--colorPrimary);
+	/* Bordo solido */
+	padding: 10px;
+	/* Padding interno */
+	box-shadow: 5px 5px 4px var(--colorPrimaryScuro);
 	/* Ombra esterna più piccola */
+}
+
+.background-wrapper {
+	background-size: cover;
+	background-position: center;
+	position: relative;
+	height: 200px;
+}
+
+.background-wrapper-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	/* Centra verticalmente */
+	justify-content: center;
+	/* Centra orizzontalmente */
+	text-align: center;
 }
 
 .obj-loading {

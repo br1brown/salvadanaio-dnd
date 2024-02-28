@@ -43,8 +43,13 @@ class Service
 
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
         $colorPrimary = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] ? 0.4 : 0);
+        $colorLinkScuro = '#000029';
+        $colorLinkChiaro = '#c4c4ff';
 
         $data["colori"] = [
+            'colorLinkScuro' => $colorLinkScuro,
+            'colorLinkChiaro' => $colorLinkChiaro,
+            'colorLink' => $this->isDarkTextPreferred($data['colorTema']) ? $colorLinkScuro : $colorLinkChiaro,
             'colorBase' => $data['colorBase'],
             'colorTema' => $data['colorTema'],
             'colorPrimary' => $colorPrimary,
@@ -218,7 +223,7 @@ class Service
     {
         // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
         $getFileList = function ($directory, $extension, $excludeFiles) {
-            $fileList = array();
+            $fileList = array ();
             $absolutePath = realpath($directory) . '/';
             foreach (glob($absolutePath . "*." . $extension) as $file) {
                 $relativePath = str_replace($absolutePath, '', $file);
