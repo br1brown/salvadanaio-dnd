@@ -24,7 +24,7 @@ try {
 	$clsTxt = $isDarkTextPreferred ? "text-dark" : "text-light";
 	?>
 	<title>
-		<?= $meta->title . " | " . $AppName; ?>
+		<?= ($meta->title == "" ? "" : $meta->title . " | ") . $AppName; ?>
 	</title>
 
 	<meta charset="UTF-8">

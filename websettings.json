@@ -24,8 +24,8 @@
     ],
     "footer": true,
     "url": {
-        "PrivacyPolicy": "privacypolicy",
-        "CookiePolicy": "cookiepolicy"
+        "privacypolicy": "privacypolicy",
+        "cookiepolicy": "cookiepolicy"
     },
     "smoke": {
         "enable": true,

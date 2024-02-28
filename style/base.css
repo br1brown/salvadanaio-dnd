@@ -174,6 +174,17 @@ body {
 	}
 }
 
+.carousel-item {
+	height: 80vh;
+}
+
+.carousel-item img {
+	height: 100%;
+	object-fit: cover;
+	/* Questa proprietà farà in modo che le immagini siano ritagliate per adattarsi, ma mantengano il loro aspetto */
+	width: 100%;
+}
+
 /* Media query per schermi oltre 768px di larghezza */
 @media only screen and (min-width: 768px) {
 	.zoomma {

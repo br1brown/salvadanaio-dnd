@@ -70,20 +70,18 @@
 					], $irl, $service);
 				}
 				if (isset($url)) {
-					$robaFooter .= VoceInformazione::renderInfos([
-						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service) {
-							if (!empty($val)) {
-								return $service->CreateRouteLinkHTML("privacypolicy", $val);
-							}
-							return null;
-						}),
-						new VoceInformazione('CookiePolicy', null, function ($val) use ($service) {
-							if (!empty($val)) {
-								return $service->CreateRouteLinkHTML("cookiepolicy", $val);
-							}
-							return null;
-						}),
-					], $url, $service);
+					$arrayURLFooter = [];
+					foreach ($url as $key => $val) {
+						$arrayURLFooter[] =
+							new VoceInformazione($key, null, function ($val) use ($key, $service) {
+								if (!empty ($val)) {
+									return $service->CreateRouteLinkHTML($key, $val);
+								}
+								return null;
+							});
+					}
+
+					$robaFooter .= VoceInformazione::renderInfos($arrayURLFooter, $url, $service);
 				}
 
 				if (!empty($robaFooter)) {

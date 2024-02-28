@@ -32,10 +32,7 @@ class Service
             if (is_array($this->settings["description"]) && isset($this->settings["description"][$this->currentLang()])) {
                 // Sostituisce il valore con la traduzione trovata
                 $data["description"] = $this->settings["description"][$this->currentLang()];
-            } else {
-                $data["description"] = $this->settings["description"];
             }
-
         }
         if (!isset($data['colorTema']) || empty($data['colorTema'])) {
             $data['colorTema'] = "#606060";
