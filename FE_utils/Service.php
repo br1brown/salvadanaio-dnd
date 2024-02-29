@@ -14,7 +14,7 @@ class Service
     /**
      * @var array Chiavi da escludere dalle impostazioni quando richiesto.
      */
-    private $excludeKeys = ['API', "meta", 'lang', "description"];
+    private $excludeKeys = ['API', "meta", 'lang', "description", "ExternalLink"];
 
     /**
      * Restituisce le impostazioni dell'applicativo necessarie
@@ -99,6 +99,12 @@ class Service
             new ExternalLink('js', 'https://cdn.jsdelivr.net/npm/promise-polyfill'),
         ];
 
+        if (isset($this->settings["ExternalLink"])) {
+            foreach ($this->settings['ExternalLink'] as $est) {
+                $metaDTO->ext_link[] = new ExternalLink($est["type"], $est["value"]);
+
+            }
+        }
         return $metaDTO;
     }
 
