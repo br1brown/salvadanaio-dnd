@@ -61,7 +61,7 @@ class VoceInformazione
 
     public function visualizza($dati, $service)
     {
-        if (isset($dati[$this->chiave])) {
+        if (isset($dati[$this->chiave]) && !empty($dati[$this->chiave])) {
             $valore = $dati[$this->chiave];
             $testo = $this->traduzioneKey ? $service->traduci($this->traduzioneKey) . ": " : "";
             $testo .= is_callable($this->callback) ? call_user_func($this->callback, $valore) : $valore;
