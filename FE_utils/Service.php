@@ -427,7 +427,13 @@ class Service
         if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route && !str_starts_with($route, '#')) {
             return "<" . $tagLabel . $class . ">" . $label . "</" . $tagLabel . "> ";
         } else {
-            return "<a" . $class . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
+            $parsedUrl = parse_url($route);
+            $target = "";
+            if (isset($parsedUrl['scheme'])) {
+                $target = "target=”_blank”";
+            }
+
+            return "<a" . $class . " " . $target . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
         }
     }
 
