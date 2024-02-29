@@ -36,7 +36,7 @@
 				endif;
 				$robaFooter = "";
 				if (isset($irl)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::renderInfos([
 						new VoceInformazione('ragioneSociale', null, null),
 						new VoceInformazione('indirizzoSedeLegale', null, null),
 						new VoceInformazione('numeroTelefono', 'telefono', function ($val) use ($service) {
@@ -51,8 +51,11 @@
 					], $irl, $service);
 				}
 				if (isset($irl)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
+					$robaFooter .= VoceInformazione::renderInfos([
 						new VoceInformazione('partitaIVA', 'partitaiva', function ($val) {
+							return "<code>$val</code>";
+						}),
+						new VoceInformazione('codiceFiscale', 'codiceFiscale', function ($val) {
 							return "<code>$val</code>";
 						}),
 						new VoceInformazione('registroImprese', 'registroimprese', function ($val) {
@@ -67,29 +70,23 @@
 					], $irl, $service);
 				}
 				if (isset($url)) {
-					$robaFooter .= VoceInformazione::staticrenderInfos([
-						new VoceInformazione('PrivacyPolicy', null, function ($val) use ($service, $routeAttuale) {
-							if (!empty($val)) {
-								return $routeAttuale == $val
-									? "<strong>" . $service->traduci('privacypolicy') . "</strong>"
-									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('privacypolicy') . "</a>";
-							}
-							return null;
-						}),
-						new VoceInformazione('CookiePolicy', null, function ($val) use ($service, $routeAttuale) {
-							if (!empty($val)) {
-								return $routeAttuale == $val
-									? "<strong>" . $service->traduci('cookiepolicy') . "</strong>"
-									: "<a href='" . $service->createRoute($val) . "'>" . $service->traduci('cookiepolicy') . "</a>";
-							}
-							return null;
-						}),
-					], $url, $service);
+					$arrayURLFooter = [];
+					foreach ($url as $key => $val) {
+						$arrayURLFooter[] =
+							new VoceInformazione($key, null, function ($val) use ($key, $service) {
+								if (!empty ($val)) {
+									return $service->CreateRouteLinkHTML($key, $val);
+								}
+								return null;
+							});
+					}
+
+					$robaFooter .= VoceInformazione::renderInfos($arrayURLFooter, $url, $service);
 				}
 
 				if (!empty($robaFooter)) {
 					?>
-				<div class="row my-1">
+				<div class="row mb-1">
 					<?= $robaFooter ?>
 				</div>
 			<?php } ?>
@@ -97,12 +94,7 @@
 			<div class="row">
 				<div class="col text-center">
 					<p>© 2024
-						<?php if ($routeAttuale == "index") {
-							echo "<strong>" . $AppName . "</strong> ";
-						} else {
-							echo "<a href=\"" . $service->createRoute("index") . "\">" . $AppName . "</a>";
-						}
-						?>
+						<?= $service->CreateRouteLinkHTML($AppName, "index") ?> |
 						<?= $service->traduci("dirittiriservati"); ?>.<br>
 						<span class="text-muted">
 							<?= $description ?>

@@ -1,7 +1,10 @@
 {
     "AppName": "Salvadanaio DnD",
     "lang": "it",
-    "description": "Permette di gestire il portafoglio dei personaggi della propria campagna senza dover fare i conti e le equivalenze",
+    "description": {
+        "it": "Permette di gestire il portafoglio dei personaggi della propria campagna senza dover fare i conti e le equivalenze"
+    },
+    "description": "",
     "meta": {
         "keywords": []
     },
@@ -13,8 +16,8 @@
     "itemsMenu": [],
     "footer": true,
     "url": {
-        "PrivacyPolicy": "",
-        "CookiePolicy": ""
+        "privacypolicy": "",
+        "cookiepolicy": ""
     },
     "smoke": {
         "enable": false,
