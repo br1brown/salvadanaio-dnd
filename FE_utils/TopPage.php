@@ -67,7 +67,6 @@ try {
 
 	<link rel="icon" type="image/png" href="<?= $service->UrlAsset("favIcon") ?>">
 
-
 	<script>
 		infoContesto = {
 			clsTxt: '<?= $clsTxt ?>',
@@ -86,22 +85,8 @@ try {
 	</script>
 
 	<?php
-	foreach ($meta->ext_link as $extlink):
-		if ($extlink->type == 'css') {
-			echo '	<link rel="stylesheet" href="' . $extlink->url . '">' . "\n";
-		} else if ($extlink->type == 'js') {
-			echo '	<script src="' . $extlink->url . '"></script>' . "\n";
-		}
-	endforeach;
-
-
-	foreach ($meta->localjs as $value):
-		echo "\n	<script src=" . $service->baseURL("script/" . $value) . "></script>";
-	endforeach;
-
-
-	foreach ($meta->localcss as $value):
-		echo "\n	<link rel=\"stylesheet\" href=" . $service->baseURL("style/" . $value) . ">";
+	foreach ($meta->linkRel as $rel_link):
+		echo $rel_link->visualizza();
 	endforeach;
 
 	?>
