@@ -45,9 +45,9 @@ if (isset($_GET['basename'])) {
 		<?php
 	} else {
 		?>
-		<div class="mx-3">
+		<div class="mx-4">
 			<div class="row">
-				<div class="col-12 col-md-auto">
+				<div class="col-12 col-md-3 m-1">
 					<h1>
 						<strong>
 							<?= $name; ?>
