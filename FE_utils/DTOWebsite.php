@@ -1,6 +1,6 @@
 <?php
 
-class ExternalLink
+class RelLink
 {
     public string $type;
     public string $url;
@@ -9,6 +9,16 @@ class ExternalLink
     {
         $this->type = $type;
         $this->url = $url;
+    }
+
+    public function visualizza(): string
+    {
+        if ($this->type == 'css') {
+            return '	<link rel="stylesheet" href="' . $this->url . '">' . "\n";
+        } else if ($this->type == 'js') {
+            return '	<script src="' . $this->url . '"></script>' . "\n";
+        }
+        return "";
     }
 }
 
@@ -21,10 +31,8 @@ class MetaDTO
     public array $keywords = [];
     private string $dataScadenza = '';
     public ?string $dataScadenzaGMT = null;
-    public array $localcss = [];
-    public array $localjs = [];
-    /** @var ExternalLink[] */
-    public array $ext_link = [];
+    /** @var RelLink[] */
+    public array $linkRel = [];
     public string $title = '';
     public string $description = '';
     public ?string $author = null;

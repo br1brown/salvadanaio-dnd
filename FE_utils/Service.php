@@ -75,34 +75,40 @@ class Service
         $meta = $this->settings['meta'];
         $metaDTO = new MetaDTO($meta);
 
+        // Impostazione dei link esterni
+        $metaDTO->linkRel = [
+            //ROBE PER IL MENU + SOCIAL
+            new RelLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'),
+            new RelLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'),
+            //jquery vari
+            new RelLink('js', 'https://code.jquery.com/jquery-3.5.1.js'),
+            new RelLink('js', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js'),
+            //bootstrap
+            new RelLink('js', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'),
+            new RelLink('css', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'),
+            //GLI ALERT
+            new RelLink('js', 'https://cdn.jsdelivr.net/npm/sweetalert2@10'),
+            //include a polyfill for ES6 Promises for IE11
+            new RelLink('js', 'https://cdn.jsdelivr.net/npm/promise-polyfill'),
+        ];
+
         $havesmoke = isset($this->settings['smoke']) && $this->settings['smoke']["enable"];
 
-        // Preparazione e impostazione dei CSS e JS locali
-        $metaDTO->localcss = $this->prepareAssets("style", "css", ["base.css"], ["addon.css"]);
         $excludeJs = $havesmoke ? [] : ["jquery_bloodforge_smoke_effect.js"];
-        $metaDTO->localjs = $this->prepareAssets("script", "js", ["lingua.js", "base.js"], ["addon.js"], $excludeJs);
 
-        // Impostazione dei link esterni
-        $metaDTO->ext_link = [
-            //ROBE PER IL MENU + SOCIAL
-            new ExternalLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'),
-            new ExternalLink('css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'),
-            //jquery vari
-            new ExternalLink('js', 'https://code.jquery.com/jquery-3.5.1.js'),
-            new ExternalLink('js', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js'),
-            //bootstrap
-            new ExternalLink('js', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'),
-            new ExternalLink('css', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'),
-            //GLI ALERT
-            new ExternalLink('js', 'https://cdn.jsdelivr.net/npm/sweetalert2@10'),
-            //include a polyfill for ES6 Promises for IE11
-            new ExternalLink('js', 'https://cdn.jsdelivr.net/npm/promise-polyfill'),
-        ];
+        // Preparazione e impostazione dei CSS e JS locali
+
+        foreach ($this->prepareAssets("style", "css", ["base.css"], ["addon.css"]) as $css) {
+            $metaDTO->linkRel[] = new RelLink("css", $this->baseURL("style/" . $css));
+        }
+
+        foreach ($this->prepareAssets("script", "js", ["lingua.js", "base.js"], ["addon.js"], $excludeJs) as $js) {
+            $metaDTO->linkRel[] = new RelLink("js", $this->baseURL("script/" . $js));
+        }
 
         if (isset($this->settings["ExternalLink"])) {
             foreach ($this->settings['ExternalLink'] as $est) {
-                $metaDTO->ext_link[] = new ExternalLink($est["type"], $est["value"]);
-
+                $metaDTO->linkRel[] = new RelLink($est["type"], $est["value"]);
             }
         }
         return $metaDTO;
