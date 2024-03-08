@@ -291,19 +291,29 @@ class Service
      */
     public function createRoute(string $route): string
     {
-        //se è un fragment non faccio nulla e lo rimando così che è la stessa pagina
-        if (str_starts_with($route, '#')) {
-            return $route;
-            //return $this->baseUrl(pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) . $route);
-        }
-
+        $current = parse_url($_SERVER['REQUEST_URI']);
         $completo = $this->baseUrl($route);
-        //la lingua è il default
-        if ($this->settings['lang'] == $this->_traduzione->lang)
-            return $completo;
-
         // Parsa l'URL e decomponilo nei suoi componenti
         $parsedUrl = parse_url($completo);
+
+        // Definizione della closure per "whitchPage"
+        $whitchPage = function (string $path): string {
+            return empty ($path) || str_ends_with($path, '/') ? $path . "index" : $path;
+        };
+
+        $RequestPage = $whitchPage($parsedUrl['path']);
+        $RenderPage = $whitchPage($current['path']);
+
+        // Verifica se la lingua è quella di default
+        if ($this->settings['lang'] == $this->_traduzione->lang) {
+            // Se l'URL da generare è lo stesso della pagina corrente, restituisci solo il frammento
+            if ($RenderPage === $RequestPage) {
+                if (isset($parsedUrl['fragment'])) {
+                    return '#' . $parsedUrl['fragment'];
+                }
+            }
+            return $completo;
+        }
 
         // Prepara l'array dei parametri della query
         $queryParams = [];
