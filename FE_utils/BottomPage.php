@@ -1,3 +1,4 @@
+</main>
 <?php if (isset($footer) && $footer == true):
 	?>
 	<footer style="font-size: 0.8rem;bottom: 0;" class="container-fluid mt-3 fillColoreSfondo <?= $clsTxt ?>">
@@ -95,8 +96,9 @@
 				<div class="col text-center">
 					<p>© 2024
 						<?= $service->CreateRouteLinkHTML($AppName, "index") ?> |
-						<?= $service->traduci("dirittiriservati"); ?>.<br>
-						<span class="text-muted">
+						<?= $service->traduci("dirittiriservati"); ?>.
+						<hr>
+						<span>
 							<?= $description ?>
 						</span>
 					</p>

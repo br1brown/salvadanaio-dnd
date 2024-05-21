@@ -27,7 +27,6 @@ class MetaDTO
     public bool $MobileFriendly = true;
     public bool $iOSFullScreenWebApp = true;
     public int $mobileOptimizationWidth = 320;
-    public int $refreshIntervalInSeconds = 900;
     public array $keywords = [];
     private string $dataScadenza = '';
     public ?string $dataScadenzaGMT = null;
