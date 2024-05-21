@@ -291,19 +291,29 @@ class Service
      */
     public function createRoute(string $route): string
     {
-        //se è un fragment non faccio nulla e lo rimando così che è la stessa pagina
-        if (str_starts_with($route, '#')) {
-            return $route;
-            //return $this->baseUrl(pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) . $route);
-        }
-
+        $current = parse_url($_SERVER['REQUEST_URI']);
         $completo = $this->baseUrl($route);
-        //la lingua è il default
-        if ($this->settings['lang'] == $this->_traduzione->lang)
-            return $completo;
-
         // Parsa l'URL e decomponilo nei suoi componenti
         $parsedUrl = parse_url($completo);
+
+        // Definizione della closure per "whitchPage"
+        $whitchPage = function (string $path): string {
+            return empty ($path) || str_ends_with($path, '/') ? $path . "index" : $path;
+        };
+
+        $RequestPage = $whitchPage($parsedUrl['path']);
+        $RenderPage = $whitchPage($current['path']);
+
+        // Verifica se la lingua è quella di default
+        if ($this->settings['lang'] == $this->_traduzione->lang) {
+            // Se l'URL da generare è lo stesso della pagina corrente, restituisci solo il frammento
+            if ($RenderPage === $RequestPage) {
+                if (isset($parsedUrl['fragment'])) {
+                    return '#' . $parsedUrl['fragment'];
+                }
+            }
+            return $completo;
+        }
 
         // Prepara l'array dei parametri della query
         $queryParams = [];
@@ -429,26 +439,38 @@ class Service
         }
         return $risultato;
     }
-
-    public function CreateRouteLinkHTML(string $keyTranslate, string $route, string $cls = "", bool $labelStrong = true): string
+    /**
+     * Crea un link HTML con opzioni di personalizzazione.
+     *
+     * @param string $keyTranslate La chiave per la traduzione del testo del link.
+     * @param string $route Il percorso o URL del link.
+     * @param string $cls (Opzionale) La classe CSS da aggiungere al link.
+     * @param bool $labelStrong (Opzionale) Se true, usa il tag <strong> per il testo del link; altrimenti usa <a>.
+     * @param string $ariaLabel (Opzionale) L'attributo aria-label per il link per migliorare l'accessibilità.
+     * @return string Il codice HTML del link.
+     */
+    public function CreateRouteLinkHTML(string $keyTranslate, string $route, string $cls = "", bool $labelStrong = true, string $ariaLabel = ""): string
     {
         $tagLabel = $labelStrong === true ? "strong" : "a";
-
         $label = $this->traduci($keyTranslate);
-        $class = empty($cls) ? "" : " class='" . $cls . "'";
-        if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route && !str_starts_with($route, '#')) {
-            return "<" . $tagLabel . $class . ">" . $label . "</" . $tagLabel . "> ";
+        $class = empty($cls) ? "" : " class='" . htmlspecialchars($cls) . "'";
+        $currentFile = pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME);
+
+        if ($currentFile === $route && !str_starts_with($route, '#')) {
+            return "<" . $tagLabel . $class . ">" . htmlspecialchars($label) . "</" . $tagLabel . "> ";
         } else {
             $parsedUrl = parse_url($route);
             $target = "";
             if (isset($parsedUrl['scheme'])) {
-                $target = "target=”_blank”";
+                $target = ' target="_blank"';
             }
 
-            return "<a" . $class . " " . $target . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
+            // Aggiungi attributi ARIA se forniti
+            $aria = ' aria-label="' . htmlspecialchars(!empty($ariaLabel) ? $ariaLabel : 'Link ' . $label) . '"';
+
+            return "<a" . $class . $target . $aria . " href=\"" . htmlspecialchars($this->createRoute($route)) . "\">" . htmlspecialchars($label) . "</a>";
         }
     }
-
 
     /**
      * Crea un link HTML con l'URL codificato e attributi personalizzabili.
@@ -468,12 +490,28 @@ class Service
         $urlCodificato = $this->convertiInEntitaHTML($url);
         $attributi = '';
 
+        // Verifica se aria-label è già presente negli attributi extra
+        $ariaLabelPresente = false;
+        foreach ($attributiExtra as $chiave => $valore) {
+            if (strtolower($chiave) === 'aria-label') {
+                $ariaLabelPresente = true;
+                break;
+            }
+        }
+
+        // Se aria-label non è presente, aggiungilo
+        if (!$ariaLabelPresente) {
+            $attributi .= 'aria-label="Link ' . htmlspecialchars($url) . '" ';
+        }
+
         foreach ($attributiExtra as $chiave => $valore) {
             $attributi .= $chiave . '="' . htmlspecialchars($valore) . '" ';
         }
 
         return "<a href=\"#\" onClick=\"openEncodedLink('$prefisso', '$urlCodificato')\" $attributi>$urlCodificato</a>";
     }
+
+
 
 
     /**

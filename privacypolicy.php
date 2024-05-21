@@ -21,5 +21,5 @@ $pagina = [
 ];
 
 
-include('FE_utils/_policy.php');
+include ('FE_utils/_policy.php');
 ?>

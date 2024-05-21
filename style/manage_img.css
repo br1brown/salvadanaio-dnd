@@ -19,6 +19,11 @@ img {
 	/* Allineamento del testo a sinistra */
 }
 
+/* Stile specifico per link all'interno dei 'polaroid' */
+.polaroid a {
+	color: black !important;
+}
+
 /* Stile specifico per le immagini all'interno dei 'polaroid' */
 .polaroid img {
 	width: 97%;

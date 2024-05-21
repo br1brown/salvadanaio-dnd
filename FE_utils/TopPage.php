@@ -26,7 +26,6 @@ try {
 	<title>
 		<?= ($meta->title == "" ? "" : $meta->title . " | ") . $AppName; ?>
 	</title>
-
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> <!--shrink-to-fit=no-->
 
@@ -46,8 +45,6 @@ try {
 	<meta name="HandheldFriendly" content="<?= $meta->MobileFriendly ? "true" : "false" ?>">
 	<meta name="MobileOptimized" content="<?= $meta->mobileOptimizationWidth ?>">
 
-	<!-- Indica la frequenza con cui la pagina dovrebbe essere aggiornata -->
-	<meta http-equiv="refresh" content="<?= $meta->refreshIntervalInSeconds ?>">
 	<?php if (isset($meta->dataScadenzaGMT)): ?>
 		<!-- La data di scadenza dei contenuti nel meta tag -->
 		<meta http-equiv="expires" content="<?= $meta->dataScadenzaGMT ?>">
@@ -66,6 +63,10 @@ try {
 	<meta name="apple-mobile-web-app-capable" content="<?= $meta->iOSFullScreenWebApp ? "yes" : "no" ?>">
 
 	<link rel="icon" type="image/png" href="<?= $service->UrlAsset("favIcon") ?>">
+
+	<!-- Accessibilità -->
+	<meta name="accessibility-support" content="WCAG 2.1 Level AA">
+	<meta name="accessibility-features" content="visual, auditory, cognitive, mobility">
 
 	<script>
 		infoContesto = {
@@ -101,9 +102,10 @@ try {
 </head>
 
 <body>
-	<a id="back-to-top" href="#" class="btn btn-<?= $isDarkTextPreferred ? "light" : "dark"; ?> btn-lg back-to-top"
-		role="button">
+	<a id="back-to-top" href="#" aria-hidden="true"
+		class="btn btn-<?= $isDarkTextPreferred ? "light" : "dark"; ?> btn-lg back-to-top" role="button">
 		<i class="fas fa-chevron-up"></i>
+		<span class="sr-only">Back to top</span>
 	</a>
 	<?php
 	if ($havesmoke): ?>
@@ -115,7 +117,8 @@ try {
 	<?php endif;
 	//se $forceMenu è valorizzata a true lo metti, se non c'è lo metti
 	if (isset($itemsMenu) && count($itemsMenu) > 0 && ((isset($forceMenu)) ? ($forceMenu == true) : true)): ?>
-		<nav class="navbar navbar-expand-sm <?= $isDarkTextPreferred ? "navbar-light" : "navbar-dark" ?> fillColoreSfondo">
+		<nav class="navbar navbar-expand-sm <?= $isDarkTextPreferred ? "navbar-light" : "navbar-dark" ?> fillColoreSfondo"
+			role="navigation" aria-label="Main navigation">
 			<?= $service->CreateRouteLinkHTML($AppName, "index", "navbar-brand", false) ?>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
 				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,8 +126,7 @@ try {
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
-					<?php
-					foreach ($itemsMenu as $key => $value): ?>
+					<?php foreach ($itemsMenu as $key => $value): ?>
 						<li
 							class="nav-item<?= pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) == $value['route'] ? " active" : "" ?>">
 							<?= $service->CreateRouteLinkHTML($value['nome'], $value['route'], "nav-link", false) ?>
@@ -139,14 +141,16 @@ try {
 					<div class="ml-auto">
 						<div class="dropdown fillColoreSfondo">
 							<button class="nav-link w-100 dropdown-toggle fillColoreSfondo <?= $clsTxt ?>" type="button"
-								id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+								aria-label="Language selection menu">
 								<?= $service->traduci("selezionaLingua"); ?>
 							</button>
 							<div class="dropdown-menu dropdown-menu-right fillColoreSfondo"
 								aria-labelledby="dropdownMenuButton">
 								<?php foreach ($lingueDisponibili as $lingua): ?>
 									<a href="javascript:setLanguage('<?= $lingua ?>')"
-										class="dropdown-item<?= $service->currentLang() == $lingua ? " active " : " " ?>fillColoreSfondo <?= $clsTxt ?>">
+										class="dropdown-item<?= $service->currentLang() == $lingua ? " active " : " " ?>fillColoreSfondo <?= $clsTxt ?>"
+										role="menuitem">
 										<?= strtoupper($lingua) ?>
 									</a>
 								<?php endforeach; ?>
@@ -154,5 +158,8 @@ try {
 						</div>
 					</div>
 				<?php endif; ?>
+			</div>
 		</nav>
+
 	<?php endif; ?>
+	<main>
