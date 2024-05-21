@@ -42,7 +42,7 @@ class Service
         }
 
         $data['isDarkTextPreferred'] = $this->isDarkTextPreferred($data['colorTema']);
-        $colorPrimary = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] ? 0.4 : 0);
+        $colorPrimary = $this->darkenColor($data['colorTema'], $data['isDarkTextPreferred'] ? 0.6 : 0);
         $colorLinkScuro = '#000029';
         $colorLinkChiaro = '#c4c4ff';
 
