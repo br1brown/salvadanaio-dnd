@@ -69,13 +69,14 @@ class VoceInformazione
     public function visualizza($dati, $service)
     {
         if (isset($dati[$this->chiave]) && !empty($dati[$this->chiave])) {
-            $valore = $dati[$this->chiave];
-            $testo = $this->traduzioneKey ? $service->traduci($this->traduzioneKey) . ": " : "";
+            $valore = htmlspecialchars($dati[$this->chiave], ENT_QUOTES, 'UTF-8'); // Sanitize output
+            $testo = $this->traduzioneKey ? htmlspecialchars($service->traduci($this->traduzioneKey), ENT_QUOTES, 'UTF-8') . ": " : "";
             $testo .= is_callable($this->callback) ? call_user_func($this->callback, $valore) : $valore;
-            return $testo;
+            return "" . $testo . "";
         }
         return null;
     }
+
 
     public static function verificaPresenzaDati($arrayVoceInformazione, $dati): bool
     {
@@ -99,7 +100,6 @@ class VoceInformazione
     {
         if (!self::verificaPresenzaDati($informazioni, $dati))
             return "";
-        // Inizia a catturare l'output in un buffer
         ob_start();
         ?>
         <div class="col-12 col-sm<?= $forceFluid === true ? "" : "-6" ?> pt-1">
@@ -115,11 +115,10 @@ class VoceInformazione
             </ul>
         </div>
         <?php
-        // Ottieni l'output dal buffer e poi puliscilo
         $html = ob_get_clean();
-        // Restituisci l'HTML generato
         return $html;
     }
+
 
 }
 

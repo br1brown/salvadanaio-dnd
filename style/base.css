@@ -169,6 +169,15 @@ a:hover {
 	/* Padding superiore */
 }
 
+code {
+	font-weight: bold;
+	/*Grassetto per differenziare*/
+	color: black;
+	/* Sostituisci con il colore desiderato */
+	background-color: transparent;
+	/* Rendi lo sfondo trasparente o adattalo secondo necessità */
+}
+
 /* Stile per testo di piccole dimensioni */
 .piccolill {
 	font-size: 0.5rem;

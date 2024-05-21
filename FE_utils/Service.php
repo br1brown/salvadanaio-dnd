@@ -439,26 +439,38 @@ class Service
         }
         return $risultato;
     }
-
-    public function CreateRouteLinkHTML(string $keyTranslate, string $route, string $cls = "", bool $labelStrong = true): string
+    /**
+     * Crea un link HTML con opzioni di personalizzazione.
+     *
+     * @param string $keyTranslate La chiave per la traduzione del testo del link.
+     * @param string $route Il percorso o URL del link.
+     * @param string $cls (Opzionale) La classe CSS da aggiungere al link.
+     * @param bool $labelStrong (Opzionale) Se true, usa il tag <strong> per il testo del link; altrimenti usa <a>.
+     * @param string $ariaLabel (Opzionale) L'attributo aria-label per il link per migliorare l'accessibilità.
+     * @return string Il codice HTML del link.
+     */
+    public function CreateRouteLinkHTML(string $keyTranslate, string $route, string $cls = "", bool $labelStrong = true, string $ariaLabel = ""): string
     {
         $tagLabel = $labelStrong === true ? "strong" : "a";
-
         $label = $this->traduci($keyTranslate);
-        $class = empty($cls) ? "" : " class='" . $cls . "'";
-        if (pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME) === $route && !str_starts_with($route, '#')) {
-            return "<" . $tagLabel . $class . ">" . $label . "</" . $tagLabel . "> ";
+        $class = empty($cls) ? "" : " class='" . htmlspecialchars($cls) . "'";
+        $currentFile = pathinfo(basename($_SERVER['PHP_SELF']), PATHINFO_FILENAME);
+
+        if ($currentFile === $route && !str_starts_with($route, '#')) {
+            return "<" . $tagLabel . $class . ">" . htmlspecialchars($label) . "</" . $tagLabel . "> ";
         } else {
             $parsedUrl = parse_url($route);
             $target = "";
             if (isset($parsedUrl['scheme'])) {
-                $target = "target=”_blank”";
+                $target = ' target="_blank"';
             }
 
-            return "<a" . $class . " " . $target . " href=\"" . $this->createRoute($route) . "\">" . $label . "</a>";
+            // Aggiungi attributi ARIA se forniti
+            $aria = ' aria-label="' . htmlspecialchars(!empty($ariaLabel) ? $ariaLabel : 'Link ' . $label) . '"';
+
+            return "<a" . $class . $target . $aria . " href=\"" . htmlspecialchars($this->createRoute($route)) . "\">" . htmlspecialchars($label) . "</a>";
         }
     }
-
 
     /**
      * Crea un link HTML con l'URL codificato e attributi personalizzabili.
@@ -478,12 +490,28 @@ class Service
         $urlCodificato = $this->convertiInEntitaHTML($url);
         $attributi = '';
 
+        // Verifica se aria-label è già presente negli attributi extra
+        $ariaLabelPresente = false;
+        foreach ($attributiExtra as $chiave => $valore) {
+            if (strtolower($chiave) === 'aria-label') {
+                $ariaLabelPresente = true;
+                break;
+            }
+        }
+
+        // Se aria-label non è presente, aggiungilo
+        if (!$ariaLabelPresente) {
+            $attributi .= 'aria-label="Link ' . htmlspecialchars($url) . '" ';
+        }
+
         foreach ($attributiExtra as $chiave => $valore) {
             $attributi .= $chiave . '="' . htmlspecialchars($valore) . '" ';
         }
 
         return "<a href=\"#\" onClick=\"openEncodedLink('$prefisso', '$urlCodificato')\" $attributi>$urlCodificato</a>";
     }
+
+
 
 
     /**
