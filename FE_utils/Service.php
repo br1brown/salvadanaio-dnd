@@ -60,7 +60,12 @@ class Service
         $havesmoke = isset($data['smoke']) && $data['smoke']["enable"];
         $data['havesmoke'] = $havesmoke;
 
-        $data['routes'] = $this->prepareAssets("func", "php", excludeFiles: ["getLang.php"]);
+        $escludiroutes = ["getLang.php"];
+        if (!$this->EsternaAPI)
+            $escludiroutes[] = "gateway.php";
+
+
+        $data['routes'] = $this->prepareAssets("func", "php", excludeFiles: $escludiroutes);
 
         return $data;
     }
