@@ -25,7 +25,7 @@ class RelLink
 class MetaDTO
 {
     public bool $MobileFriendly = true;
-    public bool $iOSFullScreenWebApp = true;
+    public bool $FullScreenWebApp = true;
     public int $mobileOptimizationWidth = 320;
     public array $keywords = [];
     private string $dataScadenza = '';

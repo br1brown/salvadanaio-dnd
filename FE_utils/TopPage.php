@@ -59,8 +59,9 @@ try {
 	<meta name="application-name" content="<?= $AppName ?>" />
 	<!-- Definisce il titolo dell'app web per iOS -->
 	<meta name="apple-mobile-web-app-title" content="<?= $AppName ?>">
-	<!-- Permette al sito web di funzionare a schermo intero su Safari iOS, simile a un'applicazione nativa -->
-	<meta name="apple-mobile-web-app-capable" content="<?= $meta->iOSFullScreenWebApp ? "yes" : "no" ?>">
+	<!-- Permette al sito web di funzionare a schermo intero -->
+	<meta name="apple-mobile-web-app-capable" content="<?= $meta->FullScreenWebApp ? "yes" : "no" ?>">
+	<meta name="mobile-web-app-capable" content="<?= $meta->FullScreenWebApp ? "yes" : "no" ?>">
 
 	<link rel="icon" type="image/png" href="<?= $service->UrlAsset("favIcon") ?>">
 
