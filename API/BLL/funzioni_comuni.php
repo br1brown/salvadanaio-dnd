@@ -54,3 +54,108 @@ function ManeggiaSoldi($tipo, $dati)
         $itemdescription
     );
 }
+
+
+function allaRomana(array $infos_personaggi, Cash $daSpendere, string $description, bool $gentile = true)
+{
+    $numeroPersonaggi = count($infos_personaggi);
+
+    // Controlla che ci siano personaggi validi
+    if ($numeroPersonaggi === 0) {
+        throw new Exception("Nessun personaggio valido per dividere la spesa.");
+    }
+
+    $description = $description ?? "1/" . $numeroPersonaggi; // Imposta la descrizione se non è stata passata
+
+    $daSpendere->refreshValuta();
+    $totalCopper = $daSpendere->get_totalcopper();
+
+    // Istanzia i personaggi e raccogli i soldi in un solo ciclo
+    $personaggiIstanziati = [];
+    $totaleRaccolto = new Cash(0, 0, 0, 0);
+    $denaroIniziale = [];
+
+    foreach ($infos_personaggi as $personaggio) {
+        $pers = new BLL\Personaggio($personaggio["basename"]);
+        $denaro = $pers->getCash();
+        $totaleRaccolto->addCash($denaro);
+
+        $denaroIniziale[] = [
+            'personaggio' => $pers,
+            'totalCopper' => $denaro->get_totalcopper(),
+        ];
+    }
+
+    $totaleRaccoltoInCopper = $totaleRaccolto->get_totalcopper();
+
+    // Verifica divisibilità del totale
+    if ($totalCopper % $numeroPersonaggi !== 0) {
+        throw new Exception("La somma non è divisibile in modo equo tra i personaggi.");
+    }
+
+    // Verifica se il totale raccolto è sufficiente
+    if ($totaleRaccoltoInCopper < $totalCopper) {
+        return BLL\Response::retError("Fondi insufficienti per coprire la spesa totale.", false);
+    }
+
+    // Modalità "gentile"
+    if ($gentile) {
+        // Calcola quanto assegnare equamente e l'eccedenza
+        $quotaPerPersona = intdiv($totaleRaccoltoInCopper, $numeroPersonaggi);
+        $eccedenza = $totaleRaccoltoInCopper % $numeroPersonaggi;
+
+        // Ordina i personaggi per il loro denaro iniziale (discendente)
+        usort($denaroIniziale, fn($a, $b) => $b['totalCopper'] <=> $a['totalCopper']);
+
+        // Distribuisci il denaro equamente e assegna l'eccedenza
+        foreach ($denaroIniziale as $index => $entry) {
+            $entry['personaggio']->setCash(Cash::ConvertiValuta($quotaPerPersona));
+        }
+
+        if ($eccedenza > 0) {
+            $denaroIniziale[0]['personaggio']->getCash()->addCash(Cash::ConvertiValuta($eccedenza));
+        }
+    }
+
+    $quantopagailsingolo = Cash::ConvertiValuta($totalCopper / $numeroPersonaggi);
+
+    $erroriPersonaggi = [];
+    $personeDaSalvare = [];
+
+    // Effettua i pagamenti e aggiungi le transazioni
+    foreach ($denaroIniziale as $entry) {
+        try {
+            $pers = $entry['personaggio'];
+            $pers->manageCurrency(false, $quantopagailsingolo);
+
+            // Aggiungi la transazione alla cronologia
+            $pers->addTransactionToHistory(
+                BLL\TransactionType::SPENT,
+                $quantopagailsingolo,
+                $description . " (Split - 1/" . $numeroPersonaggi . ")"
+            );
+
+            // Salva il personaggio in caso di successo
+            $personeDaSalvare[] = $pers;
+
+        } catch (Exception $e) {
+            $erroriPersonaggi[] = $pers->getName();
+        }
+    }
+
+    // Gestione del risultato finale
+    if (empty($erroriPersonaggi)) {
+        // Salva tutti i personaggi
+        foreach ($personeDaSalvare as $pers) {
+            $pers->save();
+        }
+        return BLL\Response::retOK("Transazione (split) eseguita correttamente.", false);
+    }
+
+    // Restituisci un errore con i nomi dei personaggi problematici
+    return BLL\Response::retError(
+        "Errore: il pagamento non è riuscito per i seguenti personaggi: " . implode(", ", $erroriPersonaggi),
+        false
+    );
+}
+

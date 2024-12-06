@@ -132,6 +132,20 @@ class Personaggio
     {
         self::_save($this->filePath, $this->personaggio);
     }
+    public function GetCash(): Cash
+    {
+        return $this->personaggio->cash;
+    }
+
+    public function SetCash(Cash $novo): void
+    {
+        $this->personaggio->cash = $novo;
+    }
+
+    public function GetName(): string
+    {
+        return $this->personaggio->name;
+    }
 
     /**
      * Gestisce le transazioni di valuta del personaggio, incluse ricezione, spesa,

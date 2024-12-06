@@ -144,7 +144,7 @@ include('FE_utils/BottomPage.php');
 
 	function dividamoilbottino() {
 		showAlert(
-			"Guadagno totale in totale",
+			"Guadagno totale",
 			"Dividiamo tra tutti",
 			{ checkResto: "0" },
 			false,
