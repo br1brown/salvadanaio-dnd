@@ -5,7 +5,7 @@ include dirname(__DIR__) . '/BLL/auth_and_cors_middleware.php';
 function eseguiPOST()
 {
     echo Echo_getObj("personaggi", function ($infos_personaggi, $lingua) {
-        $transactionType = BLL\TransactionType::SPLIT;
+
         $tuttoOK = true;  // Flag per monitorare se tutti hanno pagato correttamente
 
         // Controllo input valuta
@@ -41,7 +41,7 @@ function eseguiPOST()
                 $personeDaSalvare[] = $pers;
 
                 // Aggiungi la transazione alla cronologia
-                $pers->addTransactionToHistory($transactionType, $daSpendere, $description . " (1/" . $numeroPersonaggi . ")");
+                $pers->addTransactionToHistory(BLL\TransactionType::SPENT, $daSpendere, $description . " (Split - 1/" . $numeroPersonaggi . ")");
 
             } catch (Exception $e) {
                 $erroriPersonaggi[] = $personaggio["name"];
@@ -57,7 +57,7 @@ function eseguiPOST()
                 // Salva lo stato del personaggio
                 $pers->save();
             }
-            return BLL\Response::retOK("Transazione ($transactionType->value) eseguita correttamente.");
+            return BLL\Response::retOK("Transazione (Split) eseguita correttamente.");
         } else {
             // Se non tutti hanno pagato, restituisci un errore con i nomi dei personaggi problematici
             return BLL\Response::retError("Errore: il pagamento non è riuscito per i seguenti personaggi: " . implode(", ", $erroriPersonaggi));
