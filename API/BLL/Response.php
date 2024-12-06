@@ -4,28 +4,34 @@ namespace BLL;
 class Response
 {
     /**
-     * Restituisce un messaggio di successo in formato JSON.
+     * Restituisce un messaggio di successo in formato JSON o come array.
      *
-     * @param string $message Messaggio di successo.
-     * @return string JSON response.
+     * @param string|null $message Messaggio di successo.
+     * @param bool $encode Indica se restituire il messaggio codificato in JSON.
+     * @return string|array JSON o array associativo.
      */
-    public static function retOK(string $message = null): string
+    public static function retOK(string $message = null, bool $encode = true): string|array
     {
-        if ($message != null)
-            return json_encode(['status' => 'success', 'message' => $message]);
-        return json_encode(['status' => 'success']);
+        $response = ['status' => 'success'];
+        if ($message !== null) {
+            $response['message'] = $message;
+        }
+        return $encode ? json_encode($response) : $response;
     }
 
     /**
-     * Restituisce un messaggio di errore in formato JSON.
+     * Restituisce un messaggio di errore in formato JSON o come array.
      *
      * @param string $message Messaggio di errore.
-     * @return string JSON response.
+     * @param bool $encode Indica se restituire il messaggio codificato in JSON.
+     * @return string|array JSON o array associativo.
      */
-    public static function retError(string $message): string
+    public static function retError(string $message, bool $encode = true): string|array
     {
-        return json_encode(['status' => 'error', 'message' => $message]);
+        $response = ['status' => 'error', 'message' => $message];
+        return $encode ? json_encode($response) : $response;
     }
+
 
     /**
      * Traduce i valori specificati di una lista di array associativi nella lingua desiderata.
