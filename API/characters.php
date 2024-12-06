@@ -49,7 +49,7 @@ function eseguiGET()
             return $result;
         });
 
-        return ["characters" => $personaggi, "allcash" => BLL\Personaggio::_ConvertValuta($total)];
+        return ["characters" => $personaggi, "allcash" => BLL\Cash::ConvertiValuta($total)];
     });
 }
 include __DIR__ . '/BLL/gestione_metodi.php';

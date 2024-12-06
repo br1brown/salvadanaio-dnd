@@ -7,10 +7,6 @@ class Personaggio
     private PersonaggioDTO $personaggio;
     private string $filePath;
 
-    private int $CAMBIO_PLATINUM;
-    private int $CAMBIO_GOLD;
-    private int $CAMBIO_SILVER;
-
     public static function Crea(string $nome, int $platinum = 0, int $gold = 0, int $silver = 0, int $copper = 0)
     {
         if (empty($nome))
@@ -68,11 +64,6 @@ class Personaggio
 
     public function __construct(string $baseName)
     {
-        $config = self::loadCambi();
-        $this->CAMBIO_PLATINUM = $config["platinum"];
-        $this->CAMBIO_GOLD = $config["gold"];
-        $this->CAMBIO_SILVER = $config["silver"];
-
         $this->baseName = $baseName;
         $this->filePath = Repository::getFileName($baseName);
 
@@ -87,7 +78,6 @@ class Personaggio
         if (file_exists($this->filePath)) {
             $json = file_get_contents($this->filePath);
             $decoded = json_decode($json, true);
-
 
             $cash = new Cash($decoded["cash"]['platinum'], $decoded["cash"]['gold'], $decoded["cash"]['silver'], $decoded["cash"]['copper']);
 
@@ -129,90 +119,111 @@ class Personaggio
     {
         self::_save($this->filePath, $this->personaggio);
     }
+
+    /**
+     * Gestisce le transazioni di valuta del personaggio, incluse ricezione, spesa,
+     * avvio di debiti o crediti, e la loro sanatoria.
+     *
+     * @param string $transactionType Tipo di transazione (es.: "debt", "credit", "received", "spent", "settle_debt", "settle_credit").
+     * @param Cash $soldi Oggetto Cash che rappresenta l'importo coinvolto nella transazione.
+     * @param string $description Descrizione della transazione da aggiungere alla cronologia.
+     * @param bool $canReceiveChange Indica se è possibile ricevere resto (default: false).
+     * @param string $itemdescription Descrizione dell'elemento legato alla transazione (usato per identificare debiti/crediti da sanare).
+     * 
+     * @throws \Exception Se il tipo di transazione non è supportato o se un contratto non viene trovato.
+     */
     public function manageCharacterCoins(
         string $transactionType,
         Cash $soldi,
         string $description,
         bool $canReceiveChange = false,
         string $itemdescription = ""
-    ) {
+    ): string {
+        // Determina se la transazione aggiunge o rimuove valuta
+        $isAdding = $this->determineTransactionDirection($transactionType);
 
-        $isAdding = null;
-        $shouldAdjustCurrency = false;
+        // Gestisce la valuta del personaggio
+        $this->manageCurrency(
+            isAdding: $isAdding,
+            tempCash: $soldi,
+            canReceiveChange: $canReceiveChange
+        );
 
-        switch ($transactionType) {
-            case "debt": //sto avviando un debito quindi ricevo soldi
-            case "received":
-            case "settle_credit": //sto incasssando un credito quindi ricevo soldi
-                $isAdding = true;
-                $shouldAdjustCurrency = true;
-                break;
+        // Totale in rame della transazione
+        $totalCopperManaging = $soldi->get_totalcopper();
 
-            case "credit": //sto avviando un credito quindi perdo soldi
-            case "spent":
-            case "settle_debt": //sto incasssando un debito quindi ricevo soldi
-                $isAdding = false;
-                $shouldAdjustCurrency = true;
-                break;
-
-            default:
-                throw new \Exception("Tipo di transazione non supportata.");
+        // Gestisce transazioni sospese o sanate
+        if (in_array($transactionType, ['debt', 'credit'])) {
+            $this->addSuspendedTransaction($transactionType, $totalCopperManaging, $description);
+        } elseif (in_array($transactionType, ['settle_debt', 'settle_credit'])) {
+            $this->settleSuspendedTransaction($transactionType, $totalCopperManaging, $itemdescription);
         }
 
-        if ($shouldAdjustCurrency) {
-            $this->manageCurrency(
-                $isAdding,
-                $soldi->platinum,
-                $soldi->gold,
-                $soldi->silver,
-                $soldi->copper,
-                $canReceiveChange
-            );
+        // Aggiunge la transazione alla cronologia
+        $this->addTransactionToHistory($transactionType, $soldi, $description);
+
+        // Salva lo stato del personaggio
+        $this->save();
+
+        // Restituisce una risposta di successo
+        return Response::retOK("Transazione ($transactionType) eseguita correttamente.");
+    }
+
+    /**
+     * Determina la direzione della transazione (aggiunta o rimozione di valuta).
+     */
+    private function determineTransactionDirection(string $transactionType): bool
+    {
+        return match ($transactionType) {
+            "debt", "received", "settle_credit" => true, //aggiungo soldi
+            "credit", "spent", "settle_debt" => false, //tolgo soldi
+            default => throw new \Exception("Tipo di transazione non supportata."),
+        };
+    }
+
+    /**
+     * Aggiunge una nuova transazione sospesa.
+     */
+    private function addSuspendedTransaction(string $type, int $amount, string $description): void
+    {
+        $this->personaggio->suspended[$type][] = new TransazioneSospesa(
+            $amount,
+            preg_replace("/\r\n|\n|\r/", " - ", $description)
+        );
+    }
+
+    /**
+     * Sanatoria di una transazione sospesa (debito o credito).
+     */
+    private function settleSuspendedTransaction(string $type, int $amount, string $description): void
+    {
+        $transactionKey = $type === "settle_debt" ? "debt" : "credit";
+        $found = false;
+
+        foreach ($this->personaggio->suspended[$transactionKey] as $key => $transaction) {
+            if ($transaction->copper === $amount && $transaction->description === $description) {
+                unset($this->personaggio->suspended[$transactionKey][$key]);
+                $found = true;
+                break;
+            }
         }
 
-        $totalCopperManaging =
-            $soldi->platinum * $this->CAMBIO_PLATINUM +
-            $soldi->gold * $this->CAMBIO_GOLD +
-            $soldi->silver * $this->CAMBIO_SILVER +
-            $soldi->copper;
-        switch ($transactionType) {
-            case "debt":
-            case "credit":
-                $this->personaggio->suspended[$transactionType][] =
-                    new TransazioneSospesa(
-                        $totalCopperManaging,
-                        preg_replace("/\r\n|\n|\r/", " - ", $description),
-                    );
-
-                break;
-
-            case "settle_debt":
-            case "settle_credit":
-                // Rimuovi il debito o il credito sanato
-                $transactionKey =
-                    $transactionType === "settle_debt" ? "debt" : "credit";
-                $found = false;
-                foreach ($this->personaggio->suspended[$transactionKey] as $key => $transaction) {
-                    if (
-                        $transaction->copper === $totalCopperManaging &&
-                        $transaction->description === $itemdescription
-                    ) {
-                        unset(
-                            $this->personaggio->suspended[$transactionKey][$key]
-                            );
-                        $found = true;
-                        break;
-                    }
-                }
-                if (!$found) {
-                    throw new \Exception("Contratto non trovato.");
-                }
-                $this->personaggio->suspended[$transactionKey] = array_values(
-                    $this->personaggio->suspended[$transactionKey]
-                ); // Reindex array
-                break;
+        if (!$found) {
+            throw new \Exception("Contratto non trovato.");
         }
 
+        // Reindicizza l'array
+        $this->personaggio->suspended[$transactionKey] = array_values($this->personaggio->suspended[$transactionKey]);
+    }
+
+    /**
+     * Aggiunge una transazione alla cronologia del personaggio.
+     */
+    private function addTransactionToHistory(
+        string $type,
+        Cash $soldi,
+        string $description
+    ): void {
         $this->personaggio->history[] = new CronologiaPagamento(
             new \DateTime(),
             $soldi->platinum,
@@ -220,116 +231,48 @@ class Personaggio
             $soldi->silver,
             $soldi->copper,
             $description,
-            strtoupper($transactionType),
+            strtoupper($type)
         );
-
-        $this->save();
-
-        return Response::retOK(
-            "Transazione ($transactionType) eseguita correttamente."
-        );
-
     }
 
+
+
+    /**
+     * Gestisce l'aggiunta o la rimozione di valuta dall'oggetto Cash del personaggio.
+     * 
+     * @param bool $isAdding Indica se si sta aggiungendo valuta (true) o effettuando un pagamento (false).
+     * @param int $platinum Monete di platino da gestire.
+     * @param int $gold Monete d'oro da gestire.
+     * @param int $silver Monete d'argento da gestire.
+     * @param int $copper Monete di rame da gestire.
+     * @param bool $canReceiveChange Indica se il pagamento può includere il resto (true) o richiede pagamento esatto (false).
+     * @throws \Exception Se non ci sono abbastanza fondi o le denominazioni richieste.
+     */
     function manageCurrency(
         bool $isAdding,
-        int $platinum = 0,
-        int $gold = 0,
-        int $silver = 0,
-        int $copper = 0,
+        Cash $tempCash,
         bool $canReceiveChange = true
     ) {
+
         if ($isAdding) {
-            $this->personaggio->cash->platinum += $platinum;
-            $this->personaggio->cash->gold += $gold;
-            $this->personaggio->cash->silver += $silver;
-            $this->personaggio->cash->copper += $copper;
+            // Aggiunge la valuta al Cash del personaggio
+            $this->personaggio->cash->addCash($tempCash);
         } else {
-            if ($canReceiveChange) {
-                $totalCopperToPay =
-                    $platinum * $this->CAMBIO_PLATINUM +
-                    $gold * $this->CAMBIO_GOLD +
-                    $silver * $this->CAMBIO_SILVER +
-                    $copper;
-                $totalCopper = $this->get_totalcopper();
-                if ($totalCopper < $totalCopperToPay) {
-                    throw new \Exception(
-                        "Non hai abbastanza monete per effettuare il pagamento esatto"
-                    );
-                }
-
-                $this->personaggio->cash->platinum = 0;
-                $this->personaggio->cash->gold = 0;
-                $this->personaggio->cash->silver = 0;
-                $this->personaggio->cash->copper = $totalCopper - $totalCopperToPay;
-
-                $this->refreshCambio();
-            } else {
-                if (
-                    $this->personaggio->cash->platinum < $platinum ||
-                    $this->personaggio->cash->gold < $gold ||
-                    $this->personaggio->cash->silver < $silver ||
-                    $this->personaggio->cash->copper < $copper
-                ) {
-                    throw new \Exception(
-                        "Non hai le monete della denominazione corretta per effettuare il pagamento esatto"
-                    );
-                }
-                $this->personaggio->cash->platinum -= $platinum;
-                $this->personaggio->cash->gold -= $gold;
-                $this->personaggio->cash->silver -= $silver;
-                $this->personaggio->cash->copper -= $copper;
+            // Effettua un pagamento
+            try {
+                $this->personaggio->cash->processPayment($tempCash, $canReceiveChange);
+            } catch (\Exception $e) {
+                // Gestisce eventuali errori legati a fondi insufficienti o denominazioni errate
+                throw new \Exception("Errore durante il pagamento: " . $e->getMessage());
             }
         }
     }
 
     public function refreshCambio()
     {
-        $totalCopper = $this->get_totalcopper();
-        $this->personaggio->cash = $this->ConvertValuta($totalCopper);
+        $this->personaggio->cash->refreshValuta();
         $this->save();
     }
-
-    public function ConvertValuta(int $copper): Cash
-    {
-        return self::ConvertiValuta($copper, $this->CAMBIO_PLATINUM, $this->CAMBIO_GOLD, $this->CAMBIO_SILVER);
-    }
-
-    public static function _ConvertValuta(int $copper): Cash
-    {
-        $config = self::loadCambi();
-        $C_PLATINUM = $config["platinum"];
-        $C_GOLD = $config["gold"];
-        $C_SILVER = $config["silver"];
-        return self::ConvertiValuta($copper, $C_PLATINUM, $C_GOLD, $C_SILVER);
-    }
-    private static function ConvertiValuta(int $copper, int $C_PLATINUM, int $C_GOLD, int $C_SILVER): Cash
-    {
-        $platinum = floor($copper / $C_PLATINUM);
-        $copper -= $platinum * $C_PLATINUM;
-
-        $gold = floor($copper / $C_GOLD);
-        $copper -= $gold * $C_GOLD;
-
-        $silver = floor($copper / $C_SILVER);
-        $copper = $copper % $C_SILVER;
-
-        return new Cash($platinum, $gold, $silver, $copper);
-    }
-    function get_totalcopper(): int
-    {
-        $cash = $this->personaggio->cash;
-        if ($cash != null) {
-            $totalCopper = ($cash->platinum * $this->CAMBIO_PLATINUM) +
-                ($cash->gold * $this->CAMBIO_GOLD) +
-                ($cash->silver * $this->CAMBIO_SILVER) +
-                $cash->copper;
-
-            return $totalCopper;
-        }
-        return 0;
-    }
-
 
     public function getData(bool $encode = true, array $exclude = [])
     {
@@ -342,7 +285,7 @@ class Personaggio
             "copper" => $this->personaggio->cash->copper,
             "suspended" => [],
             "history" => [],
-            "totalcopper" => $this->get_totalcopper(),
+            "totalcopper" => $this->personaggio->cash->get_totalcopper(),
         ];
 
         if (!in_array("history", $exclude))
@@ -353,7 +296,8 @@ class Personaggio
         if (!in_array("suspended", $exclude))
             foreach ($this->personaggio->suspended as $tipo => $transazioni) {
                 foreach ($transazioni as $transazione) {
-                    $converted = $this->ConvertValuta($transazione->copper);
+                    $converted = new Cash(0, 0, 0, $transazione->copper);
+                    $converted->refreshValuta();
                     $personaggioArray["suspended"][$tipo][] = [
                         "platinum" => $converted->platinum,
                         "gold" => $converted->gold,
@@ -455,19 +399,170 @@ class PersonaggioDTO implements \JsonSerializable
 
 class Cash
 {
-    public int $platinum;
-    public int $gold;
-    public int $silver;
-    public int $copper;
+    // Proprietà pubbliche che rappresentano il numero di monete di ciascun tipo
+    public int $platinum; // Monete di platino
+    public int $gold;     // Monete d'oro
+    public int $silver;   // Monete d'argento
+    public int $copper;   // Monete di rame
 
+    // Proprietà private che rappresentano i tassi di cambio per ogni tipo di moneta
+    private int $CAMBIO_PLATINUM; // Valore in copper per 1 moneta di platino
+    private int $CAMBIO_GOLD;     // Valore in copper per 1 moneta d'oro
+    private int $CAMBIO_SILVER;   // Valore in copper per 1 moneta d'argento
+
+    /**
+     * Carica i tassi di cambio dalla repository di configurazione.
+     * Metodo statico perché non dipende da una specifica istanza della classe.
+     * @return array Configurazione con i tassi di cambio.
+     */
+    private static function loadCambi()
+    {
+        return Repository::getObj("configmoney");
+    }
+
+    /**
+     * Aggiorna i valori delle monete sulla base del totale in copper.
+     * Divide il totale in copper nelle varie denominazioni.
+     */
+    public function refreshValuta()
+    {
+        $totCopper = $this->get_totalcopper(); // Ottiene il totale in copper
+
+        // Calcola il numero di monete di platino e aggiorna il totale in copper rimanente
+        $this->platinum = floor($totCopper / $this->CAMBIO_PLATINUM);
+        $totCopper -= $this->platinum * $this->CAMBIO_PLATINUM;
+
+        // Calcola il numero di monete d'oro e aggiorna il totale in copper rimanente
+        $this->gold = floor($totCopper / $this->CAMBIO_GOLD);
+        $totCopper -= $this->gold * $this->CAMBIO_GOLD;
+
+        // Calcola il numero di monete d'argento e il rimanente diventa copper
+        $this->silver = floor($totCopper / $this->CAMBIO_SILVER);
+        $this->copper = $totCopper % $this->CAMBIO_SILVER;
+    }
+
+    /**
+     * Converte un totale in copper in un oggetto Cash.
+     * @param int $copper Totale in monete di rame da convertire.
+     * @return Cash Istanza della classe Cash con i valori calcolati.
+     */
+    public static function ConvertiValuta(int $copper): Cash
+    {
+        $ret = new Cash(0, 0, 0, $copper);
+        $ret->refreshValuta(); // Aggiorna i valori delle monete
+        return $ret;
+    }
+
+    /**
+     * Costruttore della classe Cash.
+     * @param int $platinum Numero iniziale di monete di platino.
+     * @param int $gold Numero iniziale di monete d'oro.
+     * @param int $silver Numero iniziale di monete d'argento.
+     * @param int $copper Numero iniziale di monete di rame.
+     */
     public function __construct(int $platinum, int $gold, int $silver, int $copper)
     {
+        $config = self::loadCambi(); // Carica i tassi di cambio
+        // Inizializza i tassi di cambio
+        $this->CAMBIO_PLATINUM = $config["platinum"];
+        $this->CAMBIO_GOLD = $config["gold"];
+        $this->CAMBIO_SILVER = $config["silver"];
+
+        // Inizializza le proprietà pubbliche
         $this->platinum = $platinum;
         $this->gold = $gold;
         $this->silver = $silver;
         $this->copper = $copper;
     }
+
+    /**
+     * Calcola il totale in copper considerando tutte le monete.
+     * @return int Totale in monete di rame.
+     */
+    public function get_totalcopper(): int
+    {
+        return ($this->platinum * $this->CAMBIO_PLATINUM) +
+            ($this->gold * $this->CAMBIO_GOLD) +
+            ($this->silver * $this->CAMBIO_SILVER) +
+            $this->copper;
+    }
+
+    /**
+     * Aggiunge monete all'attuale oggetto Cash.
+     * @param Cash $totalCash Oggetto Cash da aggiungere.
+     */
+    public function addCash(Cash $totalCash)
+    {
+        $this->platinum += $totalCash->platinum;
+        $this->gold += $totalCash->gold;
+        $this->silver += $totalCash->silver;
+        $this->copper += $totalCash->copper;
+    }
+
+    /**
+     * Gestisce il pagamento.
+     * @param Cash $totalCash Importo da pagare.
+     * @param bool $canReceiveChange Se vero, calcola il resto. Altrimenti, richiede pagamento esatto.
+     * @throws \Exception Se il pagamento non può essere effettuato.
+     */
+    public function processPayment(Cash $totalCash, bool $canReceiveChange)
+    {
+        $totalCopperToPay = $totalCash->get_totalcopper(); // Totale in copper da pagare
+        $totalCopper = $this->get_totalcopper(); // Totale in copper disponibile
+
+        if ($totalCopper < $totalCopperToPay) {
+            throw new \Exception("Fondi insufficienti per effettuare il pagamento.");
+        }
+
+        if ($canReceiveChange) {
+            $this->pagaConCambio($totalCopper, $totalCopperToPay);
+        } else {
+            $this->payExactAmount($totalCash);
+        }
+    }
+
+    /**
+     * Calcola il resto dopo un pagamento.
+     * @param int $totalCopper Totale disponibile in copper.
+     * @param int $totalCopperToPay Totale da pagare in copper.
+     */
+    private function pagaConCambio(int $totalCopper, int $totalCopperToPay)
+    {
+        // Imposta il resto come il totale rimanente in copper
+        $this->platinum = 0;
+        $this->gold = 0;
+        $this->silver = 0;
+        $this->copper = $totalCopper - $totalCopperToPay;
+
+        // Aggiorna i valori delle monete
+        $this->refreshValuta();
+    }
+
+    /**
+     * Effettua un pagamento esatto, sottraendo le monete richieste.
+     * @param Cash $totalCash Oggetto Cash che rappresenta il pagamento.
+     * @throws \Exception Se non ci sono abbastanza monete delle denominazioni corrette.
+     */
+    private function payExactAmount(Cash $totalCash)
+    {
+        // Controlla se le monete disponibili sono sufficienti
+        if (
+            $this->platinum < $totalCash->platinum ||
+            $this->gold < $totalCash->gold ||
+            $this->silver < $totalCash->silver ||
+            $this->copper < $totalCash->copper
+        ) {
+            throw new \Exception("Fondi insufficienti nelle denominazioni richieste per il pagamento esatto.");
+        }
+
+        // Sottrae le monete richieste
+        $this->platinum -= $totalCash->platinum;
+        $this->gold -= $totalCash->gold;
+        $this->silver -= $totalCash->silver;
+        $this->copper -= $totalCash->copper;
+    }
 }
+
 class CronologiaPagamento implements \JsonSerializable
 {
     public static function from_objectvars(array $evento): self
@@ -514,6 +609,7 @@ class CronologiaPagamento implements \JsonSerializable
         return $data === $this->date->format('Y-m-d H:i:s');
     }
 }
+
 class TransazioneSospesa implements \JsonSerializable
 {
     public int $copper; // Totale in rame
