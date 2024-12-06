@@ -3,6 +3,7 @@ namespace BLL;
 
 enum TransactionType: string
 {
+    case SPLIT = 'split';
     case DEBT = 'debt';
     case RECEIVED = 'received';
     case SETTLE_CREDIT = 'settle_credit';
@@ -238,7 +239,7 @@ class Personaggio
     /**
      * Aggiunge una transazione alla cronologia del personaggio.
      */
-    private function addTransactionToHistory(
+    public function addTransactionToHistory(
         TransactionType $type,
         Cash $soldi,
         string $description
@@ -282,7 +283,7 @@ class Personaggio
                 $this->personaggio->cash->processPayment($tempCash, $canReceiveChange);
             } catch (\Exception $e) {
                 // Gestisce eventuali errori legati a fondi insufficienti o denominazioni errate
-                throw new \Exception("Errore durante il pagamento: " . $e->getMessage());
+                throw new \Exception($this->personaggio->name . ": " . $e->getMessage());
             }
         }
     }

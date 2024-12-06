@@ -6,5 +6,5 @@ function eseguiPOST()
     ManeggiaSoldi(BLL\TransactionType::CREDIT, $_POST);
 
 }
-include dirname(__DIR__) . '/BLL/gestione_metodi.php';
+include dirname(path: __DIR__) . '/BLL/gestione_metodi.php';
 ?>

@@ -81,3 +81,65 @@ function manageTransaction(basename, actionType, isReceiving = null) {
     });
 }
 
+
+function alla_romana() {
+
+    $.get(getTemplateUrl("insert", { spendi: "0" }), function (template) {
+        SweetAlert.fire({
+            title: "Spendete in totale" + ":",
+            html: template,
+            confirmButtonText: "Spendete!",
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                const platinum = Swal.getPopup().querySelector('#platinum').value;
+                const gold = Swal.getPopup().querySelector('#gold').value;
+                const silver = Swal.getPopup().querySelector('#silver').value;
+                const copper = Swal.getPopup().querySelector('#copper').value;
+                const description = Swal.getPopup().querySelector('#description').value;
+
+                if (description == "" || (!description))
+                    Swal.showValidationMessage(traduci('descrizioneMancante'));
+
+                var bindCorrect = true;
+                validanum = function (sznum, nome) {
+                    if (sznum == "")
+                        return 0;
+                    var Num = parseFloat(sznum);
+                    if (isNaN(Num)) {
+                        bindCorrect = false;
+                        Swal.showValidationMessage(traduci('erroreValidazione') + ' ' + nome);
+                        return 0;
+                    }
+                    if (Num < 0) {
+                        bindCorrect = false;
+                        Swal.showValidationMessage(traduci('azioneNonPermessa') + ':' + ' ' + traduci('valoreNegativo'));
+                    }
+                    return Num;
+                }
+
+                var platinumNum = validanum(platinum, traduci("platino"));
+                var goldNum = validanum(gold, traduci("oro"));
+                var silverNum = validanum(silver, traduci("argento"));
+                var copperNum = validanum(copper, traduci("rame"));
+                if (bindCorrect && (platinumNum + goldNum + silverNum + copperNum == 0)) {
+                    Swal.showValidationMessage(traduci('nessunaVariazione'));
+                }
+
+                return { platinum, gold, silver, copper, description };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                apiCall("manage/alla_romana", {
+                    platinum: result.value.platinum,
+                    gold: result.value.gold,
+                    silver: result.value.silver,
+                    copper: result.value.copper,
+                    description: result.value.description
+                }, function () {
+                    location.reload();
+                }, "POST");
+            }
+        });
+    });
+}

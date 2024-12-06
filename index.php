@@ -15,7 +15,7 @@ $l = count($personaggi);
 	if ($l > 0) { ?>
 		<div class="row">
 			<strong class="col text-center">
-				<?= "<span class='badge badge-secondary'>" . renderSoldi($info["allcash"]) . "</span>"; ?>
+				<?= "<span class='badge badge-secondary' onclick='alla_romana()'>" . renderSoldi($info["allcash"]) . "</span>"; ?>
 			</strong>
 		</div>
 		<div class=row>
