@@ -1,6 +1,18 @@
 <?php
 namespace BLL;
 
+enum TransactionType: string
+{
+    case DEBT = 'debt';
+    case RECEIVED = 'received';
+    case SETTLE_CREDIT = 'settle_credit';
+    case CREDIT = 'credit';
+    case SPENT = 'spent';
+    case SETTLE_DEBT = 'settle_debt';
+}
+
+
+
 class Personaggio
 {
     private string $baseName;
@@ -124,7 +136,7 @@ class Personaggio
      * Gestisce le transazioni di valuta del personaggio, incluse ricezione, spesa,
      * avvio di debiti o crediti, e la loro sanatoria.
      *
-     * @param string $transactionType Tipo di transazione (es.: "debt", "credit", "received", "spent", "settle_debt", "settle_credit").
+     * @param TransactionType $transactionType Tipo di transazione
      * @param Cash $soldi Oggetto Cash che rappresenta l'importo coinvolto nella transazione.
      * @param string $description Descrizione della transazione da aggiungere alla cronologia.
      * @param bool $canReceiveChange Indica se è possibile ricevere resto (default: false).
@@ -133,7 +145,7 @@ class Personaggio
      * @throws \Exception Se il tipo di transazione non è supportato o se un contratto non viene trovato.
      */
     public function manageCharacterCoins(
-        string $transactionType,
+        TransactionType $transactionType,
         Cash $soldi,
         string $description,
         bool $canReceiveChange = false,
@@ -153,9 +165,9 @@ class Personaggio
         $totalCopperManaging = $soldi->get_totalcopper();
 
         // Gestisce transazioni sospese o sanate
-        if (in_array($transactionType, ['debt', 'credit'])) {
+        if (in_array($transactionType, [TransactionType::DEBT, TransactionType::CREDIT])) {
             $this->addSuspendedTransaction($transactionType, $totalCopperManaging, $description);
-        } elseif (in_array($transactionType, ['settle_debt', 'settle_credit'])) {
+        } elseif (in_array($transactionType, [TransactionType::SETTLE_DEBT, TransactionType::SETTLE_CREDIT])) {
             $this->settleSuspendedTransaction($transactionType, $totalCopperManaging, $itemdescription);
         }
 
@@ -166,40 +178,47 @@ class Personaggio
         $this->save();
 
         // Restituisce una risposta di successo
-        return Response::retOK("Transazione ($transactionType) eseguita correttamente.");
+        return Response::retOK("Transazione ($transactionType->value) eseguita correttamente.");
     }
 
     /**
      * Determina la direzione della transazione (aggiunta o rimozione di valuta).
      */
-    private function determineTransactionDirection(string $transactionType): bool
+    private function determineTransactionDirection(TransactionType $transactionType): bool
     {
         return match ($transactionType) {
-            "debt", "received", "settle_credit" => true, //aggiungo soldi
-            "credit", "spent", "settle_debt" => false, //tolgo soldi
-            default => throw new \Exception("Tipo di transazione non supportata."),
+            TransactionType::DEBT, TransactionType::RECEIVED, TransactionType::SETTLE_CREDIT => true, //aggiungo soldi
+            TransactionType::CREDIT, TransactionType::SPENT, TransactionType::SETTLE_DEBT => false, //tolgo soldi
+            default => throw new \Exception("Tipo di transazione non supportato."),
         };
     }
 
     /**
      * Aggiunge una nuova transazione sospesa.
      */
-    private function addSuspendedTransaction(string $type, int $amount, string $description): void
+    private function addSuspendedTransaction(TransactionType $type, int $amount, string $description): void
     {
-        $this->personaggio->suspended[$type][] = new TransazioneSospesa(
+        $this->personaggio->suspended[$type->value][] = new TransazioneSospesa(
             $amount,
-            preg_replace("/\r\n|\n|\r/", " - ", $description)
+            preg_replace("/\r\n|\n|\r/", " - ", $description)  // Rimuove i ritorni a capo dalla descrizione
         );
     }
 
     /**
      * Sanatoria di una transazione sospesa (debito o credito).
      */
-    private function settleSuspendedTransaction(string $type, int $amount, string $description): void
+    private function settleSuspendedTransaction(TransactionType $type, int $amount, string $description): void
     {
-        $transactionKey = $type === "settle_debt" ? "debt" : "credit";
+        // Usa i valori dell'enum per determinare il tipo di transazione
+        $transactionKey = match ($type) {
+            TransactionType::SETTLE_DEBT => 'debt',
+            TransactionType::SETTLE_CREDIT => 'credit',
+            default => throw new \Exception("Tipo di transazione non valido per la sanatoria."),
+        };
+
         $found = false;
 
+        // Scorre le transazioni sospese per trovare quella corrispondente
         foreach ($this->personaggio->suspended[$transactionKey] as $key => $transaction) {
             if ($transaction->copper === $amount && $transaction->description === $description) {
                 unset($this->personaggio->suspended[$transactionKey][$key]);
@@ -220,7 +239,7 @@ class Personaggio
      * Aggiunge una transazione alla cronologia del personaggio.
      */
     private function addTransactionToHistory(
-        string $type,
+        TransactionType $type,
         Cash $soldi,
         string $description
     ): void {
@@ -231,7 +250,7 @@ class Personaggio
             $soldi->silver,
             $soldi->copper,
             $description,
-            strtoupper($type)
+            strtoupper($type->value)
         );
     }
 
