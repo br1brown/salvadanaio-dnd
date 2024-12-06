@@ -82,7 +82,7 @@ class Repository
      * 
      * @param string $nome Nome base per la stringa.
      * @return mixed contenuto del file.
-     * @throws Exception Se il file non può essere letto o se la decodifica JSON fallisce.
+     * @throws \Exception Se il file non può essere letto o se la decodifica JSON fallisce.
      */
     public static function getTxt(string $nome): mixed
     {
@@ -116,4 +116,46 @@ class Repository
     }
 
 }
-?>
+class Logging
+{
+    // Metodo statico per scrivere nel file di log con parametri variabili
+    public static function log($tipo, $stringa, ...$oggetti)
+    {
+        // Ottieni il nome del file in base al tipo di log
+        $file = Repository::getFileName($tipo . '_log', 'txt');
+
+        // Crea una stringa con timestamp per il log
+        $timestamp = date('Y-m-d H:i:s');
+
+        // Se ci sono oggetti da loggare, formatta
+        if (!empty($oggetti)) {
+            // Usa json_encode su oggetti passati come parametri variabili
+            $stringa = sprintf($stringa, ...$oggetti);
+        }
+
+        // Prepara il log completo con tipo e timestamp
+        $log = sprintf("[%s] %s\n", $timestamp, $stringa);
+
+        // Scrivi nel file
+        file_put_contents($file, $log, FILE_APPEND);
+    }
+
+    // Metodi statici specifici per tipo di log
+    public static function logError($stringa, ...$oggetti)
+    {
+        self::log('error', $stringa, ...$oggetti);
+    }
+
+    public static function logInfo($stringa, ...$oggetti)
+    {
+        self::log('info', $stringa, ...$oggetti);
+    }
+
+    public static function logWarning($stringa, ...$oggetti)
+    {
+        self::log('warning', $stringa, ...$oggetti);
+    }
+
+    // Aggiungi ulteriori metodi per altri tipi di log, come log di debug, successi, ecc.
+}
+

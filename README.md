@@ -13,12 +13,17 @@ Il template si distingue per la sua configurazione nella comunicazione con le AP
 Il template è organizzato in due componenti principali:
 
 1. **API Backend**
-   - Collocato nella cartella `API` sotto la rout principale, funziona come un accesso esterno.
+   - Collocato nella cartella `API` sotto la root principale, funziona come un accesso esterno.
    - **Middleware di Autenticazione e Gestione CORS (`BLL\auth_and_cors_middleware.php`):**
      - Gestisce l'autenticazione tramite API key e la configurazione CORS, utilizzando un file di testo (`APIKeys.txt`) per le chiavi API e un file JSON (`CORSconfig.json`) per le politiche CORS.
    - **Gestione Dati:**
      - La classe `BLL\Repository` facilita la gestione dei dati, con opzioni per adattarsi a diversi sistemi di archiviazione.
      - `BLL\Response` standardizza le risposte, inclusi errori e conferme.
+   - **Gestione dei Log (`Logging`):**
+     - La classe `Logging` gestisce la registrazione degli eventi di sistema in file di log. Permette di scrivere informazioni relative a errori, avvisi e altre attività del sistema.
+     - **Funzionamento:**
+       - Il metodo `log` è il cuore della classe e viene utilizzato per scrivere nei file di log. Ogni log contiene un timestamp e il tipo di evento (ad esempio, errore, avviso, informazione).
+       - Ogni volta che viene scritto un log, il sistema può includere anche parametri aggiuntivi (come variabili o oggetti) che vengono formattati automaticamente.
    - **Inclusione File Comuni:**
      - Supporta funzionalità comuni che si trovano in `funzioni_comuni.php`.
    - **Esempi di Endpoint:**
