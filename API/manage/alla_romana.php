@@ -41,7 +41,7 @@ function eseguiPOST()
                 $personeDaSalvare[] = $pers;
 
                 // Aggiungi la transazione alla cronologia
-                $pers->addTransactionToHistory(BLL\TransactionType::SPENT, $daSpendere, $description . " (Split - 1/" . $numeroPersonaggi . ")");
+                $pers->addTransactionToHistory(BLL\TransactionType::SPENT, $quantopagailsingolo, $description . " (Split - 1/" . $numeroPersonaggi . ")");
 
             } catch (Exception $e) {
                 $erroriPersonaggi[] = $personaggio["name"];
@@ -57,10 +57,10 @@ function eseguiPOST()
                 // Salva lo stato del personaggio
                 $pers->save();
             }
-            return BLL\Response::retOK("Transazione (Split) eseguita correttamente.");
+            return BLL\Response::retOK("Transazione (split) eseguita correttamente.", false);
         } else {
             // Se non tutti hanno pagato, restituisci un errore con i nomi dei personaggi problematici
-            return BLL\Response::retError("Errore: il pagamento non è riuscito per i seguenti personaggi: " . implode(", ", $erroriPersonaggi));
+            return BLL\Response::retError("Errore: il pagamento non è riuscito per i seguenti personaggi: " . implode(", ", $erroriPersonaggi), false);
         }
 
     });

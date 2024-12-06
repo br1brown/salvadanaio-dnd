@@ -14,10 +14,17 @@ $l = count($personaggi);
 	<?php
 	if ($l > 0) { ?>
 		<div class="row">
-			<strong class="col text-center">
-				<?= "<span class='badge badge-secondary' onclick='alla_romana()'>" . renderSoldi($info["allcash"]) . "</span>"; ?>
-			</strong>
+			<div class="col text-center">
+				<?= "<span class='badge badge-secondary'>" . renderSoldi($info["allcash"]) . "</span> "; ?>
+				<span onclick="alla_romana()" class="btn btn-danger btn-sm">
+					<i class="fas fa-shopping-cart"></i>
+				</span>
+				<span onclick="dividamoilbottino()" class="btn btn-success btn-sm">
+					<i class="fas fa-coins"></i>
+				</span>
+			</div>
 		</div>
+
 		<div class=row>
 			<div class="col offset-md-4 col-md-4 form-group">
 				<label for="sort">
@@ -81,12 +88,14 @@ $l = count($personaggi);
 							</div>
 							</p>
 							<div class="text-center mt-3">
-								<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', true)"
+								<button
+									onclick="manageTransaction('<?= htmlspecialchars($personaggio["basename"]); ?>', true)"
 									class="btn btn-success btn-sm">
 									<i class="fas fa-coins"></i>
 									<?= $service->traduci("ricevi") ?>
 								</button>
-								<button onclick="manageMoney('<?= htmlspecialchars($personaggio["basename"]); ?>', false)"
+								<button
+									onclick="manageTransaction('<?= htmlspecialchars($personaggio["basename"]); ?>', false)"
 									class="btn btn-danger btn-sm">
 									<i class="fas fa-shopping-cart"></i>
 									<?= $service->traduci("spendi") ?>
@@ -122,6 +131,26 @@ include('FE_utils/BottomPage.php');
 	inizializzazioneApp.then(() => {
 
 	});
+	function alla_romana() {
+		showAlert(
+			"Spendete in totale",
+			"Spendete",
+			{ checkResto: "0" },
+			false,
+			"manage/alla_romana"
+		);
+	}
+
+
+	function dividamoilbottino() {
+		showAlert(
+			"Guadagno totale in totale",
+			"Dividiamo tra tutti",
+			{ checkResto: "0" },
+			false,
+			"manage/dividamoilbottino"
+		);
+	}
 </script>
 
 </html>

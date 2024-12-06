@@ -66,19 +66,9 @@ const showAlert = async (title, confirmText, templateParams, isReceiving, apiEnd
 };
 
 // Funzione per gestire transazioni generiche
-function manageTransaction(basename, actionType, isReceiving = null) {
+function manageTransaction(basename, isReceiving = null) {
+    actionType = isReceiving ? 'ricevi' : 'spendi';
     const actionWord = traduci(actionType);
     const templateParams = isReceiving != null ? { checkResto: isReceiving ? "0" : "1" } : {};
     showAlert(actionWord, actionWord, templateParams, isReceiving, `manage/${actionType}`, { basename });
-}
-
-// Funzione per la divisione alla romana
-function alla_romana() {
-    showAlert(
-        "Spendete in totale",
-        "Spendete",
-        { checkResto: "0" },
-        false,
-        "manage/alla_romana"
-    );
 }
