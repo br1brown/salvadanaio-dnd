@@ -240,7 +240,7 @@ class Service
     {
         // Ottiene un elenco di file dalla directory specificata, escludendo i file non necessari
         $getFileList = function ($directory, $extension, $excludeFiles) {
-            $fileList = array ();
+            $fileList = array();
             $absolutePath = realpath($directory) . '/';
             foreach (glob($absolutePath . "*." . $extension) as $file) {
                 $relativePath = str_replace($absolutePath, '', $file);
@@ -303,7 +303,7 @@ class Service
 
         // Definizione della closure per "whitchPage"
         $whitchPage = function (string $path): string {
-            return empty ($path) || str_ends_with($path, '/') ? $path . "index" : $path;
+            return empty($path) || str_ends_with($path, '/') ? $path . "index" : $path;
         };
 
         $RequestPage = $whitchPage($parsedUrl['path']);
@@ -364,7 +364,7 @@ class Service
      * @param string $pathOrEndpoint Il percorso dell'endpoint o interno dell'API.
      * @param string $metodo Il metodo HTTP da utilizzare per la chiamata (ad es. 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'). Di default è 'GET'.
      * @param array $dati I dati da inviare con la richiesta, utili per i metodi come 'POST', 'PUT'.
-     * @param string $contentType Il Content Type della richiesta, di default è 'application/json'.
+     * @param string $contentType Il Content Type della richiesta.
      * @param array $headerPersonalizzati Header HTTP personalizzati da includere nella richiesta.
      * @param int $timeoutTotale Il timeout totale per la richiesta in secondi. Di default è 30 secondi.
      * @param int $timeoutConnessione Il timeout per la connessione in secondi. Di default è 10 secondi.
@@ -372,19 +372,23 @@ class Service
      * @throws InvalidArgumentException Se i parametri obbligatori non sono validi.
      * @throws Exception In caso di errore nella chiamata all'endpoint o nella risposta dell'API.
      */
-    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], string $contentType = 'application/json')
+    public function callApiEndpoint(string $pathOrEndpoint, string $metodo = "GET", array $dati = [], ?string $contentType = null)
     {
         // Validazione del parametro $pathOrEndpoint
         if (empty($pathOrEndpoint)) {
             throw new InvalidArgumentException("Il parametro 'pathOrEndpoint' non può essere vuoto.");
         }
-
         $url = $this->APIbaseURL($pathOrEndpoint);
+
+        if ($contentType === null) {
+            $contentType = strtoupper($metodo) === "POST"
+                ? 'application/x-www-form-urlencoded'
+                : 'application/json';
+        }
 
         $dati['lang'] = $this->_traduzione->lang;
 
         $risultati = ServerToServer::callURL($url, $metodo, $dati, $contentType, ["X-Api-Key: " . $this->APIkey]);
-
         $response = $risultati->Response;
         $ResponseContentType = $risultati->ResponseContentType;
 
