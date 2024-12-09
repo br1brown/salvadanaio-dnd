@@ -10,3 +10,7 @@ if (isset($title) && $title == "salvadanaio" && isset($_GET['basename'])) {
 
 $meta->description = isset($singledescription) ? $service->traduci($singledescription) : $settings['description'];
 
+session_start();
+
+// Controlla se l'utente è loggato
+$isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;

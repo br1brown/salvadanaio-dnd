@@ -35,6 +35,7 @@ function getApiUrl(action, params = null) {
  */
 function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, dataType = 'json') {
 	data.lang = infoContesto.lang;
+	var token = getBearerToken();
 
 	let settings = {
 		dataType: dataType,
@@ -46,7 +47,7 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 
 	if (!!infoContesto.EsternaAPI) {
 		var valori = {
-			url: getApiUrl(endpoint), data, type, dataType, XApiKey: infoContesto.APIKey
+			url: getApiUrl(endpoint), data, type, dataType, XApiKey: infoContesto.APIKey, BearerToken: token
 		}
 
 		settings.url = infoContesto.route.gateway;
@@ -61,6 +62,11 @@ function apiCall(endpoint, data, callback = null, type = 'GET', modalOk = true, 
 		settings.headers = {
 			'X-Api-Key': infoContesto.APIKey
 		};
+
+		if (token !== null) {
+			settings.headers['BearerToken'] = token;
+		}
+
 		if (type !== 'GET' && !(!data)) {
 			settings.data = data; // Aggiunge i dati al corpo della richiesta per POST, PUT, DELETE, ecc.
 		}
