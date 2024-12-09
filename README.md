@@ -1,52 +1,84 @@
 # Template per Sito Web
 
-Questo template offre una solida base per lo sviluppo di siti web, fornendo già molte funzioni utili.
-È progettato con flessibilità in mente, rendendolo ideale per progetti che richiedono una distinta separazione delle funzionalità client-server.
+Questo template fornisce una base robusta e versatile per lo sviluppo di siti web, con funzionalità preconfigurate e una chiara separazione tra client e server.
 
 ## Compatibilità
-- **Versione Consigliata:** 8.1.4. È importante utilizzare questa versione per assicurare la piena compatibilità del template.
+- **Versione consigliata:** 8.1.4 (utilizzare questa versione garantisce piena compatibilità).
 
 ## Comunicazione API
-Il template si distingue per la sua configurazione nella comunicazione con le API, che sono impostate per funzionare come se fossero ospitate su un server esterno. Questo permette di effettuare chiamate alle stesse sia dal sito web che da applicazioni di terze parti, _(utilizzando le librerie cURL per il frontend)_.
+Il template è configurato per comunicare con API simulate come server esterni. Questo approccio consente l’integrazione sia con il sito web che con applicazioni di terze parti.
 
-### Struttura
-Il template è organizzato in due componenti principali:
+### Autenticazione API
+- **Sicurezza avanzata:** Supporta il token **Bearer** per il frontend e il backend.
+  - **Frontend:** il token viene gestito autonomamente in ogni chiamata API, funzioni nel file `manageAPI.js`.
+  - **Backend:** il middleware `auth_and_cors_middleware.php` gestisce l’autenticazione e i permessi CORS.
 
-1. **API Backend**
-   - Collocato nella cartella `API` sotto la root principale, funziona come un accesso esterno.
-   - **Middleware di Autenticazione e Gestione CORS (`BLL\auth_and_cors_middleware.php`):**
-     - Gestisce l'autenticazione tramite API key e la configurazione CORS, utilizzando un file di testo (`APIKeys.txt`) per le chiavi API e un file JSON (`CORSconfig.json`) per le politiche CORS.
-   - **Gestione Dati:**
-     - La classe `BLL\Repository` facilita la gestione dei dati, con opzioni per adattarsi a diversi sistemi di archiviazione.
-     - `BLL\Response` standardizza le risposte, inclusi errori e conferme.
-   - **Gestione dei Log (`Logging`):**
-     - La classe `Logging` gestisce la registrazione degli eventi di sistema in file di log. Permette di scrivere informazioni relative a errori, avvisi e altre attività del sistema.
-     - **Funzionamento:**
-       - Il metodo `log` è il cuore della classe e viene utilizzato per scrivere nei file di log. Ogni log contiene un timestamp e il tipo di evento (ad esempio, errore, avviso, informazione).
-       - Ogni volta che viene scritto un log, il sistema può includere anche parametri aggiuntivi (come variabili o oggetti) che vengono formattati automaticamente.
-   - **Inclusione File Comuni:**
-     - Supporta funzionalità comuni che si trovano in `funzioni_comuni.php`.
-   - **Esempi di Endpoint:**
-     - `social.php` e `anagrafica.php` dimostrano l'utilizzo delle API per la comunicazione dati.
+---
 
-2. **Frontend**
-   - La classe `Service` semplifica l'interazione con le API e la gestione delle funzionalità comuni, inclusa la manipolazione degli URL.
-   - Integra una libreria per convertire il Markdown in HTML.
-   - `websettings.json` contiene le impostazioni di base del sito, inclusi i valori per i tag <meta>.
-   - La gestione multilingua avviene tramite vari file JSON suddivisi per lingua all'interno di `FE_utils/lang/{codice lingua ISO 639-1}`,
-    - Se la cartella inizia con un carattere `_` la lingue verrà esclusa.
-   - Funzioni di traduzione (`traduci` in JavaScript e analogamente in `$service`) permettono di ottenere stringhe tradotte dai file JSON.
+## Struttura del Template
 
-### Esempi Pratici
-Per vedere il template in azione, visita [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/)
+### 1. **Backend API**
+Le API sono collocate nella cartella `API` e seguono una struttura modulare.
 
+#### Middleware di Autenticazione e CORS
+- **Posizione:** `BLL/auth_and_cors_middleware.php`.
+- **Funzionalità:**
+  - Gestisce autenticazione tramite **API key** e token **Bearer**.
+  - Configurazioni esterne per:
+    - **pwd.txt** (password),
+    - **APIKeys.txt** (chiavi API nate per evitare recupero dei dati tramite crawler),
+    - **CORSconfig.json** (politiche CORS).
 
+#### Gestione Dati
+- La classe `BLL\Repository` facilita l’accesso ai dati e supporta diversi sistemi di archiviazione.
+- La classe `BLL\Response` standardizza le risposte API (es. errori o successi).
 
---- --- ---
+#### Logging
+- **Classe dedicata:** `Logging`.
+  - Scrive eventi di sistema (es. errori, avvisi) nei file di log con timestamp e categorie.
+  - Supporta parametri extra per fornire dettagli contestuali.
 
+#### Endpoint API
+Gli endpoint seguono una struttura standard con funzioni per metodi HTTP (`GET`, `POST`, `PUT`, `DELETE`):
+```php
+<?php
+include __DIR__ . '/BLL/auth_and_cors_middleware.php';
 
-# Creare progetti dal template
-Se stai iniziando un nuovo progetto e vuoi utilizzare il template come fondamento, ma non sai come fare, esegui questo script nella cartella della repository.
+function esegui[metodo]()
+{
+    possoProcedere(); // Verifica autenticazione
+    // Logica per gestire la richiesta
+}
+
+include __DIR__ . '/BLL/gestione_metodi.php';
+```
+
+- **Esempi di file API:** `social.php`, `anagrafica.php`.
+
+---
+
+### 2. **Frontend**
+Il frontend è organizzato per offrire una gestione semplice delle API e della configurazione.
+
+#### Caratteristiche principali
+- **Classe `Service`:** Facilita l’interazione con le API e la manipolazione degli URL.
+- **Gestione multilingua:** File JSON separati per lingua in `FE_utils/lang/{codice lingua ISO 639-1}`.
+  - Le lingue con prefisso `_` sono escluse.
+  - Funzioni di traduzione:
+    - **JavaScript:** `traduci`.
+    - **PHP:** metodo `$service`.
+- **Markdown:** Integra una libreria per convertire Markdown in HTML.
+- **Configurazione sito:** File `websettings.json` con impostazioni globali (es. tag `<meta>`).
+
+---
+
+## Esempi Pratici
+- **Visualizza una demo:** [Guarda un esempio](https://occhioalmondo.altervista.org/template-sito/).
+
+---
+
+## Creazione di Progetti dal Template
+Per iniziare un nuovo progetto basato su questo template, esegui il seguente script nella repository:
 ```bash
 git checkout -b main
 git remote add template https://github.com/br1brown/template-sito.git
